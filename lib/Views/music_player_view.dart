@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:runo_music/Views/artist_view.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
@@ -157,22 +158,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
           ),
           BackGroundBlur(),
           popOut(),
-          // Positioned(
-          //   child: Container(
-          //     width: 40,
-          //     height: 40,
-          //     decoration: BoxDecoration(
-          //         color: Colors.grey.withOpacity(0.5),
-          //         borderRadius: BorderRadius.circular(40)),
-          //     child: IconButton(
-          //         onPressed: () {
-          //           Navigator.pop(context);
-          //         },
-          //         icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
-          //   ),
-          //   left: 5,
-          //   top: 20,
-          // ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
@@ -204,11 +190,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          widget.artistName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ArtistView(artistId: widget.artistId)));
+                          },
+                          child:Text(
+                            widget.artistName,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -288,20 +279,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
               ],
             ),
           ),
-          // if(_isOverLay)
-          // InkWell(
-          //   onTa
-          //   child: Positioned(
-          //     bottom: 56,
-          //     left: 0,
-          //     child: Container(
-          //       height: 40,
-          //       child: ClipRRect(
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //     ),
-          //     ),
-          //   )
+
         ],
       ),
     );

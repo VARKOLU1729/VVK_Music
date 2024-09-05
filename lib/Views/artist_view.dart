@@ -4,6 +4,8 @@ import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
+import 'package:runo_music/Widgets/header.dart';
+import 'package:runo_music/Widgets/display_with_pagination.dart';
 //Thins to include
 // (Artist Details)
 // Show the Artist Image, Bio.
@@ -45,6 +47,14 @@ class _ArtistViewState extends State<ArtistView> {
     _artistAlbumPagingController.appendPage(albumData, pageKey + 1);
   }
 
+  void _loadImage() async
+  {
+    var imageUrl = await fetchData(path: '/artists/${widget.artistId}/images');
+    setState(() {
+      artistImageUrl = imageUrl['images'][1]['url'];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +63,7 @@ class _ArtistViewState extends State<ArtistView> {
     });
     _artistAlbumPagingController.addPageRequestListener((pageKey) {
       _loadAlbumData(pageKey);
+      _loadImage();
     });
   }
 
@@ -65,67 +76,52 @@ class _ArtistViewState extends State<ArtistView> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "Top Tracks",
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+      backgroundColor: Color.fromARGB(200, 141, 205, 154),
+        body:Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+
+                  child: artistImageUrl==null?CircularProgressIndicator() : Image.network(
+                      artistImageUrl!,
+                    width: width,
+                    // height: height,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Colors.black.withOpacity(0.1), Colors.black.withOpacity(0.4)]
+                      )
+                    ),
+                  ),
+                  top: 50,
+                  left: 10,
+                )
+              ],
             ),
-          ),
-          Container(
-            height: 220,
-            child: PagedListView<int, dynamic>(
-                pagingController: _artistTrackPagingController,
-                scrollDirection: Axis.horizontal,
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    itemBuilder: (context, item, index) {
-                  return TrackAlbumWidget(
-                    id: item[0],
-                    name: item[1],
-                    imageUrl: item[2],
-                    artistId: item[3],
-                    artistName: item[4],
-                    type: Type.track,
-                  );
-                })),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "Top Albums",
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          Container(
-            height: 220,
-            child: PagedListView<int, dynamic>(
-                pagingController: _artistAlbumPagingController,
-                scrollDirection: Axis.horizontal,
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    itemBuilder: (context, item, index) {
-                  return TrackAlbumWidget(
-                    id: item[0],
-                    name: item[1],
-                    imageUrl: item[2],
-                    artistId: item[3],
-                    artistName: item[4],
-                    type: Type.album,
-                  );
-                })),
-          ),
-        ],
-      ),
-    ));
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Header(title: 'Top Tracks'),
+                    DisplayWithPagination(pagingController: _artistTrackPagingController,type: Type.track),
+                    Header(title: 'Top Albums'),
+                    DisplayWithPagination(pagingController: _artistAlbumPagingController, type: Type.album)
+                  ],
+                ),
+              ),
+            )
+          ],
+        ) 
+        
+        );
   }
 }

@@ -58,6 +58,7 @@ class _AlbumViewState extends State<AlbumView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
           Image.network(
             widget.albumImageUrl,

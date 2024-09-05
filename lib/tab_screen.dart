@@ -10,28 +10,41 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  Widget activePage = const Home();
+
   int selectedIndex = 0;
+  List<List<String>> favourites = [];
+  void addToFavourites(List<String> item)
+  {
+    setState(() {
+      favourites.add(item);
+    });
+  }
+
   String title = "RUNO MUSIC";
-  void _selectScreen(index) {
-    if (index == 0) {
-      setState(() {
-        selectedIndex = 0;
-        activePage = Home();
-        title = "RUNO";
-      });
-    }
-    if (index == 1) {
-      setState(() {
-        selectedIndex = 1;
-        activePage = Home();
-        title = "Favourites";
-      });
-    }
+  void _selectIndex(index) {
+    setState(() {
+      selectedIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget activePage = Home(addToFavourites: addToFavourites);
+    if (selectedIndex== 0) {
+      setState(() {
+        selectedIndex = 0;
+        activePage = Home(addToFavourites: addToFavourites,);
+        title = "RUNO";
+      });
+    }
+    if (selectedIndex == 1) {
+      setState(() {
+        selectedIndex = 1;
+        activePage = Favourites(favourites: favourites);
+        title = "Favourites";
+      });
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -39,7 +52,7 @@ class _TabScreenState extends State<TabScreen> {
       ),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectScreen,
+        onTap: _selectIndex,
         backgroundColor: Color(0xff01242b),
         unselectedItemColor: Colors.white70,
         selectedItemColor: Colors.white,

@@ -3,13 +3,14 @@ import 'package:runo_music/Widgets/track_album_widget.dart';
 
 class Favourites extends StatefulWidget {
   final List<List<String>> favourites;
-  const Favourites({super.key, required this.favourites});
+  Favourites({super.key, required this.favourites});
 
   @override
   State<Favourites> createState() => _FavouritesState();
 }
 
 class _FavouritesState extends State<Favourites> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -11,6 +11,7 @@ class TrackAlbumWidget extends StatelessWidget {
   final String artistId;
   final String artistName;
   final Type type;
+  final void Function(List<String> item) addToFavourite;
   const TrackAlbumWidget(
       {super.key,
         required this.id,
@@ -18,7 +19,9 @@ class TrackAlbumWidget extends StatelessWidget {
         required this.imageUrl,
         required this.artistId,
         required this.artistName,
-        required this.type});
+        required this.type,
+        required this.addToFavourite
+      });
 
   Widget build(BuildContext context) {
     return InkWell(

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
+import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 
+
 class Home extends StatefulWidget {
-  const Home({super.key});
+
+  void Function(List<String> item) addToFavourites;
+
+   Home({super.key, required this.addToFavourites});
 
   @override
   State<Home> createState() => _HomeState();
@@ -34,15 +39,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-
     _trackPagingController.addPageRequestListener((pageKey) {
       _loadTrackData(pageKey);
     });
-
     _albumPagingController.addPageRequestListener((pageKey) {
       _loadAlbumData(pageKey);
     });
-
   }
 
   @override
@@ -58,60 +60,10 @@ class _HomeState extends State<Home> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "Top Tracks",
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          Container(
-            height: 220,
-            child: PagedListView<int, dynamic>(
-                pagingController: _trackPagingController,
-                scrollDirection: Axis.horizontal,
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    itemBuilder: (context, item, index) {
-                      return TrackAlbumWidget(
-                        id: item[0],
-                        name: item[1],
-                        imageUrl: item[2],
-                        artistId: item[3],
-                        artistName: item[4],
-                        type: Type.track,
-                      );
-                    })),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "Top Albums",
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          Container(
-            height: 220,
-            child: PagedListView<int, dynamic>(
-                pagingController: _albumPagingController,
-                scrollDirection: Axis.horizontal,
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    itemBuilder: (context, item, index) {
-                      return TrackAlbumWidget(
-                        id: item[0],
-                        name: item[1],
-                        imageUrl: item[2],
-                        artistId: item[3],
-                        artistName: item[4],
-                        type: Type.album,
-                      );
-                    })),
-          ),
+          Header(title: 'Top Tracks'),
+          DisplayWithPagination(pagingController: _trackPagingController,type: Type.track, addToFavourites:widget.addToFavourites),
+          Header(title: 'Top Albums'),
+          DisplayWithPagination(pagingController: _albumPagingController, type: Type.album, addToFavourites:widget.addToFavourites)
         ],
       ),
     );
