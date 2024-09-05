@@ -13,8 +13,6 @@ var kColorTheme = ColorScheme(
     onSecondary: Color.fromARGB(20, 20, 20, 20),
     error: Color.fromARGB(20, 20, 20, 20),
     onError: Color.fromARGB(20, 20, 20, 20),
-    background: Color.fromARGB(20, 20, 20, 20),
-    onBackground: Color.fromARGB(20, 20, 20, 20),
     surface: Color.fromARGB(20, 20, 20, 20),
     onSurface: Color.fromARGB(20, 20, 20, 20));
 
@@ -26,8 +24,6 @@ var kDarkTheme = ColorScheme(
     onSecondary: Color.fromARGB(20, 20, 20, 20),
     error: Color.fromARGB(20, 20, 20, 20),
     onError: Color.fromARGB(20, 20, 20, 20),
-    background: Color.fromARGB(20, 20, 20, 20),
-    onBackground: Color.fromARGB(20, 20, 20, 20),
     surface: Color.fromARGB(20, 20, 20, 20),
     onSurface: Color.fromARGB(20, 20, 20, 20));
 

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:runo_music/fetch_data.dart';
+import 'package:runo_music/Widgets/back_ground_blur.dart';
+import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Widgets/pop_out.dart';
+
 class MusicPlayerView extends StatefulWidget {
   final String trackId;
   final String trackName;
@@ -25,14 +28,17 @@ class MusicPlayerView extends StatefulWidget {
 
 class _MusicPlayerViewState extends State<MusicPlayerView> {
   final AudioPlayer _audioPlayer = AudioPlayer();
+  double volume = 0.5;
   double height = 0;
   double width = 0;
   bool _isPlaying = false;
   bool _isLoading = true;
+  bool _isSongCompleted = false;
   Duration _duration = Duration.zero;
   Duration _currentPosition = Duration.zero;
   String? _sourceUrl;
   bool _isOverLay = false;
+  bool _setvolume = false;
 
   late final StreamSubscription<Duration> _positionSubscription;
   late final StreamSubscription<Duration> _durationSubscription;
@@ -44,7 +50,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
     _initializeAudio();
     _initializeStreams();
   }
-
 
   Future<void> _initializeAudio() async {
     try {
@@ -82,11 +87,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       setState(() {
         _isPlaying = false;
         _currentPosition = Duration.zero;
+        _isSongCompleted = true;
       });
     });
   }
 
   Future<void> togglePlayback() async {
+    // if(_isSongCompleted)
+    //   {
+    //     _seekToPosition(0);
+    //   }
     if (_isPlaying) {
       await _audioPlayer.pause();
     } else {
@@ -99,7 +109,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
   Future<void> _seekToPosition(double value) async {
     final newPosition =
-    Duration(seconds: (_duration.inSeconds * value).round());
+        Duration(seconds: (_duration.inSeconds * value).round());
     await _audioPlayer.seek(newPosition);
     setState(() {
       _currentPosition = newPosition;
@@ -138,37 +148,31 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       // ),
       body: Stack(
         children: [
+
           Image.network(
             widget.trackImageUrl,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
           ),
-
-          Positioned.fill(
-            child: BackdropFilter(
-              blendMode: BlendMode.darken,
-              filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
-              child: Container(
-                color: Colors.black12.withOpacity(0.4),
-              ),
-            ),
-          ),
-
-          Positioned(
-            child: Ink(
-              decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20)),
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
-            ),
-            left: 5,
-            top: 10,
-          ),
+          BackGroundBlur(),
+          popOut(),
+          // Positioned(
+          //   child: Container(
+          //     width: 40,
+          //     height: 40,
+          //     decoration: BoxDecoration(
+          //         color: Colors.grey.withOpacity(0.5),
+          //         borderRadius: BorderRadius.circular(40)),
+          //     child: IconButton(
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //         },
+          //         icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
+          //   ),
+          //   left: 5,
+          //   top: 20,
+          // ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
@@ -178,6 +182,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                   flex: 3,
                   child: Center(
                     child: Image.network(
+                      scale: 0.75,
                       widget.trackImageUrl,
                     ),
                   ),
@@ -187,6 +192,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: 40,
+                        ),
                         Text(
                           widget.trackName,
                           style: const TextStyle(
@@ -200,7 +208,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           widget.artistName,
                           style: const TextStyle(
                             fontSize: 14,
-                            color: Colors.white70,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -209,13 +217,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                               trackHeight: 3,
                               trackShape: RectangularSliderTrackShape(),
                               overlayShape:
-                              RoundSliderOverlayShape(overlayRadius: 6),
+                                  RoundSliderOverlayShape(overlayRadius: 6),
                               thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 5)),
+                                  RoundSliderThumbShape(enabledThumbRadius: 5)),
                           child: Slider(
                             allowedInteraction: SliderInteraction.tapAndSlide,
                             thumbColor: Colors.white,
-                            activeColor: Colors.red,
+                            activeColor: Colors.white,
                             inactiveColor: Colors.grey,
                             value: _calculateSliderValue(),
                             min: 0.0,
@@ -243,8 +251,38 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                             child: _isLoading
                                 ? CircularProgressIndicator(color: Colors.white)
                                 : playPauseButton(
-                                isPlaying: _isPlaying,
-                                togglePlayback: togglePlayback)),
+                                    isPlaying: _isPlaying,
+                                    togglePlayback: togglePlayback)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _setvolume = !_setvolume;
+                                  });
+                                },
+                                icon: volume < 0.5
+                                    ? (volume == 0
+                                        ? Icon(Icons.volume_off,
+                                            color: Colors.white)
+                                        : Icon(Icons.volume_down,
+                                            color: Colors.white))
+                                    : Icon(Icons.volume_up,
+                                        color: Colors.white)),
+                            if (_setvolume)
+                              Slider(
+                                value: volume,
+                                onChanged: (val) {
+                                  setState(() {
+                                    volume = val;
+                                    _audioPlayer.setVolume(val);
+                                    // _setvolume = false;
+                                  });
+                                },
+                              )
+                          ],
+                        )
                       ],
                     )),
               ],
@@ -281,6 +319,7 @@ class playPauseButton extends StatelessWidget {
     return Container(
       child: IconButton(
           color: Colors.white,
+          iconSize: 50,
           onPressed: togglePlayback,
           icon: (!isPlaying) ? Icon(Icons.play_arrow) : Icon(Icons.pause)),
       decoration: BoxDecoration(
@@ -288,11 +327,11 @@ class playPauseButton extends StatelessWidget {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Colors.red.withOpacity(0.99),
-                Colors.red.withOpacity(0.66)
+                Colors.grey.withOpacity(0.44),
+                Colors.grey.withOpacity(0.22)
               ]),
           color: Colors.red,
-          borderRadius: BorderRadius.circular(30)),
+          borderRadius: BorderRadius.circular(40)),
     );
   }
 }
