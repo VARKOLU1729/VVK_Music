@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
+import 'package:runo_music/Widgets/see_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Data/top_tracks.dart';
@@ -60,9 +61,19 @@ class _HomeState extends State<Home> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Header(title: 'Top Tracks'),
+          Container(
+            height: 300,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Colors.orange, Colors.green])
+            ),
+          ),
+          SizedBox(height: 20,),
+          // Row( children: [Header(title: 'Top Tracks'), TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>SeeAll(addToFavourite: addToFavourite, id: id, name: name, imageUrl: imageUrl, artistId: artistId, artistName: artistName, albumId: albumId, type: type, albumName: albumName)))}, child: Text("See All", style: TextStyle(color: Colors.white),))]),
+          SizedBox(height: 10,),
+          Text(_trackPagingController.itemList![0][0].toString(),),
           DisplayWithPagination(pagingController: _trackPagingController,type: Type.track, addToFavourites:widget.addToFavourites),
           Header(title: 'Top Albums'),
+          SizedBox(height: 10,),
           DisplayWithPagination(pagingController: _albumPagingController, type: Type.album, addToFavourites:widget.addToFavourites)
         ],
       ),

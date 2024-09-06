@@ -22,7 +22,9 @@ Future<List<List<String>>> FetchTopAlbums({required String path,required PagingC
       albumName,
       albumImageUrl['images'][3]['url'],
       albumArtistId,
-      albumArtistName
+      albumArtistName,
+      albumId,
+      albumName
     ]);
   }
   return albumData;

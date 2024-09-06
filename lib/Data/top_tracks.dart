@@ -13,15 +13,19 @@ Future<List<List<String>>> FetchTopTracks({required String path,  required Pagin
   {
     var trackAlbumId = trackDetailsJson['tracks'][i]['albumId'];
     var trackId = trackDetailsJson['tracks'][i]['id'];
+    var trackName = trackDetailsJson['tracks'][i]['name'];
     var trackArtistId = trackDetailsJson['tracks'][i]['artistId'];
     var trackArtistName = trackDetailsJson['tracks'][i]['artistName'];
     var trackImageUrl = await fetchData(path: 'albums/$trackAlbumId/images');
+    var trackAlbumName = trackDetailsJson['tracks'][i]['albumName'];
     trackData.add([
       trackId,
-      trackDetailsJson['tracks'][i]['name'],
+      trackName,
       trackImageUrl['images'][3]['url'],
       trackArtistId,
-      trackArtistName
+      trackArtistName,
+      trackAlbumId,
+      trackAlbumName
     ]);
   }
   return trackData;

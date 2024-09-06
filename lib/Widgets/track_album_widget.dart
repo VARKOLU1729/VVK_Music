@@ -10,17 +10,21 @@ class TrackAlbumWidget extends StatelessWidget {
   final String imageUrl;
   final String artistId;
   final String artistName;
+  final String albumId;
+  final String albumName;
   final Type type;
-  final void Function(List<String> item) addToFavourite;
-  const TrackAlbumWidget(
+  void Function(List<String> item)? addToFavourite;
+  TrackAlbumWidget(
       {super.key,
+        this.addToFavourite,
         required this.id,
         required this.name,
         required this.imageUrl,
         required this.artistId,
         required this.artistName,
+        required this.albumId,
         required this.type,
-        required this.addToFavourite
+        required this.albumName
       });
 
   Widget build(BuildContext context) {
@@ -42,7 +46,11 @@ class TrackAlbumWidget extends StatelessWidget {
                   trackName: name,
                   trackImageUrl: imageUrl,
                   artistId: artistId,
-                  artistName: artistName)));
+                  artistName: artistName,
+                albumId: albumId,
+                albumName: albumName,
+                addToFavourite: addToFavourite!,
+              )));
 
         if (type == Type.album)
           Navigator.of(context).push(MaterialPageRoute(
@@ -51,7 +59,9 @@ class TrackAlbumWidget extends StatelessWidget {
                   albumName: name,
                   albumImageUrl: imageUrl,
                   artistId: artistId,
-                  artistName: artistName)));
+                  artistName: artistName,
+                  addToFavourite: addToFavourite!,
+              )));
       },
       borderRadius: BorderRadius.circular(20),
       hoverColor: Color(0xff2d505e),
@@ -59,7 +69,9 @@ class TrackAlbumWidget extends StatelessWidget {
         width: 180,
         child: Column(
           children: [
-            Container(
+            Expanded(
+              flex: 8,
+              child: Container(
               padding: EdgeInsets.all(10),
               // decoration: BoxDecoration(
               //   shape: BoxShape.rectangle,
@@ -73,12 +85,16 @@ class TrackAlbumWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
+            ),
+            Expanded(
+                flex:2,
+                child: Text(
               name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.white),
-            )
+            ))
+
           ],
         ),
       ),

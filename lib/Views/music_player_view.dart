@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:runo_music/Views/artist_view.dart';
+import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
@@ -13,6 +14,9 @@ class MusicPlayerView extends StatefulWidget {
   final String trackImageUrl;
   final String artistId;
   final String artistName;
+  final String albumId;
+  final String albumName;
+  final void Function(List<String> item) addToFavourite;
 
   const MusicPlayerView({
     super.key,
@@ -21,6 +25,9 @@ class MusicPlayerView extends StatefulWidget {
     required this.trackImageUrl,
     required this.artistId,
     required this.artistName,
+    required this.albumId,
+    required this.albumName,
+    required this.addToFavourite
   });
 
   @override
@@ -38,7 +45,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   Duration _duration = Duration.zero;
   Duration _currentPosition = Duration.zero;
   String? _sourceUrl;
-  bool _isOverLay = false;
+  bool addedToFav = false;
   bool _setvolume = false;
 
   late final StreamSubscription<Duration> _positionSubscription;
@@ -181,18 +188,39 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                         SizedBox(
                           height: 40,
                         ),
-                        Text(
-                          widget.trackName,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AlbumView(albumId: widget.albumId,albumName: widget.albumName,albumImageUrl: widget.trackImageUrl, artistId: widget.artistId,artistName: widget.artistName, addToFavourite: widget.addToFavourite,)));
+                              },
+                              child:Text(
+                                widget.trackName,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+
+                            InkWell(
+                              onTap: (){
+                                widget.addToFavourite([widget.trackId, widget.trackName, widget.trackImageUrl, widget.artistId, widget.artistName, widget.albumId, widget.albumName]);
+                                setState(() {
+                                  addedToFav = !addedToFav;
+                                  //add remove to fav here - if time is sufficient
+                                });
+                              },
+                              child: Icon(Icons.favorite, color:addedToFav?Colors.red:Colors.white),
+                            )
+                          ],
                         ),
                         const SizedBox(height: 5),
                         InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ArtistView(artistId: widget.artistId)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ArtistView(artistId: widget.artistId, addToFavourite: widget.addToFavourite,)));
                           },
                           child:Text(
                             widget.artistName,

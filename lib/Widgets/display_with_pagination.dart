@@ -24,6 +24,8 @@ class DisplayWithPagination extends StatelessWidget {
               imageUrl: item[2],
               artistId: item[3],
               artistName: item[4],
+              albumId: item[5],
+              albumName:item[6],
               type: type,
               addToFavourite : addToFavourites
             );

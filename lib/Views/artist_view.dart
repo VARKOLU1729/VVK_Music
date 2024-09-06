@@ -5,6 +5,7 @@ import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/header.dart';
+import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 //Thins to include
 // (Artist Details)
@@ -17,8 +18,9 @@ import 'package:runo_music/Widgets/display_with_pagination.dart';
 // Show the list of albums created by this artist (on click of it, open  Album View)
 
 class ArtistView extends StatefulWidget {
+  final void Function(List<String> item) addToFavourite;
   final String artistId;
-  const ArtistView({super.key, required this.artistId});
+  ArtistView({super.key, required this.artistId,required this.addToFavourite});
 
   @override
   State<ArtistView> createState() => _ArtistViewState();
@@ -79,13 +81,12 @@ class _ArtistViewState extends State<ArtistView> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color.fromARGB(200, 141, 205, 154),
+      backgroundColor: Color.fromARGB(200, 20, 23, 20),
         body:Column(
           children: [
             Stack(
               children: [
                 Container(
-
                   child: artistImageUrl==null?CircularProgressIndicator() : Image.network(
                       artistImageUrl!,
                     width: width,
@@ -93,28 +94,45 @@ class _ArtistViewState extends State<ArtistView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  child: Container(
+                Container(
+                  child:
+                  Padding(
+                    padding: EdgeInsets.only(top : height/12),
+                    child: Text(
+                        "Shaboozey",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40
+                      ),
+                    ),
+                  ),
+                  margin: EdgeInsets.only(top: height/6),
+                  height: height/7,
+                    width: width,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                          colors: [Colors.black.withOpacity(0.1), Colors.black.withOpacity(0.4)]
+                        begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.black.withOpacity(0.05),Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.7)]
                       )
                     ),
                   ),
-                  top: 50,
-                  left: 10,
-                )
-              ],
+                popOut(),
+            ]
             ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 20,),
                     Header(title: 'Top Tracks'),
-                    DisplayWithPagination(pagingController: _artistTrackPagingController,type: Type.track),
+                    SizedBox(height: 10,),
+                    DisplayWithPagination(pagingController: _artistTrackPagingController,type: Type.track, addToFavourites:widget.addToFavourite!),
                     Header(title: 'Top Albums'),
-                    DisplayWithPagination(pagingController: _artistAlbumPagingController, type: Type.album)
+                    SizedBox(height: 10,),
+                    DisplayWithPagination(pagingController: _artistAlbumPagingController, type: Type.album, addToFavourites:widget.addToFavourite!)
                   ],
                 ),
               ),

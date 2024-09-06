@@ -11,13 +11,16 @@ class AlbumView extends StatefulWidget {
   final String albumImageUrl;
   final String artistId;
   final String artistName;
+  final void Function(List<String> item) addToFavourite;
+
   const AlbumView(
       {super.key,
       required this.albumId,
       required this.albumName,
       required this.albumImageUrl,
       required this.artistId,
-      required this.artistName});
+      required this.artistName,
+      required this.addToFavourite});
 
   @override
   State<AlbumView> createState() => _AlbumViewState();
@@ -58,7 +61,7 @@ class _AlbumViewState extends State<AlbumView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(200, 9, 3, 3),
+        backgroundColor: Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
           Image.network(
             widget.albumImageUrl,
@@ -66,90 +69,178 @@ class _AlbumViewState extends State<AlbumView> {
             height: double.infinity,
             fit: BoxFit.cover,
           ),
-      BackGroundBlur(),
-      popOut(),
-      Column(
-        children: [
+          BackGroundBlur(),
+          popOut(),
           Container(
-            height: 300,
-            child: ImageContainer(albumImageUrl: widget.albumImageUrl),
+            margin: EdgeInsets.only(top: 300),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.3),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
+                )
+            ),
           ),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: albumTrackData.length,
-                  itemBuilder: (context, index) {
-                    return AlbumTrackWidget(
-                      albumTrackId: albumTrackData[index][0],
-                      albumTrackName: albumTrackData[index][1],
-                      albumImageUrl: albumTrackData[index][2],
-                      artistId: albumTrackData[index][3],
-                      artistName: albumTrackData[index][4],
-                    );
-                  }
-                  )
-          )
-        ],
-      ),
-    ])
-
-    );
+          Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child:
+                Center(
+                  child: Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child:
+                      Image.network(
+                        widget.albumImageUrl,
+                        fit: BoxFit.cover,
+                        // scale: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                  child: ListView.builder(
+                      itemCount: albumTrackData.length,
+                      itemBuilder: (context, index) {
+                        return AlbumTrackWidget(
+                          albumTrackId: albumTrackData[index][0],
+                          albumTrackName: albumTrackData[index][1],
+                          albumImageUrl: albumTrackData[index][2],
+                          artistId: albumTrackData[index][3],
+                          artistName: albumTrackData[index][4],
+                          albumId: widget.albumId,
+                          albumName: widget.albumName,
+                          addToFavourite: widget.addToFavourite,
+                        );
+                      }))
+            ],
+          ),
+        ]));
   }
 }
 
-class ImageContainer extends StatelessWidget {
-  final String albumImageUrl;
-  const ImageContainer({super.key, required this.albumImageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Image.network(
-          scale: 1,
-          albumImageUrl,
-        ),
-      ),
-    );
-  }
-}
-
-class AlbumTrackWidget extends StatelessWidget {
+class AlbumTrackWidget extends StatefulWidget {
   final String albumTrackId;
   final String albumTrackName;
   final String albumImageUrl;
   final String artistId;
   final String artistName;
-  const AlbumTrackWidget(
-      {super.key,
-      required this.albumTrackId,
-      required this.albumTrackName,
-      required this.albumImageUrl,
-      required this.artistId,
-      required this.artistName});
+  final String albumId;
+  final String albumName;
+  final void Function(List<String> item) addToFavourite;
 
+
+  AlbumTrackWidget(
+      {super.key,
+        required this.albumTrackId,
+        required this.albumTrackName,
+        required this.albumImageUrl,
+        required this.artistId,
+        required this.artistName,
+        required this.albumId,
+        required this.addToFavourite,
+        required this.albumName
+      });
+
+  @override
+  State<AlbumTrackWidget> createState() => _AlbumTrackWidgetState();
+}
+
+class _AlbumTrackWidgetState extends State<AlbumTrackWidget> {
+  bool addedToFav = false;
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          print(albumTrackId);
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MusicPlayerView(
-                trackId: albumTrackId,
-                trackName: albumTrackName,
-                trackImageUrl: albumImageUrl,
-                artistId: artistId,
-                artistName: artistName),
+              trackId: widget.albumTrackId,
+              trackName:  widget.albumTrackName,
+              trackImageUrl:  widget.albumImageUrl,
+              artistId:  widget.artistId,
+              artistName:  widget.artistName,
+              albumId: widget.albumId,
+              albumName: widget.albumName,
+              addToFavourite:  widget.addToFavourite,
+            ),
           ));
         },
         child: ListTile(
           tileColor: Colors.black,
           selectedTileColor: Colors.pink,
-          leading: Icon(Icons.music_note),
+          leading: Icon(Icons.music_note_sharp, color: Colors.blue,),
           title: Text(
-            albumTrackName,
+            widget.albumTrackName,
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          trailing: Icon(Icons.favorite),
-        ));
+          trailing: IconButton(
+            icon:Icon(Icons.favorite, color:addedToFav?Colors.red:Colors.white),
+            onPressed: (){
+              widget.addToFavourite([ widget.albumTrackId, widget.albumTrackName, widget.albumImageUrl,  widget.artistId,  widget.artistName, widget.albumId, widget.albumName]);
+              setState(() {
+                addedToFav = !addedToFav;
+                //add remove to fav here - if time is sufficient
+              });
+            },),
+        ));;
   }
 }
+
+
+// class AlbumTrackWidget extends StatelessWidget {
+//   final String albumTrackId;
+//   final String albumTrackName;
+//   final String albumImageUrl;
+//   final String artistId;
+//   final String artistName;
+//   final void Function(List<String> item) addToFavourite;
+//   bool addedToFav = false;
+//
+//   AlbumTrackWidget(
+//       {super.key,
+//       required this.albumTrackId,
+//       required this.albumTrackName,
+//       required this.albumImageUrl,
+//       required this.artistId,
+//       required this.artistName,
+//       required this.addToFavourite});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//         onTap: () {
+//           print(albumTrackId);
+//           Navigator.of(context).push(MaterialPageRoute(
+//             builder: (context) => MusicPlayerView(
+//               trackId: albumTrackId,
+//               trackName: albumTrackName,
+//               trackImageUrl: albumImageUrl,
+//               artistId: artistId,
+//               artistName: artistName,
+//               addToFavourite: addToFavourite,
+//             ),
+//           ));
+//         },
+//         child: ListTile(
+//           tileColor: Colors.black,
+//           selectedTileColor: Colors.pink,
+//           leading: Icon(Icons.music_note_sharp, color: Colors.blue,),
+//           title: Text(
+//             albumTrackName,
+//             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+//           ),
+//           trailing: IconButton(
+//             icon:Icon(Icons.favorite),
+//             onPressed: (){
+//               addToFavourite([albumTrackId,albumTrackName,albumImageUrl, artistId, artistName]);
+//               setState(() {
+//                 addedToFav = !addedToFav;
+//                 //add remove to fav here - if time is sufficient
+//               });
+//               },),
+//         ));
+//   }
+// }
