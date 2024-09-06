@@ -7,12 +7,10 @@ import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 
-
 class Home extends StatefulWidget {
-
   void Function(List<String> item) addToFavourites;
 
-   Home({super.key, required this.addToFavourites});
+  Home({super.key, required this.addToFavourites});
 
   @override
   State<Home> createState() => _HomeState();
@@ -20,22 +18,25 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   PagingController<int, dynamic> _trackPagingController =
-  PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0);
   PagingController<int, dynamic> _albumPagingController =
-  PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0);
 
-  void _loadTrackData(pageKey) async
-  {
-    List<List<String>> trackData = await FetchTopTracks(path: 'tracks/top', controller: _trackPagingController, pageKey: pageKey);
-    _trackPagingController.appendPage(trackData, pageKey+1);
+  void _loadTrackData(pageKey) async {
+    List<List<String>> trackData = await FetchTopTracks(
+        path: 'tracks/top',
+        controller: _trackPagingController,
+        pageKey: pageKey);
+    _trackPagingController.appendPage(trackData, pageKey + 1);
   }
 
-  void _loadAlbumData(pageKey) async
-  {
-    List<List<String>> albumData = await FetchTopAlbums(path:'albums/top', controller: _albumPagingController, pageKey: pageKey);
-    _albumPagingController.appendPage(albumData, pageKey+1);
+  void _loadAlbumData(pageKey) async {
+    List<List<String>> albumData = await FetchTopAlbums(
+        path: 'albums/top',
+        controller: _albumPagingController,
+        pageKey: pageKey);
+    _albumPagingController.appendPage(albumData, pageKey + 1);
   }
-
 
   @override
   void initState() {
@@ -64,17 +65,45 @@ class _HomeState extends State<Home> {
           Container(
             height: 300,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.orange, Colors.green])
-            ),
+                gradient:
+                    LinearGradient(colors: [Colors.orange, Colors.green])),
           ),
-          SizedBox(height: 20,),
-          // Row( children: [Header(title: 'Top Tracks'), TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>SeeAll(addToFavourite: addToFavourite, id: id, name: name, imageUrl: imageUrl, artistId: artistId, artistName: artistName, albumId: albumId, type: type, albumName: albumName)))}, child: Text("See All", style: TextStyle(color: Colors.white),))]),
-          SizedBox(height: 10,),
-          Text(_trackPagingController.itemList![0][0].toString(),),
-          DisplayWithPagination(pagingController: _trackPagingController,type: Type.track, addToFavourites:widget.addToFavourites),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+            Header(title: 'Top Tracks'),
+            TextButton(
+              onPressed: () {
+                showBottomSheet(
+                  constraints: BoxConstraints(maxHeight: 600),
+                  enableDrag: true,
+                    showDragHandle: true,
+                    context: context,
+                    builder: (context) => SeeAll(
+                        addToFavourite: widget.addToFavourites,
+                        pagingController: _trackPagingController));
+              },
+              child: Text("See All", style: TextStyle(color: Colors.white)),
+            )
+          ]),
+          SizedBox(
+            height: 10,
+          ),
+          DisplayWithPagination(
+              pagingController: _trackPagingController,
+              type: Type.track,
+              addToFavourites: widget.addToFavourites),
           Header(title: 'Top Albums'),
-          SizedBox(height: 10,),
-          DisplayWithPagination(pagingController: _albumPagingController, type: Type.album, addToFavourites:widget.addToFavourites)
+          SizedBox(
+            height: 10,
+          ),
+          DisplayWithPagination(
+              pagingController: _albumPagingController,
+              type: Type.album,
+              addToFavourites: widget.addToFavourites)
         ],
       ),
     );
