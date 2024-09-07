@@ -41,7 +41,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   double width = 0;
   bool _isPlaying = false;
   bool _isLoading = true;
-  bool _isSongCompleted = false;
   Duration _duration = Duration.zero;
   Duration _currentPosition = Duration.zero;
   String? _sourceUrl;
@@ -94,10 +93,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   }
 
   Future<void> togglePlayback() async {
-    // if(_isSongCompleted)
-    //   {
-    //     _seekToPosition(0);
-    //   }
     if (_isPlaying) {
       await _audioPlayer.pause();
     } else {
@@ -159,9 +154,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.black.withOpacity(0.99),
-      // ),
       body: Stack(
         children: [
           Image.network(
@@ -357,7 +349,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     _isLoop = !_isLoop;
                                   });
                                 },
-                                icon: Icon(Icons.loop, color: Colors.white,),
+                                icon:!_isLoop? Icon(Icons.loop, color: Colors.white,):Icon(Icons.loop, color: Colors.blue,),
                             )
 
                           ],
