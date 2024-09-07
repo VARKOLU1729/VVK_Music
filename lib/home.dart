@@ -78,13 +78,11 @@ class _HomeState extends State<Home> {
             TextButton(
               onPressed: () {
                 showBottomSheet(
-                  constraints: BoxConstraints(maxHeight: 600),
-                  enableDrag: true,
-                    showDragHandle: true,
                     context: context,
                     builder: (context) => SeeAll(
                         addToFavourite: widget.addToFavourites,
-                        pagingController: _trackPagingController));
+                        pagingController: _trackPagingController)
+                );
               },
               child: Text("See All", style: TextStyle(color: Colors.white)),
             )

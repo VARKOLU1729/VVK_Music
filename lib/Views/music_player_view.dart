@@ -7,6 +7,7 @@ import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
+import 'package:vertical_slider/vertical_slider.dart';
 
 class MusicPlayerView extends StatefulWidget {
   final String trackId;
@@ -18,17 +19,16 @@ class MusicPlayerView extends StatefulWidget {
   final String albumName;
   final void Function(List<String> item) addToFavourite;
 
-  const MusicPlayerView({
-    super.key,
-    required this.trackId,
-    required this.trackName,
-    required this.trackImageUrl,
-    required this.artistId,
-    required this.artistName,
-    required this.albumId,
-    required this.albumName,
-    required this.addToFavourite
-  });
+  const MusicPlayerView(
+      {super.key,
+      required this.trackId,
+      required this.trackName,
+      required this.trackImageUrl,
+      required this.artistId,
+      required this.artistName,
+      required this.albumId,
+      required this.albumName,
+      required this.addToFavourite});
 
   @override
   State<MusicPlayerView> createState() => _MusicPlayerViewState();
@@ -36,7 +36,7 @@ class MusicPlayerView extends StatefulWidget {
 
 class _MusicPlayerViewState extends State<MusicPlayerView> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  double volume = 0.5;
+  double volume = 1;
   double height = 0;
   double width = 0;
   bool _isPlaying = false;
@@ -47,10 +47,10 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   String? _sourceUrl;
   bool addedToFav = false;
   bool _setvolume = false;
+  bool _isLoop = false;
 
   late final StreamSubscription<Duration> _positionSubscription;
   late final StreamSubscription<Duration> _durationSubscription;
-  late final StreamSubscription<void> _onCompleteSubscription;
 
   @override
   void initState() {
@@ -91,13 +91,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       });
     });
 
-    _onCompleteSubscription = _audioPlayer.onPlayerComplete.listen((_) {
-      setState(() {
-        _isPlaying = false;
-        _currentPosition = Duration.zero;
-        _isSongCompleted = true;
-      });
-    });
   }
 
   Future<void> togglePlayback() async {
@@ -128,7 +121,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   void dispose() {
     _positionSubscription.cancel();
     _durationSubscription.cancel();
-    _onCompleteSubscription.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -140,9 +132,25 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   }
 
   double _calculateSliderValue() {
-    if (_duration.inMilliseconds > 0) {
+    if (_duration.inMilliseconds > 0 && _currentPosition<_duration) {
       return _currentPosition.inMilliseconds / _duration.inMilliseconds;
     }
+    else if(_currentPosition>=_duration)
+      {
+
+        _seekToPosition(0);
+        if(_isLoop)
+          {
+            _audioPlayer.resume();
+            _isPlaying = true;
+          }
+        else
+          {
+            _audioPlayer.pause();
+            _isPlaying = false;
+          }
+
+      }
     return 0.0;
   }
 
@@ -156,7 +164,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       // ),
       body: Stack(
         children: [
-
           Image.network(
             widget.trackImageUrl,
             width: double.infinity,
@@ -165,19 +172,46 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
           ),
           BackGroundBlur(),
           popOut(),
+          if(_setvolume) Positioned.directional(
+              textDirection: TextDirection.rtl,
+              end:width/20,
+              top: height/4,
+              bottom: height/2,
+              child: VerticalSlider(
+                value: volume,
+                onChangeEnd: (val){
+                  setState(() {
+                    _setvolume = false;
+                  });
+                },
+                onChanged: (val) {
+                  setState(() {
+                    volume = val;
+                    _audioPlayer.setVolume(val);
 
+                  },
+                  );
+                },
+              )
+
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height:40),
                 Expanded(
                   flex: 3,
                   child: Center(
-                    child: Image.network(
-                      scale: 0.75,
-                      widget.trackImageUrl,
-                    ),
+                    child:ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(
+                        scale: 0.6,
+                        widget.trackImageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ), 
                   ),
                 ),
                 Expanded(
@@ -192,10 +226,22 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AlbumView(albumId: widget.albumId,albumName: widget.albumName,albumImageUrl: widget.trackImageUrl, artistId: widget.artistId,artistName: widget.artistName, addToFavourite: widget.addToFavourite,)));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AlbumView(
+                                              albumId: widget.albumId,
+                                              albumName: widget.albumName,
+                                              albumImageUrl:
+                                                  widget.trackImageUrl,
+                                              artistId: widget.artistId,
+                                              artistName: widget.artistName,
+                                              addToFavourite:
+                                                  widget.addToFavourite,
+                                            )));
                               },
-                              child:Text(
+                              child: Text(
                                 widget.trackName,
                                 style: const TextStyle(
                                   fontSize: 18,
@@ -204,25 +250,40 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 ),
                               ),
                             ),
-
                             InkWell(
-                              onTap: (){
-                                widget.addToFavourite([widget.trackId, widget.trackName, widget.trackImageUrl, widget.artistId, widget.artistName, widget.albumId, widget.albumName]);
+                              onTap: () {
+                                widget.addToFavourite([
+                                  widget.trackId,
+                                  widget.trackName,
+                                  widget.trackImageUrl,
+                                  widget.artistId,
+                                  widget.artistName,
+                                  widget.albumId,
+                                  widget.albumName
+                                ]);
                                 setState(() {
                                   addedToFav = !addedToFav;
                                   //add remove to fav here - if time is sufficient
                                 });
                               },
-                              child: Icon(Icons.favorite, color:addedToFav?Colors.red:Colors.white),
+                              child: Icon(Icons.favorite,
+                                  color:
+                                      addedToFav ? Colors.red : Colors.white),
                             )
                           ],
                         ),
                         const SizedBox(height: 5),
                         InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ArtistView(artistId: widget.artistId, addToFavourite: widget.addToFavourite,)));
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ArtistView(
+                                          artistId: widget.artistId,
+                                          addToFavourite: widget.addToFavourite,
+                                        )));
                           },
-                          child:Text(
+                          child: Text(
                             widget.artistName,
                             style: const TextStyle(
                               fontSize: 14,
@@ -272,6 +333,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 : playPauseButton(
                                     isPlaying: _isPlaying,
                                     togglePlayback: togglePlayback)),
+                        SizedBox(height: 40,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -283,31 +345,29 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 },
                                 icon: volume < 0.5
                                     ? (volume == 0
-                                        ? Icon(Icons.volume_off,
-                                            color: Colors.white)
-                                        : Icon(Icons.volume_down,
-                                            color: Colors.white))
-                                    : Icon(Icons.volume_up,
-                                        color: Colors.white)),
-                            if (_setvolume)
-                              Slider(
-                                value: volume,
-                                onChanged: (val) {
+                                    ? Icon(Icons.volume_off,
+                                    color: Colors.white)
+                                    : Icon(Icons.volume_down,
+                                    color: Colors.white))
+                                    : Icon(Icons.volume_up, color: Colors.white)),
+                            SizedBox(height: 40,),
+                            IconButton(
+                                onPressed: () {
                                   setState(() {
-                                    volume = val;
-                                    _audioPlayer.setVolume(val);
-                                    // _setvolume = false;
+                                    _isLoop = !_isLoop;
                                   });
                                 },
-                              )
+                                icon: Icon(Icons.loop, color: Colors.white,),
+                            )
+
                           ],
                         )
+
                       ],
                     )),
               ],
             ),
           ),
-
         ],
       ),
     );
