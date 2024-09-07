@@ -18,8 +18,8 @@ class popOut extends StatelessWidget {
             },
             icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
       ),
-      left: 5,
-      top: 20,
+      left: 15,
+      top: 40,
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 
 class Home extends StatefulWidget {
-  void Function(List<String> item) addToFavourites;
+  void Function(List<dynamic> item) addToFavourites;
 
   Home({super.key, required this.addToFavourites});
 
@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
       PagingController(firstPageKey: 0);
 
   void _loadTrackData(pageKey) async {
-    List<List<String>> trackData = await FetchTopTracks(
+    List<List<dynamic>> trackData = await FetchTopTracks(
         path: 'tracks/top',
         controller: _trackPagingController,
         pageKey: pageKey);
@@ -71,21 +71,26 @@ class _HomeState extends State<Home> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Header(title: 'Top Tracks'),
-            TextButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 showBottomSheet(
                     context: context,
                     builder: (context) => SeeAll(
                         addToFavourite: widget.addToFavourites,
-                        pagingController: _trackPagingController)
-                );
+                        pagingController: _trackPagingController));
               },
-              child: Text("See All", style: TextStyle(color: Colors.white)),
-            )
+              child: Container(
+                  width: 100,
+                  height: 25,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(50)),
+                  child: Center(
+                      child: Text("SEE MORE",
+                          style: TextStyle(color: Colors.white)))),
+            ),
           ]),
           SizedBox(
             height: 10,

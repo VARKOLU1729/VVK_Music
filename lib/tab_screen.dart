@@ -12,8 +12,8 @@ class TabScreen extends StatefulWidget {
 class _TabScreenState extends State<TabScreen> {
 
   int selectedIndex = 0;
-  List<List<String>> favourites =[];
-  void addToFavourites(List<String> item)
+  List<List<dynamic>> favourites =[];
+  void addToFavourites(List<dynamic> item)
   {
     setState(() {
       favourites.add(item);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Views/artist_view.dart';
 import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
@@ -10,32 +11,25 @@ import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:vertical_slider/vertical_slider.dart';
 
 class MusicPlayerView extends StatefulWidget {
-  final String trackId;
-  final String trackName;
-  final String trackImageUrl;
-  final String artistId;
-  final String artistName;
-  final String albumId;
-  final String albumName;
-  final void Function(List<String> item) addToFavourite;
+  List<dynamic>? items;
+  int index;
+  final PagingController<int, dynamic>? trackPagingController;
+  final void Function(List<dynamic> item) addToFavourite;
 
-  const MusicPlayerView(
+  MusicPlayerView(
       {super.key,
-      required this.trackId,
-      required this.trackName,
-      required this.trackImageUrl,
-      required this.artistId,
-      required this.artistName,
-      required this.albumId,
-      required this.albumName,
+      this.items,
+        this.trackPagingController,
+        required this.index,
       required this.addToFavourite});
+
 
   @override
   State<MusicPlayerView> createState() => _MusicPlayerViewState();
 }
 
 class _MusicPlayerViewState extends State<MusicPlayerView> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  AudioPlayer? _audioPlayer;
   double volume = 1;
   double height = 0;
   double width = 0;
@@ -47,23 +41,74 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   bool addedToFav = false;
   bool _setvolume = false;
   bool _isLoop = false;
+  String? trackId;
+  String? trackName;
+  String? trackImageUrl;
+  String? artistId;
+  String? artistName;
+  String? albumId;
+  String? albumName;
+  bool isLastItem = false;
+  bool isFirstItem = false;
 
-  late final StreamSubscription<Duration> _positionSubscription;
-  late final StreamSubscription<Duration> _durationSubscription;
+  List<dynamic> items = [];
+  StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<Duration>? _durationSubscription;
 
-  @override
-  void initState() {
-    super.initState();
+  void initVariables()
+  {
+    _isPlaying = false;
+    _isLoading = true;
+    _duration = Duration.zero;
+    _currentPosition = Duration.zero;
+    _seekToPosition(0);
+  }
+
+
+  void loadTrackData(int index)
+  {
+    _audioPlayer = AudioPlayer();
+    initVariables();
+    if(index==0)
+      {
+        isFirstItem = true;
+      }
+    if(widget.items==null)
+    {
+      items = widget.trackPagingController!.itemList![index];
+    }
+    else
+    {
+      if(index==items.length-1)
+        {
+          isLastItem = true;
+        }
+      items = widget.items![index];
+    }
+
+    trackId = items[0];
+    trackName = items[1];
+    trackImageUrl = items[2];
+    artistId = items[3];
+    artistName = items[4];
+    albumId = items[5];
+    albumName = items[6];
     _initializeAudio();
     _initializeStreams();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    loadTrackData(widget.index);
+  }
+
   Future<void> _initializeAudio() async {
     try {
-      final urlData = await fetchData(path: 'tracks/${widget.trackId}');
+      final urlData = await fetchData(path: 'tracks/${trackId}');
       _sourceUrl = urlData['tracks'][0]['previewURL'];
-      await _audioPlayer.setSourceUrl(_sourceUrl!);
-      await _audioPlayer.resume();
+      await _audioPlayer!.setSourceUrl(_sourceUrl!);
+      await _audioPlayer!.resume();
 
       setState(() {
         _isPlaying = true;
@@ -78,13 +123,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   }
 
   void _initializeStreams() {
-    _positionSubscription = _audioPlayer.onPositionChanged.listen((position) {
+    _positionSubscription = _audioPlayer!.onPositionChanged.listen((position) {
       setState(() {
         _currentPosition = position;
       });
     });
 
-    _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
+    _durationSubscription = _audioPlayer!.onDurationChanged.listen((duration) {
       setState(() {
         _duration = duration;
       });
@@ -94,9 +139,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
   Future<void> togglePlayback() async {
     if (_isPlaying) {
-      await _audioPlayer.pause();
+      await _audioPlayer!.pause();
     } else {
-      await _audioPlayer.resume();
+      await _audioPlayer!.resume();
     }
     setState(() {
       _isPlaying = !_isPlaying;
@@ -106,7 +151,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   Future<void> _seekToPosition(double value) async {
     final newPosition =
         Duration(seconds: (_duration.inSeconds * value).round());
-    await _audioPlayer.seek(newPosition);
+    await _audioPlayer!.seek(newPosition);
     setState(() {
       _currentPosition = newPosition;
     });
@@ -114,9 +159,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
   @override
   void dispose() {
-    _positionSubscription.cancel();
-    _durationSubscription.cancel();
-    _audioPlayer.dispose();
+    _positionSubscription!.cancel();
+    _durationSubscription!.cancel();
+    _audioPlayer!.dispose();
     super.dispose();
   }
 
@@ -136,12 +181,12 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
         _seekToPosition(0);
         if(_isLoop)
           {
-            _audioPlayer.resume();
+            _audioPlayer!.resume();
             _isPlaying = true;
           }
         else
           {
-            _audioPlayer.pause();
+            _audioPlayer!.pause();
             _isPlaying = false;
           }
 
@@ -157,7 +202,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       body: Stack(
         children: [
           Image.network(
-            widget.trackImageUrl,
+            trackImageUrl!,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -179,7 +224,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                 onChanged: (val) {
                   setState(() {
                     volume = val;
-                    _audioPlayer.setVolume(val);
+                    _audioPlayer!.setVolume(val);
 
                   },
                   );
@@ -192,7 +237,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height:40),
+                SizedBox(height:80),
                 Expanded(
                   flex: 3,
                   child: Center(
@@ -200,12 +245,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                       borderRadius: BorderRadius.circular(20),
                       child: Image.network(
                         scale: 0.6,
-                        widget.trackImageUrl,
+                        trackImageUrl!,
                         fit: BoxFit.cover,
                       ),
                     ), 
                   ),
                 ),
+                SizedBox(height: 40,),
                 Expanded(
                     flex: 2,
                     child: Column(
@@ -223,18 +269,18 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AlbumView(
-                                              albumId: widget.albumId,
-                                              albumName: widget.albumName,
+                                              albumId: albumId!,
+                                              albumName: albumName!,
                                               albumImageUrl:
-                                                  widget.trackImageUrl,
-                                              artistId: widget.artistId,
-                                              artistName: widget.artistName,
+                                                  trackImageUrl!,
+                                              artistId: artistId!,
+                                              artistName: artistName!,
                                               addToFavourite:
                                                   widget.addToFavourite,
                                             )));
                               },
                               child: Text(
-                                widget.trackName,
+                                trackName!,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -245,13 +291,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                             InkWell(
                               onTap: () {
                                 widget.addToFavourite([
-                                  widget.trackId,
-                                  widget.trackName,
-                                  widget.trackImageUrl,
-                                  widget.artistId,
-                                  widget.artistName,
-                                  widget.albumId,
-                                  widget.albumName
+                                  widget.index,1, widget.trackPagingController
                                 ]);
                                 setState(() {
                                   addedToFav = !addedToFav;
@@ -271,12 +311,12 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ArtistView(
-                                          artistId: widget.artistId,
+                                          artistId: artistId!,
                                           addToFavourite: widget.addToFavourite,
                                         )));
                           },
                           child: Text(
-                            widget.artistName,
+                            artistName!,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -319,16 +359,49 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Center(
-                            child: _isLoading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : playPauseButton(
-                                    isPlaying: _isPlaying,
-                                    togglePlayback: togglePlayback)),
-                        SizedBox(height: 40,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    _positionSubscription!.cancel();
+                                    _durationSubscription!.cancel();
+                                    _audioPlayer!.dispose();
+                                    _isLoading = true;
+                                   loadTrackData(widget.index--);
+                                  });
+                                },
+                                icon: isFirstItem? Icon(Icons.skip_previous,size: 40, color: Colors.grey,) :Icon(Icons.skip_previous,size: 40, color: Colors.white,)
+                            ),
+                            _isLoading
+                                ? CircularProgressIndicator(color: Colors.white)
+                                : playPauseButton(
+                                isPlaying: _isPlaying,
+                                togglePlayback: togglePlayback
+                            ),
+                            IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    _positionSubscription!.cancel();
+                                    _durationSubscription!.cancel();
+                                    _audioPlayer!.dispose();
+                                    _isLoading = true;
+                                    _duration = Duration();
+                                    loadTrackData(widget.index++);
+                                  });
+                                },
+                                icon: isLastItem ? Icon(Icons.skip_next,size: 40, color: Colors.grey,) : Icon(Icons.skip_next,size: 40, color: Colors.white,)
+                            ),
+
+                          ],
+                        ),
+
+                        SizedBox(height: 30,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            bottomIcon(icon:
                             IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -341,16 +414,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     color: Colors.white)
                                     : Icon(Icons.volume_down,
                                     color: Colors.white))
-                                    : Icon(Icons.volume_up, color: Colors.white)),
-                            SizedBox(height: 40,),
+                                    : Icon(Icons.volume_up, color: Colors.white, size: 20,)),),
+                            bottomIcon(icon:
                             IconButton(
                                 onPressed: () {
                                   setState(() {
                                     _isLoop = !_isLoop;
                                   });
                                 },
-                                icon:!_isLoop? Icon(Icons.loop, color: Colors.white,):Icon(Icons.loop, color: Colors.blue,),
-                            )
+                                icon:!_isLoop? Icon(Icons.loop, color: Colors.white,size: 20,):Icon(Icons.loop, color: Colors.blue,size: 20,),
+                            ))
 
                           ],
                         )
@@ -366,6 +439,29 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   }
 }
 
+class bottomIcon extends StatelessWidget {
+  final Widget icon;
+  bottomIcon({super.key, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: icon,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Colors.grey.withOpacity(0.44),
+                Colors.grey.withOpacity(0.22)
+              ]),
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(50)),
+    );;
+  }
+}
+
+
 class playPauseButton extends StatelessWidget {
   final bool isPlaying;
   final Function() togglePlayback;
@@ -377,7 +473,7 @@ class playPauseButton extends StatelessWidget {
     return Container(
       child: IconButton(
           color: Colors.white,
-          iconSize: 50,
+          iconSize: 40,
           onPressed: togglePlayback,
           icon: (!isPlaying) ? Icon(Icons.play_arrow) : Icon(Icons.pause)),
       decoration: BoxDecoration(

@@ -3,8 +3,8 @@ import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 
 class Favourites extends StatefulWidget {
-  final List<List<String>> favourites;
-  void Function(List<String> item) addToFavourite;
+  final List<List<dynamic>> favourites;
+  void Function(List<dynamic> item) addToFavourite;
   Favourites(
       {super.key, required this.favourites, required this.addToFavourite});
 
@@ -31,12 +31,15 @@ class _FavouritesState extends State<Favourites> {
             Container(
               margin: EdgeInsets.only(top: 350),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.3),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
-                )
-              ),
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                    Colors.black.withOpacity(0.05),
+                    Colors.black.withOpacity(0.3),
+                    Colors.black.withOpacity(0.6),
+                    Colors.black.withOpacity(0.9)
+                  ])),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,13 +49,11 @@ class _FavouritesState extends State<Favourites> {
                 ),
                 Expanded(
                   flex: 1,
-                  child:
-                  Center(
+                  child: Center(
                     child: Container(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child:
-                        Image.network(
+                        child: Image.network(
                           Fav_img,
                           fit: BoxFit.cover,
                           // scale: 2,
@@ -61,14 +62,15 @@ class _FavouritesState extends State<Favourites> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
                   "My Favourites",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 Expanded(
                   flex: 2,
@@ -76,17 +78,19 @@ class _FavouritesState extends State<Favourites> {
                       itemCount: widget.favourites.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2),
-                      itemBuilder: (context, index) => TrackAlbumWidget(
-                            id: widget.favourites[index][0],
-                            name: widget.favourites[index][1],
-                            imageUrl: widget.favourites[index][2],
-                            artistId: widget.favourites[index][3],
-                            artistName: widget.favourites[index][4],
-                            albumId: widget.favourites[index][5],
-                            albumName: widget.favourites[index][6],
-                            type: Type.track,
-                            addToFavourite: widget.addToFavourite,
-                          )),
+                      itemBuilder: (context, index) => widget.favourites[index][1] == 0
+                          ? TrackAlbumWidget(
+                              index: widget.favourites[index][0],
+                              items: widget.favourites[index][2],
+                              type: Type.track,
+                              addToFavourite: widget.addToFavourite,
+                            )
+                          : TrackAlbumWidget(
+                              index: widget.favourites[index][0],
+                              pagingController: widget.favourites[index][2],
+                              type: Type.track,
+                              addToFavourite: widget.addToFavourite,
+                            )),
                 ),
               ],
             )

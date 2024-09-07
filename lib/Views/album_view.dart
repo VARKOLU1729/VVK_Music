@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
+
+List<List<dynamic>> albumTrackData = [];
 
 class AlbumView extends StatefulWidget {
   final String albumId;
@@ -11,7 +14,7 @@ class AlbumView extends StatefulWidget {
   final String albumImageUrl;
   final String artistId;
   final String artistName;
-  final void Function(List<String> item) addToFavourite;
+  final void Function(List<dynamic> item) addToFavourite;
 
   const AlbumView(
       {super.key,
@@ -22,16 +25,16 @@ class AlbumView extends StatefulWidget {
       required this.artistName,
       required this.addToFavourite});
 
+
   @override
   State<AlbumView> createState() => _AlbumViewState();
 }
 
 class _AlbumViewState extends State<AlbumView> {
-  List<List<String>> albumTrackData = [];
 
-  //paging option is not there , so directlt fetched all the results
+  //paging option is not there , so directly fetched all the results
   void _loadData() async {
-    List<List<String>> albumTrackDat = [];
+    List<List<dynamic>> albumTrackDat = [];
     var albumTracksJson =
         await fetchData(path: '/albums/${widget.albumId}/tracks');
     var noAlbumTracks = albumTracksJson['meta']['returnedCount'];
@@ -43,7 +46,9 @@ class _AlbumViewState extends State<AlbumView> {
         albumTrackName,
         widget.albumImageUrl,
         widget.artistId,
-        widget.artistName
+        widget.artistName,
+        widget.albumId,
+        widget.albumName
       ]);
       // print(albumTrackData);
     }
@@ -106,6 +111,7 @@ class _AlbumViewState extends State<AlbumView> {
                       itemCount: albumTrackData.length,
                       itemBuilder: (context, index) {
                         return AlbumTrackWidget(
+                          index:index,
                           albumTrackId: albumTrackData[index][0],
                           albumTrackName: albumTrackData[index][1],
                           albumImageUrl: albumTrackData[index][2],
@@ -123,6 +129,7 @@ class _AlbumViewState extends State<AlbumView> {
 }
 
 class AlbumTrackWidget extends StatefulWidget {
+  final int index;
   final String albumTrackId;
   final String albumTrackName;
   final String albumImageUrl;
@@ -130,11 +137,12 @@ class AlbumTrackWidget extends StatefulWidget {
   final String artistName;
   final String albumId;
   final String albumName;
-  final void Function(List<String> item) addToFavourite;
+  final void Function(List<dynamic> item) addToFavourite;
 
 
   AlbumTrackWidget(
       {super.key,
+        required this.index,
         required this.albumTrackId,
         required this.albumTrackName,
         required this.albumImageUrl,
@@ -157,13 +165,8 @@ class _AlbumTrackWidgetState extends State<AlbumTrackWidget> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MusicPlayerView(
-              trackId: widget.albumTrackId,
-              trackName:  widget.albumTrackName,
-              trackImageUrl:  widget.albumImageUrl,
-              artistId:  widget.artistId,
-              artistName:  widget.artistName,
-              albumId: widget.albumId,
-              albumName: widget.albumName,
+              items: albumTrackData,
+              index: widget.index,
               addToFavourite:  widget.addToFavourite,
             ),
           ));
@@ -179,7 +182,7 @@ class _AlbumTrackWidgetState extends State<AlbumTrackWidget> {
           trailing: IconButton(
             icon:Icon(Icons.favorite, color:addedToFav?Colors.red:Colors.white),
             onPressed: (){
-              widget.addToFavourite([ widget.albumTrackId, widget.albumTrackName, widget.albumImageUrl,  widget.artistId,  widget.artistName, widget.albumId, widget.albumName]);
+              widget.addToFavourite([widget.index,0, albumTrackData]);
               setState(() {
                 addedToFav = !addedToFav;
                 //add remove to fav here - if time is sufficient
