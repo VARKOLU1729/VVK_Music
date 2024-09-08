@@ -4,6 +4,7 @@ import 'package:runo_music/Widgets/back_ground_blur.dart';
 
 class Favourites extends StatefulWidget {
   final List<List<dynamic>> favourites;
+  List<dynamic>? favourite_items;
   void Function(List<dynamic> item) addToFavourite;
   Favourites(
       {super.key, required this.favourites, required this.addToFavourite});
@@ -17,6 +18,7 @@ class _FavouritesState extends State<Favourites> {
       "https://m.media-amazon.com/images/G/01/ctt2309d82309/2022_en_US-UK-CA-AUNZ_MySoundtrack_PG_GH_2400x2400._UXNaN_FMjpg_QL85_.jpg";
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Color.fromARGB(200, 88, 86, 86),
         body: Stack(
@@ -80,12 +82,14 @@ class _FavouritesState extends State<Favourites> {
                           crossAxisCount: 2),
                       itemBuilder: (context, index) => widget.favourites[index][1] == 0
                           ? TrackAlbumWidget(
-                              index: widget.favourites[index][0],
+                              fav_index : index,
+                              index:widget.favourites[index][0],
                               items: widget.favourites[index][2],
                               type: Type.track,
                               addToFavourite: widget.addToFavourite,
                             )
                           : TrackAlbumWidget(
+                              fav_index : index,
                               index: widget.favourites[index][0],
                               pagingController: widget.favourites[index][2],
                               type: Type.track,

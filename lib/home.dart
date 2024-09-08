@@ -71,8 +71,8 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _trackPagingController.dispose();
-    _albumPagingController.dispose();
+    // _trackPagingController.dispose();
+    // _albumPagingController.dispose();
     super.dispose();
   }
 
@@ -91,7 +91,7 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: height/2,
+                  height: height/2.25,
                   child: Image.network(
                     stationImageUrl,
                     width: width,
@@ -145,8 +145,8 @@ class _HomeState extends State<Home> {
                         ),
                       ]
                   ),
-                  margin: EdgeInsets.only(top: height / 3),
-                  height: height / 6,
+                  margin: EdgeInsets.only(top: height / 3.25),
+                  height: height / 7.25,
                   // width: width,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(

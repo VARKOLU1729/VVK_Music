@@ -20,20 +20,18 @@ class _SeeAllState extends State<SeeAll> {
     if(widget.type==Type.album) title = "Albums for You";
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
-        leading: Padding(
-          padding: const EdgeInsets.only(top:15.0),
-          child: IconButton(
-              onPressed: (){
-                Navigator.pop(context);
-              },
-              icon:Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
-          ),
+        toolbarHeight: 50,
+        leading:
+        IconButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            icon:Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
         ),
         backgroundColor: Colors.black.withOpacity(0.88),
         title:
         Padding(
-          padding: const EdgeInsets.only(top:15.0),
+          padding: const EdgeInsets.only(top:5.0),
           child: Text(title, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
         ),
       ),

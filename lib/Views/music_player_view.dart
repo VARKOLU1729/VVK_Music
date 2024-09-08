@@ -75,7 +75,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       }
     if(widget.items==null)
     {
-      items = widget.trackPagingController!.itemList![index];
+      items = widget.trackPagingController!.itemList!;
     }
     else
     {
@@ -83,16 +83,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
         {
           isLastItem = true;
         }
-      items = widget.items![index];
+      items = widget.items!;
     }
 
-    trackId = items[0];
-    trackName = items[1];
-    trackImageUrl = items[2];
-    artistId = items[3];
-    artistName = items[4];
-    albumId = items[5];
-    albumName = items[6];
+    trackId = items[index][0];
+    trackName = items[index][1];
+    trackImageUrl = items[index][2];
+    artistId = items[index][3];
+    artistName = items[index][4];
+    albumId = items[index][5];
+    albumName = items[index][6];
     _initializeAudio();
     _initializeStreams();
   }

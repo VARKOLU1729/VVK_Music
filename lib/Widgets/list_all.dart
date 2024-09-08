@@ -86,11 +86,23 @@ class _ListAllWidgetState extends State<ListAllWidget> {
               style: TextStyle(color: Colors.grey, fontSize: 13)),
           trailing: InkWell(
             onTap: () {
-              widget.addToFavourite([widget.index, 1, widget.pagingController]);
-              setState(() {
-                addedToFav = !addedToFav;
-                //add remove to fav here - if time is sufficient
-              });
+              if(widget.items==null)
+                {
+                  widget.addToFavourite([widget.index, 1, widget.pagingController]);
+                  setState(() {
+                    addedToFav = !addedToFav;
+                    //add remove to fav here - if time is sufficient
+                  });
+                }
+              else
+                {
+                  widget.addToFavourite([widget.index, 0, widget.items]);
+                  setState(() {
+                    addedToFav = !addedToFav;
+                    //add remove to fav here - if time is sufficient
+                  });
+                }
+
             },
             child: Icon(Icons.favorite,
                 color: addedToFav ? Colors.red : Colors.white),

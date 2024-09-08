@@ -34,23 +34,23 @@ class _TabScreenState extends State<TabScreen> {
       setState(() {
         selectedIndex = 0;
         activePage = Home(addToFavourites: addToFavourites,);
-        title = "RUNO";
+        title = "Explore Music";
       });
     }
-    if (selectedIndex == 1) {
+    if (selectedIndex == 2) {
       setState(() {
-        selectedIndex = 1;
+        selectedIndex = 2;
         activePage = Favourites(favourites: favourites, addToFavourite:addToFavourites);
-        title = "Favourites";
+        title = "Your Library";
       });
     }
 
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 18, 20, 25),
-      // appBar: AppBar(
-      //   title: Text(title),
-      //   backgroundColor: Colors.grey.withOpacity(0.1),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        toolbarHeight: 1,
+      ),
 
       body:Stack(
         children: [
@@ -59,17 +59,15 @@ class _TabScreenState extends State<TabScreen> {
             child: Container(
               color: Colors.black.withOpacity(0.5),
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Text("Explore Music",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20
-                    ),
+                child:
+                Text(title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20
                   ),
                 ),
               ),
-              height: 80,
+              height: 40,
             ),
             // 
           )
@@ -97,10 +95,10 @@ class _TabScreenState extends State<TabScreen> {
                   selectedItemColor: Color.fromARGB(255, 12, 189, 189),
                   currentIndex: selectedIndex,
                   items: [
-                    BottomNavigationBarItem(icon: Icon(Icons.home, size: 20,), label: "Home"),
-                    // BottomNavigationBarItem(icon: ),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.music_note, size: 20,), label: "My Music")
+                    BottomNavigationBarItem(icon: Icon(Icons.home_outlined, size: 20,),activeIcon:Icon(Icons.home_filled, size: 20,) , label: "HOME"),
+                    BottomNavigationBarItem(icon: Icon(Icons.search_off_outlined), label: "SEARCH"),
+                    BottomNavigationBarItem(icon: Icon(Icons.person_2_outlined, size: 20,), activeIcon: Icon(Icons.person, size: 20,),label: "LIBRARY"),
+                    // BottomNavigationBarItem(icon: Icon(Icons.adjust_rounded), label: "SEARCH"),
                   ],
                 ),
               ),

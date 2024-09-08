@@ -6,6 +6,8 @@ import 'package:runo_music/Views/music_player_view.dart';
 enum Type { album, track }
 
 class TrackAlbumWidget extends StatelessWidget {
+  final int? fav_index;
+  final List<dynamic>? fav_items;
   final PagingController<int, dynamic>? pagingController;
   List<dynamic>? items;
   final int index;
@@ -14,36 +16,46 @@ class TrackAlbumWidget extends StatelessWidget {
   TrackAlbumWidget(
       {super.key,
         required this.index,
+        this.fav_index,
+        this.fav_items,
         this.pagingController,
         this.items,
         required this.type,
         required this.addToFavourite,
       });
-
+  List<dynamic> fav_items_list = [];
   Widget build(BuildContext context) {
+
     if(items==null)
       {
-        items = pagingController!.itemList![index];
+        items = pagingController!.itemList!;
       }
-    final String id = items![0];
-    final String name = items![1];
-    final String imageUrl = items![2];
-    final String artistId = items![3];
-    final String artistName = items![4];
-    final String albumId = items![5];
-    final String albumName = items![6];
+    final String id = items![index][0];
+    final String name = items![index][1];
+    final String imageUrl = items![index][2];
+    final String artistId = items![index][3];
+    final String artistName = items![index][4];
+    final String albumId = items![index][5];
+    final String albumName = items![index][6];
+    if(fav_index!=null)
+    {
+      fav_items_list.add(items![index]);
+      print(fav_items_list);
+    }
     return InkWell(
       onTap: () {
         // print(trackName);
-        if (type == Type.track)
-          // showModalBottomSheet(
-          //     context: context,
-          //     builder: (context) => MusicPlayerView(
-          //         trackId: id,
-          //         trackName: name,
-          //         trackImageUrl: imageUrl,
-          //         artistId: artistId,
-          //         artistName: artistName));
+        if(fav_index!=null)
+          {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => MusicPlayerView(
+                  index: 0,
+                  items: fav_items_list!,
+                  addToFavourite: addToFavourite!,
+                )));
+          }
+        else if (type == Type.track)
+
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => MusicPlayerView(
                 index: index,
@@ -51,7 +63,7 @@ class TrackAlbumWidget extends StatelessWidget {
                 addToFavourite: addToFavourite!,
               )));
 
-        if (type == Type.album)
+        else if (type == Type.album)
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AlbumView(
                   albumId: id,
