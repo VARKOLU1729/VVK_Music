@@ -5,6 +5,7 @@ import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
+import 'package:runo_music/Widgets/list_all.dart';
 
 List<List<dynamic>> albumTrackData = [];
 
@@ -82,7 +83,7 @@ class _AlbumViewState extends State<AlbumView> {
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.3),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
+                    colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
                 )
             ),
           ),
@@ -110,140 +111,11 @@ class _AlbumViewState extends State<AlbumView> {
                   child: ListView.builder(
                       itemCount: albumTrackData.length,
                       itemBuilder: (context, index) {
-                        return AlbumTrackWidget(
-                          index:index,
-                          albumTrackId: albumTrackData[index][0],
-                          albumTrackName: albumTrackData[index][1],
-                          albumImageUrl: albumTrackData[index][2],
-                          artistId: albumTrackData[index][3],
-                          artistName: albumTrackData[index][4],
-                          albumId: widget.albumId,
-                          albumName: widget.albumName,
-                          addToFavourite: widget.addToFavourite,
-                        );
+                        return ListAllWidget(index: index,items: albumTrackData,addToFavourite: widget.addToFavourite,);
+
                       }))
             ],
           ),
         ]));
   }
 }
-
-class AlbumTrackWidget extends StatefulWidget {
-  final int index;
-  final String albumTrackId;
-  final String albumTrackName;
-  final String albumImageUrl;
-  final String artistId;
-  final String artistName;
-  final String albumId;
-  final String albumName;
-  final void Function(List<dynamic> item) addToFavourite;
-
-
-  AlbumTrackWidget(
-      {super.key,
-        required this.index,
-        required this.albumTrackId,
-        required this.albumTrackName,
-        required this.albumImageUrl,
-        required this.artistId,
-        required this.artistName,
-        required this.albumId,
-        required this.addToFavourite,
-        required this.albumName
-      });
-
-  @override
-  State<AlbumTrackWidget> createState() => _AlbumTrackWidgetState();
-}
-
-class _AlbumTrackWidgetState extends State<AlbumTrackWidget> {
-  bool addedToFav = false;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MusicPlayerView(
-              items: albumTrackData,
-              index: widget.index,
-              addToFavourite:  widget.addToFavourite,
-            ),
-          ));
-        },
-        child: ListTile(
-          tileColor: Colors.black,
-          selectedTileColor: Colors.pink,
-          leading: Icon(Icons.music_note_sharp, color: Colors.blue,),
-          title: Text(
-            widget.albumTrackName,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          trailing: IconButton(
-            icon:Icon(Icons.favorite, color:addedToFav?Colors.red:Colors.white),
-            onPressed: (){
-              widget.addToFavourite([widget.index,0, albumTrackData]);
-              setState(() {
-                addedToFav = !addedToFav;
-                //add remove to fav here - if time is sufficient
-              });
-            },),
-        ));;
-  }
-}
-
-
-// class AlbumTrackWidget extends StatelessWidget {
-//   final String albumTrackId;
-//   final String albumTrackName;
-//   final String albumImageUrl;
-//   final String artistId;
-//   final String artistName;
-//   final void Function(List<String> item) addToFavourite;
-//   bool addedToFav = false;
-//
-//   AlbumTrackWidget(
-//       {super.key,
-//       required this.albumTrackId,
-//       required this.albumTrackName,
-//       required this.albumImageUrl,
-//       required this.artistId,
-//       required this.artistName,
-//       required this.addToFavourite});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//         onTap: () {
-//           print(albumTrackId);
-//           Navigator.of(context).push(MaterialPageRoute(
-//             builder: (context) => MusicPlayerView(
-//               trackId: albumTrackId,
-//               trackName: albumTrackName,
-//               trackImageUrl: albumImageUrl,
-//               artistId: artistId,
-//               artistName: artistName,
-//               addToFavourite: addToFavourite,
-//             ),
-//           ));
-//         },
-//         child: ListTile(
-//           tileColor: Colors.black,
-//           selectedTileColor: Colors.pink,
-//           leading: Icon(Icons.music_note_sharp, color: Colors.blue,),
-//           title: Text(
-//             albumTrackName,
-//             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-//           ),
-//           trailing: IconButton(
-//             icon:Icon(Icons.favorite),
-//             onPressed: (){
-//               addToFavourite([albumTrackId,albumTrackName,albumImageUrl, artistId, artistName]);
-//               setState(() {
-//                 addedToFav = !addedToFav;
-//                 //add remove to fav here - if time is sufficient
-//               });
-//               },),
-//         ));
-//   }
-// }

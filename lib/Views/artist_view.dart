@@ -7,6 +7,8 @@ import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
+import 'package:runo_music/Widgets/see_all.dart';
+
 //Thins to include
 // (Artist Details)
 // Show the Artist Image, Bio.
@@ -70,14 +72,14 @@ class _ArtistViewState extends State<ArtistView> {
   @override
   void initState() {
     super.initState();
-    _loadArtistData();
-    _loadImage();
     _artistTrackPagingController.addPageRequestListener((pageKey) {
       _loadTrackData(pageKey);
     });
     _artistAlbumPagingController.addPageRequestListener((pageKey) {
       _loadAlbumData(pageKey);
     });
+    _loadArtistData();
+    _loadImage();
   }
 
   @override
@@ -89,6 +91,7 @@ class _ArtistViewState extends State<ArtistView> {
 
   @override
   Widget build(BuildContext context) {
+    var ctx = context;
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -142,7 +145,35 @@ class _ArtistViewState extends State<ArtistView> {
                     SizedBox(
                       height: 20,
                     ),
-                    Header(title: 'Top Tracks'),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Header(title: 'Top Tracks'),
+                            InkWell(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  constraints: BoxConstraints(minHeight:height),
+                                    context: context,
+                                    builder: (context) => SeeAll(
+                                        type:Type.track,
+                                        addToFavourite: widget.addToFavourite,
+                                        pagingController: _artistTrackPagingController));
+                              },
+                              child: Container(
+                                  width: 100,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: Center(
+                                      child: Text("SEE MORE",
+                                          style: TextStyle(color: Colors.white)))),
+                            ),
+                          ]
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -150,7 +181,34 @@ class _ArtistViewState extends State<ArtistView> {
                         pagingController: _artistTrackPagingController,
                         type: Type.track,
                         addToFavourites: widget.addToFavourite!),
-                    Header(title: 'Top Albums'),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Header(title: 'Top Albums'),
+                            InkWell(
+                              onTap: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => SeeAll(
+                                        type:Type.album,
+                                        addToFavourite: widget.addToFavourite,
+                                        pagingController: _artistAlbumPagingController));
+                              },
+                              child: Container(
+                                  width: 100,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: Center(
+                                      child: Text("SEE MORE",
+                                          style: TextStyle(color: Colors.white)))),
+                            ),
+                          ]
+                      ),
+                    ),
                     SizedBox(
                       height: 10,
                     ),

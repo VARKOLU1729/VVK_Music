@@ -295,7 +295,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 ]);
                                 setState(() {
                                   addedToFav = !addedToFav;
-                                  //add remove to fav here - if time is sufficient
+                                  //add remove from fav here - if time is sufficient
                                 });
                               },
                               child: Icon(Icons.favorite,
@@ -365,14 +365,21 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                             IconButton(
                                 onPressed: (){
                                   setState(() {
-                                    _positionSubscription!.cancel();
-                                    _durationSubscription!.cancel();
-                                    _audioPlayer!.dispose();
-                                    _isLoading = true;
-                                   loadTrackData(widget.index--);
+                                    if(widget.index>0)
+                                      {
+                                        _positionSubscription!.cancel();
+                                        _durationSubscription!.cancel();
+                                        _audioPlayer!.dispose();
+                                        _isLoading = true;
+                                        loadTrackData(widget.index--);
+                                      }
+                                    else
+                                      {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("This is the first item")));
+                                      }
                                   });
                                 },
-                                icon: isFirstItem? Icon(Icons.skip_previous,size: 40, color: Colors.grey,) :Icon(Icons.skip_previous,size: 40, color: Colors.white,)
+                                icon: (widget.index==0)? Icon(Icons.skip_previous,size: 40, color: Colors.grey,) :Icon(Icons.skip_previous,size: 40, color: Colors.white,)
                             ),
                             _isLoading
                                 ? CircularProgressIndicator(color: Colors.white)

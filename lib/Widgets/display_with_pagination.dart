@@ -13,6 +13,7 @@ class DisplayWithPagination extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 220,
+      padding: EdgeInsets.only(left: 15),
       child: PagedListView<int, dynamic>(
           pagingController: pagingController,
           scrollDirection: Axis.horizontal,

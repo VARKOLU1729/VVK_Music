@@ -16,7 +16,7 @@ class popOut extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
+            icon: Icon(color: Colors.white, Icons.keyboard_arrow_left)),
       ),
       left: 15,
       top: 40,

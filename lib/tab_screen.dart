@@ -59,14 +59,17 @@ class _TabScreenState extends State<TabScreen> {
             child: Container(
               color: Colors.black.withOpacity(0.5),
               child: Center(
-                child: Text("Explore Music",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Text("Explore Music",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20
+                    ),
                   ),
                 ),
               ),
-              height: 70,
+              height: 80,
             ),
             // 
           )

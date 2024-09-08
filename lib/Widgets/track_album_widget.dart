@@ -71,7 +71,7 @@ class TrackAlbumWidget extends StatelessWidget {
             Expanded(
               flex: 8,
               child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(5),
               // decoration: BoxDecoration(
               //   shape: BoxShape.rectangle,
               //   borderRadius: BorderRadius.circular(20),
