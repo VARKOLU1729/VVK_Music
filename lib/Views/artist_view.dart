@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
+import 'package:runo_music/Widgets/deviceParams.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
@@ -103,14 +105,14 @@ class _ArtistViewState extends State<ArtistView> {
                     ? CircularProgressIndicator()
                     : Image.network(
                         artistImageUrl!,
-                        width: width,
+                        width: getWidth(context),
                         // height: height,
                         fit: BoxFit.cover,
                       ),
               ),
               Container(
                 child: Padding(
-                  padding: EdgeInsets.only(top: height / 12),
+                  padding: EdgeInsets.only(top: getHeight(context) / 12),
                   child: artistName == null
                       ? CircularProgressIndicator()
                       : Text(
@@ -121,9 +123,9 @@ class _ArtistViewState extends State<ArtistView> {
                               fontSize: 40),
                         ),
                 ),
-                margin: EdgeInsets.only(top: height / 6),
-                height: height / 7,
-                width: width,
+                margin: EdgeInsets.only(top: getHeight(context) / 6),
+                height: getHeight(context) / 7,
+                width: getWidth(context),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -153,7 +155,7 @@ class _ArtistViewState extends State<ArtistView> {
                             InkWell(
                               onTap: () {
                                 showModalBottomSheet(
-                                  constraints: BoxConstraints(minHeight:height),
+                                  constraints: BoxConstraints(minHeight:getHeight(context)),
                                     context: context,
                                     builder: (context) => SeeAll(
                                         type:Type.track,

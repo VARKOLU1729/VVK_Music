@@ -95,12 +95,12 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                       addedToFav = !addedToFav;
                       if(addedToFav)
                         {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:addedSnackbarContent()));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration:Duration(milliseconds: 30) ,content:addedSnackbarContent()));
                           value.addToFavourite(id: id!, details: [id, name,imageUrl, artistId, artistName, albumId, albumName]);
                         }
                       else
                         {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:removedSnackbarContent()));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration:Duration(milliseconds: 30), content:removedSnackbarContent()));
                           value.removeFromFavourite(id: id!);
                         }
                     });
