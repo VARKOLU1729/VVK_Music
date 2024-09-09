@@ -98,7 +98,7 @@ class _TabScreenState extends State<TabScreen> {
                   currentIndex: selectedIndex,
                   items: [
                     BottomNavigationBarItem(icon: Icon(Icons.home_outlined, size: 20,),activeIcon:Icon(Icons.home_filled, size: 20,) , label: "HOME"),
-                    BottomNavigationBarItem(icon: Icon(Icons.search_off_outlined), label: "SEARCH"),
+                    BottomNavigationBarItem(icon: Icon(Icons.search), label: "SEARCH"),
                     BottomNavigationBarItem(icon: Icon(Icons.person_2_outlined, size: 20,), activeIcon: Icon(Icons.person, size: 20,),label: "LIBRARY"),
                     // BottomNavigationBarItem(icon: Icon(Icons.adjust_rounded), label: "SEARCH"),
                   ],

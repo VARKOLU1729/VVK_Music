@@ -11,15 +11,9 @@ import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 
-//Thins to include
-// (Artist Details)
-// Show the Artist Image, Bio.
-/*
-/v2.2/artists/Art.28463069/images
-*/
+import 'music_player_view.dart';
 
-// (Albums made by this Artist)
-// Show the list of albums created by this artist (on click of it, open  Album View)
+
 
 class ArtistView extends StatefulWidget {
   final String artistId;
@@ -92,38 +86,57 @@ class _ArtistViewState extends State<ArtistView> {
 
   @override
   Widget build(BuildContext context) {
-    var ctx = context;
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Color.fromARGB(200, 20, 23, 20),
         body: Column(
           children: [
             Stack(children: [
               Container(
+                height: getHeight(context)/3.25,
                 child: artistImageUrl == null
                     ? CircularProgressIndicator()
                     : Image.network(
                         artistImageUrl!,
                         width: getWidth(context),
-                        // height: height,
-                        fit: BoxFit.cover,
+                        height: getHeight(context),
+                        fit: BoxFit.fitWidth,
                       ),
               ),
               Container(
-                child: Padding(
-                  padding: EdgeInsets.only(top: getHeight(context) / 12),
-                  child: artistName == null
+                padding: EdgeInsets.only(top: 50),
+                child: ListTile(
+                  title: artistName == null
                       ? CircularProgressIndicator()
                       : Text(
-                          artistName!,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 40),
-                        ),
+                    artistName!,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
+                  subtitle: Text("6L Monthly Listeners", style: TextStyle(color: Colors.white70),),
+                  trailing: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.red.withOpacity(0.66),
+                            Colors.red.withOpacity(0.99)
+                          ]
+                        )
+                    ),
+                    child: IconButton(onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MusicPlayerView(
+                        index: 0,
+                        trackPagingController: _artistTrackPagingController,
+                      )));
+
+                    }, icon: Icon(Icons.play_arrow, size: 30,color: Colors.white,)),
+                  ),
                 ),
-                margin: EdgeInsets.only(top: getHeight(context) / 6),
+                margin: EdgeInsets.only(top: getHeight(context) / 4),
                 height: getHeight(context) / 7,
                 width: getWidth(context),
                 decoration: BoxDecoration(
@@ -132,8 +145,8 @@ class _ArtistViewState extends State<ArtistView> {
                         end: Alignment.bottomCenter,
                         colors: [
                       Colors.black.withOpacity(0.05),
-                      Colors.black.withOpacity(0.3),
-                      Colors.black.withOpacity(0.7)
+                      Colors.black.withOpacity(0.1),
+                      Colors.black.withOpacity(0.2)
                     ])),
               ),
               popOut(),

@@ -7,7 +7,7 @@ class SeeAll extends StatefulWidget {
   final Type type;
   final PagingController<int, dynamic> pagingController;
 
-  SeeAll({required this.type, required this.pagingController});
+  const SeeAll({super.key, required this.type, required this.pagingController});
   @override
   State<SeeAll> createState() => _SeeAllState();
 }
@@ -25,17 +25,27 @@ class _SeeAllState extends State<SeeAll> {
             onPressed: (){
               Navigator.pop(context);
             },
-            icon:Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+            icon:const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
         ),
         backgroundColor: Colors.black.withOpacity(0.88),
         title:
         Padding(
           padding: const EdgeInsets.only(top:5.0),
-          child: Text(title, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+          child: Text(title, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
         ),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+      body:Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                end: Alignment.topCenter,
+                begin: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withOpacity(0.99),
+                  Colors.black.withOpacity(0.92),
+                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.88)
+                ])),
         child: widget.type==Type.track ? PagedListView<int, dynamic>(
             pagingController: widget.pagingController,
             scrollDirection: Axis.vertical,
@@ -48,24 +58,14 @@ class _SeeAllState extends State<SeeAll> {
             })) :
          PagedGridView<int, dynamic>(
              pagingController: widget.pagingController,
-             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
              builderDelegate: PagedChildBuilderDelegate<dynamic>(
                  itemBuilder: (context, item, index){
-                   print(index);
                    return TrackAlbumWidget(index: index, type: Type.album,pagingController: widget.pagingController);
                  }
              )
          ),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                end: Alignment.topCenter,
-                begin: Alignment.bottomCenter,
-                colors: [
-              Colors.black.withOpacity(0.99),
-              Colors.black.withOpacity(0.92),
-              Colors.black.withOpacity(0.9),
-              Colors.black.withOpacity(0.88)
-            ])),
+
       ),
     );
   }

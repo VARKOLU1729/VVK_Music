@@ -174,10 +174,10 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   }
 
   double _calculateSliderValue() {
-    if (_duration.inMilliseconds > 0 && _currentPosition<_duration) {
+    if (_duration.inMilliseconds > 0 && _currentPosition<_duration-Duration(seconds: 1)) {
       return _currentPosition.inMilliseconds / _duration.inMilliseconds;
     }
-    else if(_currentPosition>=_duration)
+    else if(_currentPosition>=_duration-Duration(seconds: 1))
       {
 
         _seekToPosition(0);

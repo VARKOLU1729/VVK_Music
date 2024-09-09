@@ -71,13 +71,32 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Column(
         children: [
-          TextField(
-            onSubmitted: (val) {
-              print(val);
-              search(val);
-            },
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+            height: 45,
+            child: TextField(
+              style: TextStyle(color: Colors.black),
+             decoration: InputDecoration(
+               fillColor: Colors.white,
+               filled: true,
+               prefixIcon: Icon(Icons.search, color: Colors.grey,),
+               hintText: "Search music",
+               hintStyle: TextStyle(color: Colors.grey),
+               contentPadding: EdgeInsets.only(top: 10),
+               border: OutlineInputBorder(
+                 borderRadius: BorderRadius.circular(50),
+                 borderSide: BorderSide.none
+               )
+             ),
+              onSubmitted: (val) {
+                print(val);
+                search(val);
+              },
+
+            ),
           ),
           if (_isSearched)
             Expanded(
