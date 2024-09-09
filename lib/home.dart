@@ -26,9 +26,9 @@ class _HomeState extends State<Home> {
       "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
 
   PagingController<int, dynamic> _trackPagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   PagingController<int, dynamic> _albumPagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
 
   void _loadTrackData(pageKey) async {
     List<List<dynamic>> trackData = await FetchTopTracks(
@@ -71,8 +71,8 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    // _trackPagingController.dispose();
-    // _albumPagingController.dispose();
+    _trackPagingController.dispose();
+    _albumPagingController.dispose();
     super.dispose();
   }
 

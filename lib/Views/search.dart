@@ -14,7 +14,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final PagingController<int, dynamic> _searchPagingController =
-      PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
 
   String _currentQuery = '';
   bool _isSearched = false;
