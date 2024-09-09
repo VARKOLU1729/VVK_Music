@@ -22,7 +22,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    // Add the page request listener here
+
     _searchPagingController.addPageRequestListener((pageKey) {
       print("initiated");
       _loadTrackData(pageKey, _currentQuery);
@@ -57,9 +57,9 @@ class _SearchState extends State<Search> {
     print("into search");
     setState(() {
       _currentQuery = query;
-      _isSearched = true; // Set this to true immediately
+      _isSearched = true;
     });
-    _searchPagingController.refresh(); // This will trigger the listener
+    _searchPagingController.refresh();
   }
 
   @override

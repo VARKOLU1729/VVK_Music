@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Widgets/deviceParams.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
@@ -18,8 +19,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  double height = 0;
-  double width = 0;
   String stationId = "ps.10388500";
   String stationArtistName = "The Smiths, Elliott Smith, Aimee Mann";
   String stationImageUrl =
@@ -35,7 +34,8 @@ class _HomeState extends State<Home> {
         path: 'tracks/top',
         controller: _trackPagingController,
         pageKey: pageKey);
-    _trackPagingController.appendPage(trackData, pageKey + 1);
+    if(trackData.isEmpty) _trackPagingController.appendLastPage(trackData);
+    else _trackPagingController.appendPage(trackData, pageKey + 1);
   }
 
   void _loadAlbumData(pageKey) async {
@@ -43,7 +43,8 @@ class _HomeState extends State<Home> {
         path: 'albums/top',
         controller: _albumPagingController,
         pageKey: pageKey);
-    _albumPagingController.appendPage(albumData, pageKey + 1);
+    if(albumData.isEmpty) _albumPagingController.appendLastPage(albumData);
+    else _albumPagingController.appendPage(albumData, pageKey + 1);
   }
 
   void _loadStationData() async {
@@ -78,8 +79,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 18, 20, 25),
       body: SingleChildScrollView(
@@ -91,11 +90,11 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: height/2.25,
+                  height: getHeight(context)/2.25,
                   child: Image.network(
                     stationImageUrl,
-                    width: width,
-                    height: height/2.25,
+                    width: getWidth(context),
+                    height: getHeight(context)/2.25,
                     fit: BoxFit.fitHeight,
                   ),
                 ),
@@ -145,8 +144,8 @@ class _HomeState extends State<Home> {
                         ),
                       ]
                   ),
-                  margin: EdgeInsets.only(top: height / 3.25),
-                  height: height / 7.25,
+                  margin: EdgeInsets.only(top: getHeight(context) / 3.25),
+                  height:getHeight(context) / 7.25,
                   // width: width,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
