@@ -8,7 +8,7 @@ Future<dynamic> fetchData(
       host: 'api.napster.com',
       path: 'v2.2/${path}',
       queryParameters: {
-        if (limit != null) 'limit': limit,
+          if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,
         'apikey': "OTYxNDY3NTItZmM1Zi00MTMzLTllN2UtMDk2ZTBlMzIyYTZm"
       });
