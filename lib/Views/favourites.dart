@@ -67,12 +67,15 @@ class _FavouritesState extends State<Favourites> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  "My Favourites",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text(
+                    "My Favourites",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Expanded(
                   flex: 2,

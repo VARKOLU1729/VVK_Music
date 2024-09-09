@@ -245,36 +245,32 @@ class _ArtistViewState extends State<ArtistView> {
                                                     gradient: LinearGradient(
                                                       begin: Alignment.topCenter,
                                                         end: Alignment.bottomCenter,
-                                                        colors: [Colors.black.withOpacity(0.88), Colors.black.withOpacity(0.55)])
+                                                        colors: [Colors.brown.withOpacity(0.88),Colors.black.withOpacity(0.88),Colors.black.withOpacity(0.88), Colors.black.withOpacity(0.55)])
                                                   ),
                                                   child:
                                                   Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                                    padding: const EdgeInsets.only(left: 30, right: 30, bottom: 100),
                                                     child: Column(
                                                       children: [
-                                                        SizedBox(
-                                                          height: 40,
-                                                        ),
+                                                        SizedBox(height: 40,),
                                                         Container(
-                                                          height: 100,
-                                                          width: 100,
+                                                          height: 150,
+                                                          width: 150,
                                                           child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5),
-                                                            child:
-                                                                Image.network(
+                                                            borderRadius: BorderRadius.circular(5),
+                                                            child: Image.network(
                                                               artistImageUrl!,
                                                               fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
+                                                        SizedBox(height: 30,),
                                                         Text(
                                                           artistName!,
                                                           style: TextStyle(
                                                               color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                                                         ),
+                                                        SizedBox(height: 30,),
                                                         Text(artistBio!, style: TextStyle(color: Colors.white),)
                                                       ],
                                                     ),
@@ -288,11 +284,12 @@ class _ArtistViewState extends State<ArtistView> {
                               ],
                             ),
                             trailing: Container(
+                              height: 200,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
                                   artistImageUrl!,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fitHeight,
                                 ),
                               ),
                             )),

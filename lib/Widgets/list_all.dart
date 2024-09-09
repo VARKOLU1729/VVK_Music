@@ -30,17 +30,17 @@ class _ListAllWidgetState extends State<ListAllWidget> {
   List<dynamic>? items;
   void loadData() {
     if (widget.items == null) {
-      items = widget.pagingController!.itemList![widget.index];
+      items = widget.pagingController!.itemList!;
     } else {
-      items = widget.items![widget.index];
+      items = widget.items!;
     }
-    id = items![0];
-    name = items![1];
-    imageUrl = items![2];
-    artistId = items![3];
-    artistName = items![4];
-    albumName = items![5];
-    albumId = items![6];
+    id = items![widget.index][0];
+    name = items![widget.index][1];
+    imageUrl = items![widget.index][2];
+    artistId = items![widget.index][3];
+    artistName = items![widget.index][4];
+    albumName = items![widget.index][5];
+    albumId = items![widget.index][6];
   }
 
   @override

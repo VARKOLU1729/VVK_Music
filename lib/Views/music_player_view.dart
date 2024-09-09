@@ -290,9 +290,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                             ),
                             InkWell(
                               onTap: () {
-                                widget.addToFavourite([
+                                widget.trackPagingController!=null ?  widget.addToFavourite([
                                   widget.index,1, widget.trackPagingController
-                                ]);
+                                ]) : widget.addToFavourite([widget.index, 0, widget.items]);
                                 setState(() {
                                   addedToFav = !addedToFav;
                                   //add remove from fav here - if time is sufficient
