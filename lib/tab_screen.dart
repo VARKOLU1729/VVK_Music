@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:runo_music/home.dart';
 import 'package:runo_music/Views/favourites.dart';
 
+import 'Views/search.dart';
+
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
 
@@ -30,6 +32,13 @@ class _TabScreenState extends State<TabScreen> {
         title = "Explore Music";
       });
     }
+    if(selectedIndex==1)
+      {
+        setState(() {
+          selectedIndex=1;
+          activePage = Search();
+        });
+      }
     if (selectedIndex == 2) {
       setState(() {
         selectedIndex = 2;
