@@ -4,6 +4,8 @@ import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Views/album_view.dart';
 // import 'package:go_router/go_router.dart';
 import 'package:runo_music/home.dart';
+import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/favourite_items_provider.dart';
 
 var kColorTheme = ColorScheme(
     brightness: Brightness.light,
@@ -28,19 +30,22 @@ var kDarkTheme = ColorScheme(
     onSurface: Color.fromARGB(20, 20, 20, 20));
 
 void main() {
-  return runApp(MaterialApp(
-    home: TabScreen(),
-    themeMode: ThemeMode.dark,
-    darkTheme: ThemeData().copyWith(
-        primaryColor: Colors.black12,
-        appBarTheme: AppBarTheme().copyWith(
-            backgroundColor: kDarkTheme.primary,
-            centerTitle: true,
-            titleTextStyle: TextStyle(color: kDarkTheme.onPrimary))),
-    theme: ThemeData().copyWith(
-        appBarTheme: AppBarTheme().copyWith(
-            backgroundColor: kColorTheme.primary,
-            centerTitle: true,
-            titleTextStyle: TextStyle(color: kColorTheme.onPrimary))),
-  ));
+  return runApp(
+      MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>favouriteItemsProvider())],
+        child:MaterialApp(
+          home: TabScreen(),
+          themeMode: ThemeMode.dark,
+          darkTheme: ThemeData().copyWith(
+              primaryColor: Colors.black12,
+              appBarTheme: AppBarTheme().copyWith(
+                  backgroundColor: kDarkTheme.primary,
+                  centerTitle: true,
+                  titleTextStyle: TextStyle(color: kDarkTheme.onPrimary))),
+          theme: ThemeData().copyWith(
+              appBarTheme: AppBarTheme().copyWith(
+                  backgroundColor: kColorTheme.primary,
+                  centerTitle: true,
+                  titleTextStyle: TextStyle(color: kColorTheme.onPrimary))),
+        )) ,
+      ) ;
 }

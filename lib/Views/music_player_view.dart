@@ -3,25 +3,27 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:runo_music/Views/artist_view.dart';
 import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Widgets/messenger.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:vertical_slider/vertical_slider.dart';
+
+import '../Widgets/favourite_items_provider.dart';
 
 class MusicPlayerView extends StatefulWidget {
   List<dynamic>? items;
   int index;
   final PagingController<int, dynamic>? trackPagingController;
-  final void Function(List<dynamic> item) addToFavourite;
 
   MusicPlayerView(
       {super.key,
       this.items,
         this.trackPagingController,
-        required this.index,
-      required this.addToFavourite});
+        required this.index});
 
 
   @override
@@ -198,174 +200,178 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Stack(
-        children: [
-          Image.network(
-            trackImageUrl!,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          BackGroundBlur(),
-          popOut(),
-          if(_setvolume) Positioned.directional(
-              textDirection: TextDirection.rtl,
-              end:width/20,
-              top: height/4,
-              bottom: height/2,
-              child: VerticalSlider(
-                value: volume,
-                onChangeEnd: (val){
-                  setState(() {
-                    _setvolume = false;
-                  });
-                },
-                onChanged: (val) {
-                  setState(() {
-                    volume = val;
-                    _audioPlayer!.setVolume(val);
-
+    return Consumer<favouriteItemsProvider>(builder: (context, value, child){
+      if(value.favourite_items.containsKey(trackId)) addedToFav = true;
+      return Scaffold(
+        body: Stack(
+          children: [
+            Image.network(
+              trackImageUrl!,
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            BackGroundBlur(),
+            popOut(),
+            if(_setvolume) Positioned.directional(
+                textDirection: TextDirection.rtl,
+                end:width/20,
+                top: height/4,
+                bottom: height/2,
+                child: VerticalSlider(
+                  value: volume,
+                  onChangeEnd: (val){
+                    setState(() {
+                      _setvolume = false;
+                    });
                   },
-                  );
-                },
-              )
+                  onChanged: (val) {
+                    setState(() {
+                      volume = val;
+                      _audioPlayer!.setVolume(val);
 
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height:80),
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child:ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                        scale: 0.6,
-                        trackImageUrl!,
-                        fit: BoxFit.cover,
-                      ),
-                    ), 
-                  ),
-                ),
-                SizedBox(height: 40,),
-                Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 40,
+                    },
+                    );
+                  },
+                )
+
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height:80),
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child:ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          scale: 0.6,
+                          trackImageUrl!,
+                          fit: BoxFit.cover,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AlbumView(
-                                              albumId: albumId!,
-                                              albumName: albumName!,
-                                              albumImageUrl:
-                                                  trackImageUrl!,
-                                              artistId: artistId!,
-                                              artistName: artistName!,
-                                              addToFavourite:
-                                                  widget.addToFavourite,
-                                            )));
-                              },
-                              child: Text(
-                                trackName!,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 40,),
+                  Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AlbumView(
+                                            albumId: albumId!,
+                                            albumName: albumName!,
+                                            albumImageUrl:
+                                            trackImageUrl!,
+                                            artistId: artistId!,
+                                            artistName: artistName!,
+                                          )));
+                                },
+                                child: Text(
+                                  trackName!,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                widget.trackPagingController!=null ?  widget.addToFavourite([
-                                  widget.index,1, widget.trackPagingController
-                                ]) : widget.addToFavourite([widget.index, 0, widget.items]);
-                                setState(() {
-                                  addedToFav = !addedToFav;
-                                  //add remove from fav here - if time is sufficient
-                                });
-                              },
-                              child: Icon(Icons.favorite,
-                                  color:
-                                      addedToFav ? Colors.red : Colors.white),
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ArtistView(
-                                          artistId: artistId!,
-                                          addToFavourite: widget.addToFavourite,
-                                        )));
-                          },
-                          child: Text(
-                            artistName!,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        SliderTheme(
-                          data: SliderThemeData(
-                              trackHeight: 3,
-                              trackShape: RectangularSliderTrackShape(),
-                              overlayShape:
-                                  RoundSliderOverlayShape(overlayRadius: 6),
-                              thumbShape:
-                                  RoundSliderThumbShape(enabledThumbRadius: 5)),
-                          child: Slider(
-                            allowedInteraction: SliderInteraction.tapAndSlide,
-                            thumbColor: Colors.white,
-                            activeColor: Colors.white,
-                            inactiveColor: Colors.grey,
-                            value: _calculateSliderValue(),
-                            min: 0.0,
-                            max: 1.0,
-                            onChanged: (value) {
-                              _seekToPosition(value);
-                            },
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _formatDuration(_currentPosition),
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              _formatDuration(_duration),
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            IconButton(
-                                onPressed: (){
+                              InkWell(
+                                onTap: () {
                                   setState(() {
-                                    if(widget.index>0)
+                                    addedToFav = !addedToFav;
+                                    if(addedToFav)
+                                      {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:addedSnackbarContent()));
+                                        value.addToFavourite(id: trackId!, details: [trackId, trackName,trackImageUrl, artistId, artistName, albumId, albumName]);
+                                      }
+                                    else
+                                    {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:removedSnackbarContent()));
+                                      value.removeFromFavourite(id: trackId!);
+                                    }
+                                  });
+                                },
+                                child: Icon(Icons.favorite,
+                                    color: addedToFav ? Colors.red : Colors.white),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ArtistView(
+                                        artistId: artistId!,
+                                      )));
+                            },
+                            child: Text(
+                              artistName!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          SliderTheme(
+                            data: SliderThemeData(
+                                trackHeight: 3,
+                                trackShape: RectangularSliderTrackShape(),
+                                overlayShape:
+                                RoundSliderOverlayShape(overlayRadius: 6),
+                                thumbShape:
+                                RoundSliderThumbShape(enabledThumbRadius: 5)),
+                            child: Slider(
+                              allowedInteraction: SliderInteraction.tapAndSlide,
+                              thumbColor: Colors.white,
+                              activeColor: Colors.white,
+                              inactiveColor: Colors.grey,
+                              value: _calculateSliderValue(),
+                              min: 0.0,
+                              max: 1.0,
+                              onChanged: (value) {
+                                _seekToPosition(value);
+                              },
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _formatDuration(_currentPosition),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                _formatDuration(_duration),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      if(widget.index>0)
                                       {
                                         _positionSubscription!.cancel();
                                         _durationSubscription!.cancel();
@@ -373,75 +379,77 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                         _isLoading = true;
                                         loadTrackData(widget.index--);
                                       }
-                                    else
+                                      else
                                       {
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("This is the first item")));
                                       }
-                                  });
-                                },
-                                icon: (widget.index==0)? Icon(Icons.skip_previous,size: 40, color: Colors.grey,) :Icon(Icons.skip_previous,size: 40, color: Colors.white,)
-                            ),
-                            _isLoading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : playPauseButton(
-                                isPlaying: _isPlaying,
-                                togglePlayback: togglePlayback
-                            ),
-                            IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    _positionSubscription!.cancel();
-                                    _durationSubscription!.cancel();
-                                    _audioPlayer!.dispose();
-                                    _isLoading = true;
-                                    _duration = Duration();
-                                    loadTrackData(widget.index++);
-                                  });
-                                },
-                                icon: isLastItem ? Icon(Icons.skip_next,size: 40, color: Colors.grey,) : Icon(Icons.skip_next,size: 40, color: Colors.white,)
-                            ),
+                                    });
+                                  },
+                                  icon: (widget.index==0)? Icon(Icons.skip_previous,size: 40, color: Colors.grey,) :Icon(Icons.skip_previous,size: 40, color: Colors.white,)
+                              ),
+                              _isLoading
+                                  ? CircularProgressIndicator(color: Colors.white)
+                                  : playPauseButton(
+                                  isPlaying: _isPlaying,
+                                  togglePlayback: togglePlayback
+                              ),
+                              IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      _positionSubscription!.cancel();
+                                      _durationSubscription!.cancel();
+                                      _audioPlayer!.dispose();
+                                      _isLoading = true;
+                                      _duration = Duration();
+                                      loadTrackData(widget.index++);
+                                    });
+                                  },
+                                  icon: isLastItem ? Icon(Icons.skip_next,size: 40, color: Colors.grey,) : Icon(Icons.skip_next,size: 40, color: Colors.white,)
+                              ),
 
-                          ],
-                        ),
+                            ],
+                          ),
 
-                        SizedBox(height: 30,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            bottomIcon(icon:
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _setvolume = !_setvolume;
-                                  });
-                                },
-                                icon: volume < 0.5
-                                    ? (volume == 0
-                                    ? Icon(Icons.volume_off,
-                                    color: Colors.white)
-                                    : Icon(Icons.volume_down,
-                                    color: Colors.white))
-                                    : Icon(Icons.volume_up, color: Colors.white, size: 20,)),),
-                            bottomIcon(icon:
-                            IconButton(
+                          SizedBox(height: 30,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              bottomIcon(icon:
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _setvolume = !_setvolume;
+                                    });
+                                  },
+                                  icon: volume < 0.5
+                                      ? (volume == 0
+                                      ? Icon(Icons.volume_off,
+                                      color: Colors.white)
+                                      : Icon(Icons.volume_down,
+                                      color: Colors.white))
+                                      : Icon(Icons.volume_up, color: Colors.white, size: 20,)),),
+                              bottomIcon(icon:
+                              IconButton(
                                 onPressed: () {
                                   setState(() {
                                     _isLoop = !_isLoop;
                                   });
                                 },
                                 icon:!_isLoop? Icon(Icons.loop, color: Colors.white,size: 20,):Icon(Icons.loop, color: Colors.blue,size: 20,),
-                            ))
+                              ))
 
-                          ],
-                        )
+                            ],
+                          )
 
-                      ],
-                    )),
-              ],
+                        ],
+                      )),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      );
+    }
     );
   }
 }

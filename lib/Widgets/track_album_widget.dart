@@ -12,7 +12,6 @@ class TrackAlbumWidget extends StatelessWidget {
   List<dynamic>? items;
   final int index;
   final Type type;
-  void Function(List<dynamic> item)? addToFavourite;
   TrackAlbumWidget(
       {super.key,
         required this.index,
@@ -20,8 +19,7 @@ class TrackAlbumWidget extends StatelessWidget {
         this.fav_items,
         this.pagingController,
         this.items,
-        required this.type,
-        required this.addToFavourite,
+        required this.type
       });
   List<dynamic> fav_items_list = [];
   Widget build(BuildContext context) {
@@ -51,7 +49,6 @@ class TrackAlbumWidget extends StatelessWidget {
                 builder: (context) => MusicPlayerView(
                   index: 0,
                   items: fav_items_list!,
-                  addToFavourite: addToFavourite!,
                 )));
           }
         else if (type == Type.track)
@@ -59,8 +56,7 @@ class TrackAlbumWidget extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => MusicPlayerView(
                 index: index,
-                trackPagingController: pagingController,
-                addToFavourite: addToFavourite!,
+                trackPagingController: pagingController
               )));
 
         else if (type == Type.album)
@@ -70,8 +66,7 @@ class TrackAlbumWidget extends StatelessWidget {
                   albumName: name,
                   albumImageUrl: imageUrl,
                   artistId: artistId,
-                  artistName: artistName,
-                  addToFavourite: addToFavourite!,
+                  artistName: artistName
               )));
       },
       borderRadius: BorderRadius.circular(20),

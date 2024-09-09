@@ -5,9 +5,8 @@ import 'package:runo_music/Widgets/track_album_widget.dart';
 class DisplayWithPagination extends StatelessWidget {
   final PagingController<int, dynamic> pagingController;
   final Type type;
-  final void Function(List<dynamic> item) addToFavourites;
 
-  DisplayWithPagination({super.key, required this.pagingController, required this.type, required this.addToFavourites });
+  DisplayWithPagination({super.key, required this.pagingController, required this.type });
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +21,7 @@ class DisplayWithPagination extends StatelessWidget {
             return TrackAlbumWidget(
               index: index,
               pagingController: pagingController,
-              type: type,
-              addToFavourite : addToFavourites
+              type: type
             );
           })),
     );

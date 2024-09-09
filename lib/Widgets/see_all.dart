@@ -4,11 +4,10 @@ import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 
 class SeeAll extends StatefulWidget {
-  void Function(List<dynamic> item) addToFavourite;
   final Type type;
   final PagingController<int, dynamic> pagingController;
 
-  SeeAll({required this.type, required this.addToFavourite, required this.pagingController});
+  SeeAll({required this.type, required this.pagingController});
   @override
   State<SeeAll> createState() => _SeeAllState();
 }
@@ -45,8 +44,7 @@ class _SeeAllState extends State<SeeAll> {
               return
               ListAllWidget(
                   pagingController : widget.pagingController,
-                  index:index,
-                  addToFavourite: widget.addToFavourite) ;
+                  index:index) ;
             })) :
          PagedGridView<int, dynamic>(
              pagingController: widget.pagingController,
@@ -54,7 +52,7 @@ class _SeeAllState extends State<SeeAll> {
              builderDelegate: PagedChildBuilderDelegate<dynamic>(
                  itemBuilder: (context, item, index){
                    print(index);
-                   return TrackAlbumWidget(index: index, type: Type.album,pagingController: widget.pagingController, addToFavourite: widget.addToFavourite);
+                   return TrackAlbumWidget(index: index, type: Type.album,pagingController: widget.pagingController);
                  }
              )
          ),

@@ -39,6 +39,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   audioplayers: ^6.1.0
   vertical_slider: ^0.0.1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

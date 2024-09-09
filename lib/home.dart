@@ -9,9 +9,9 @@ import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 
 class Home extends StatefulWidget {
-  void Function(List<dynamic> item) addToFavourites;
 
-  Home({super.key, required this.addToFavourites});
+
+  Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -175,7 +175,6 @@ class _HomeState extends State<Home> {
                                 context: context,
                                 builder: (context) => SeeAll(
                                     type:Type.track,
-                                    addToFavourite: widget.addToFavourites,
                                     pagingController: _trackPagingController));
                           },
                           child: Container(
@@ -197,7 +196,6 @@ class _HomeState extends State<Home> {
                 DisplayWithPagination(
                     pagingController: _trackPagingController,
                     type: Type.track,
-                    addToFavourites: widget.addToFavourites
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 20),
@@ -211,7 +209,6 @@ class _HomeState extends State<Home> {
                                 context: context,
                                 builder: (context) => SeeAll(
                                     type:Type.album,
-                                    addToFavourite: widget.addToFavourites,
                                     pagingController: _albumPagingController));
                           },
                           child: Container(
@@ -232,8 +229,7 @@ class _HomeState extends State<Home> {
                 ),
                 DisplayWithPagination(
                     pagingController: _albumPagingController,
-                    type: Type.album,
-                    addToFavourites: widget.addToFavourites
+                    type: Type.album
                 )
               ],
             ),

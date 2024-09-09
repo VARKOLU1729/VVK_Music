@@ -12,13 +12,6 @@ class TabScreen extends StatefulWidget {
 class _TabScreenState extends State<TabScreen> {
 
   int selectedIndex = 0;
-  List<List<dynamic>> favourites =[];
-  void addToFavourites(List<dynamic> item)
-  {
-    setState(() {
-      favourites.add(item);
-    });
-  }
 
   String title = "RUNO MUSIC";
   void _selectIndex(index) {
@@ -29,18 +22,18 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = Home(addToFavourites: addToFavourites);
+    Widget activePage = Home();
     if (selectedIndex== 0) {
       setState(() {
         selectedIndex = 0;
-        activePage = Home(addToFavourites: addToFavourites,);
+        activePage = Home();
         title = "Explore Music";
       });
     }
     if (selectedIndex == 2) {
       setState(() {
         selectedIndex = 2;
-        activePage = Favourites(favourites: favourites, addToFavourite:addToFavourites);
+        activePage = Favourites();
         title = "Your Library";
       });
     }

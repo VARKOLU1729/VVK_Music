@@ -20,9 +20,8 @@ import 'package:runo_music/Widgets/see_all.dart';
 // Show the list of albums created by this artist (on click of it, open  Album View)
 
 class ArtistView extends StatefulWidget {
-  final void Function(List<dynamic> item) addToFavourite;
   final String artistId;
-  ArtistView({super.key, required this.artistId, required this.addToFavourite});
+  ArtistView({super.key, required this.artistId});
 
   @override
   State<ArtistView> createState() => _ArtistViewState();
@@ -158,7 +157,6 @@ class _ArtistViewState extends State<ArtistView> {
                                     context: context,
                                     builder: (context) => SeeAll(
                                         type:Type.track,
-                                        addToFavourite: widget.addToFavourite,
                                         pagingController: _artistTrackPagingController));
                               },
                               child: Container(
@@ -179,8 +177,7 @@ class _ArtistViewState extends State<ArtistView> {
                     ),
                     DisplayWithPagination(
                         pagingController: _artistTrackPagingController,
-                        type: Type.track,
-                        addToFavourites: widget.addToFavourite!),
+                        type: Type.track),
                     Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: Row(
@@ -193,7 +190,6 @@ class _ArtistViewState extends State<ArtistView> {
                                     context: context,
                                     builder: (context) => SeeAll(
                                         type:Type.album,
-                                        addToFavourite: widget.addToFavourite,
                                         pagingController: _artistAlbumPagingController));
                               },
                               child: Container(
@@ -214,8 +210,7 @@ class _ArtistViewState extends State<ArtistView> {
                     ),
                     DisplayWithPagination(
                         pagingController: _artistAlbumPagingController,
-                        type: Type.album,
-                        addToFavourites: widget.addToFavourite!),
+                        type: Type.album),
                     (artistName == null ||
                             artistBio == null ||
                             artistImageUrl == null)

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 
+import '../Widgets/favourite_items_provider.dart';
+
 class Favourites extends StatefulWidget {
-  final List<List<dynamic>> favourites;
-  List<dynamic>? favourite_items;
-  void Function(List<dynamic> item) addToFavourite;
-  Favourites(
-      {super.key, required this.favourites, required this.addToFavourite});
+  Favourites({super.key});
 
   @override
   State<Favourites> createState() => _FavouritesState();
@@ -19,7 +19,7 @@ class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return Consumer<favouriteItemsProvider>(builder: (context, value, child)=>Scaffold(
         backgroundColor: Color.fromARGB(200, 88, 86, 86),
         body: Stack(
           children: [
@@ -78,30 +78,13 @@ class _FavouritesState extends State<Favourites> {
                   ),
                 ),
                 Expanded(
-                  flex: 2,
-                  child: GridView.builder(
-                      itemCount: widget.favourites.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                      itemBuilder: (context, index) => widget.favourites[index][1] == 0
-                          ? TrackAlbumWidget(
-                              fav_index : index,
-                              index:widget.favourites[index][0],
-                              items: widget.favourites[index][2],
-                              type: Type.track,
-                              addToFavourite: widget.addToFavourite,
-                            )
-                          : TrackAlbumWidget(
-                              fav_index : index,
-                              index: widget.favourites[index][0],
-                              pagingController: widget.favourites[index][2],
-                              type: Type.track,
-                              addToFavourite: widget.addToFavourite,
-                            )),
+                  child: ListView.builder(itemCount: value.favourite_items.length, itemBuilder: (context, index)=>
+                      ListAllWidget(index: index,items: value.favourite_items.values.toList(growable: false))),
                 ),
               ],
             )
           ],
-        ));
+        ))
+    );
   }
 }

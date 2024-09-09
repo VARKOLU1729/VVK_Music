@@ -15,7 +15,6 @@ class AlbumView extends StatefulWidget {
   final String albumImageUrl;
   final String artistId;
   final String artistName;
-  final void Function(List<dynamic> item) addToFavourite;
 
   const AlbumView(
       {super.key,
@@ -23,8 +22,7 @@ class AlbumView extends StatefulWidget {
       required this.albumName,
       required this.albumImageUrl,
       required this.artistId,
-      required this.artistName,
-      required this.addToFavourite});
+      required this.artistName});
 
 
   @override
@@ -111,7 +109,7 @@ class _AlbumViewState extends State<AlbumView> {
                   child: ListView.builder(
                       itemCount: albumTrackData.length,
                       itemBuilder: (context, index) {
-                        return ListAllWidget(index: index,items: albumTrackData,addToFavourite: widget.addToFavourite,);
+                        return ListAllWidget(index: index,items: albumTrackData);
 
                       }))
             ],
