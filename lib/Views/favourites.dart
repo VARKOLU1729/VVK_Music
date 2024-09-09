@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Views/music_player_view.dart';
+import 'package:runo_music/Widgets/deviceParams.dart';
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
@@ -20,6 +22,23 @@ class _FavouritesState extends State<Favourites> {
   Widget build(BuildContext context) {
 
     return Consumer<favouriteItemsProvider>(builder: (context, value, child)=>Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 50,
+        leading:
+        IconButton(
+            onPressed: (){
+              // Navigator.pop(context);
+            },
+            icon:Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+        ),
+        backgroundColor: Colors.white.withOpacity(0.0001),
+        actions: [IconButton(
+            onPressed: (){
+              // Navigator.pop(context);
+            },
+            icon:Icon(Icons.more_vert, color: Colors.white,size: 25,)
+        ),],
+      ),
         backgroundColor: Color.fromARGB(200, 88, 86, 86),
         body: Stack(
           children: [
@@ -31,15 +50,17 @@ class _FavouritesState extends State<Favourites> {
             ),
             BackGroundBlur(),
             Container(
-              margin: EdgeInsets.only(top: 350),
+              margin: EdgeInsets.only(top: getHeight(context)/3),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                    Colors.black.withOpacity(0.05),
-                    Colors.black.withOpacity(0.3),
+                    Colors.black.withOpacity(0.01),
+                        Colors.black.withOpacity(0.3),
+                    Colors.black.withOpacity(0.5),
                     Colors.black.withOpacity(0.6),
+                    Colors.black.withOpacity(0.7),
                     Colors.black.withOpacity(0.9)
                   ])),
             ),
@@ -47,14 +68,15 @@ class _FavouritesState extends State<Favourites> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 100,
+                  height: 20,
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: Center(
                     child: Container(
+                      height: 250,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           Fav_img,
                           fit: BoxFit.cover,
@@ -67,17 +89,36 @@ class _FavouritesState extends State<Favourites> {
                 SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(
+                ListTile(
+                  title: Text(
                     "My Favourites",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
+                  subtitle: Text('PRIVATE . ${value.favourite_items.length} SONGS . ${value.favourite_items.length*30} SECS',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  trailing:Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Color.fromARGB(255, 12, 189, 189)
+                    ),
+                    child: IconButton(onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MusicPlayerView(
+                        index: 0,
+                        items: value.favourite_items.values.toList(),
+                      )));
+
+                    }, icon: Icon(Icons.play_arrow, size: 30,)),
+                  ),
                 ),
                 Expanded(
+                  flex: 4,
                   child: ListView.builder(itemCount: value.favourite_items.length, itemBuilder: (context, index)=>
                       ListAllWidget(index: index,items: value.favourite_items.values.toList(growable: false))),
                 ),

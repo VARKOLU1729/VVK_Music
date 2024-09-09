@@ -45,7 +45,7 @@ class _TabScreenState extends State<TabScreen> {
         toolbarHeight: 1,
       ),
 
-      body:Stack(
+      body: selectedIndex==0 ? Stack(
         children: [
           activePage,
           Positioned(
@@ -65,7 +65,7 @@ class _TabScreenState extends State<TabScreen> {
             // 
           )
         ],
-      ),
+      ):activePage,
       bottomNavigationBar:
           Container(
             height: 60,
