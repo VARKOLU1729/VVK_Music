@@ -213,6 +213,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
             ),
             BackGroundBlur(),
             popOut(),
+
+
+
             if(_setvolume) Positioned.directional(
                 textDirection: TextDirection.rtl,
                 end:width/20,

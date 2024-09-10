@@ -13,6 +13,7 @@ class favouriteItemsProvider extends ChangeNotifier
   void removeFromFavourite({required String id})
   {
     favourite_items.remove(id);
+    print(favourite_items);
     notifyListeners();
   }
 

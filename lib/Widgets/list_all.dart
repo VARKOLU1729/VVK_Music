@@ -74,6 +74,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                       )));
             },
             child: ListTile(
+              key: ValueKey(id),
               leading: Container(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
@@ -92,16 +93,20 @@ class _ListAllWidgetState extends State<ListAllWidget> {
               trailing: InkWell(
                 onTap: () {
                     setState(() {
-                      addedToFav = !addedToFav;
-                      if(addedToFav)
+                      // addedToFav = !addedToFav;
+                      if(!addedToFav)
                         {
+                          print("added $id");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration:Duration(milliseconds: 30) ,content:addedSnackbarContent()));
                           value.addToFavourite(id: id!, details: [id, name,imageUrl, artistId, artistName, albumId, albumName]);
+                          addedToFav = !addedToFav;
                         }
                       else
                         {
+                          print("removed $id");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration:Duration(milliseconds: 30), content:removedSnackbarContent()));
                           value.removeFromFavourite(id: id!);
+                          addedToFav = !addedToFav;
                         }
                     });
                   },

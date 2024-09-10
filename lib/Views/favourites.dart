@@ -119,7 +119,7 @@ class _FavouritesState extends State<Favourites> {
                 ),
                 Expanded(
                   flex: 4,
-                  child: ListView.builder(itemCount: value.favourite_items.length, itemBuilder: (context, index)=>
+                  child: ListView.builder(key: ValueKey(value.favourite_items.length), itemCount: value.favourite_items.length, itemBuilder: (context, index)=>
                       ListAllWidget(index: index,items: value.favourite_items.values.toList(growable: false))),
                 ),
               ],

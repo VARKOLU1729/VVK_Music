@@ -33,6 +33,7 @@ void main() {
   return runApp(
       MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>favouriteItemsProvider())],
         child:MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: TabScreen(),
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData().copyWith(
