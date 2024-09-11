@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:runo_music/tab_screen.dart';
-import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Views/album_view.dart';
-// import 'package:go_router/go_router.dart';
-import 'package:runo_music/home.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Widgets/favourite_items_provider.dart';
 
@@ -20,11 +16,11 @@ var kColorTheme = ColorScheme(
 
 var kDarkTheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xff01242b),
+    primary: Color.fromARGB(255, 18, 20, 25),
     onPrimary: Colors.white,
-    secondary: Color.fromARGB(20, 20, 20, 20),
-    onSecondary: Color.fromARGB(20, 20, 20, 20),
-    error: Color.fromARGB(20, 20, 20, 20),
+    secondary: Color.fromARGB(255, 44, 54, 62),
+    onSecondary: Colors.grey,
+    error: Colors.red,
     onError: Color.fromARGB(20, 20, 20, 20),
     surface: Color.fromARGB(20, 20, 20, 20),
     onSurface: Color.fromARGB(20, 20, 20, 20));

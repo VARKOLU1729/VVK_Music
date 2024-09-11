@@ -79,10 +79,10 @@ class _TabScreenState extends State<TabScreen> {
           Container(
             height: 60,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color.fromARGB(255, 51, 62, 71).withOpacity(0.1), Color.fromARGB(255, 51, 62, 71).withOpacity(0.5)])
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color.fromARGB(255, 51, 62, 71).withOpacity(0.1), Color.fromARGB(255, 51, 62, 71).withOpacity(0.5)])
             ),
             child: Container(
               height: 60,
@@ -106,6 +106,7 @@ class _TabScreenState extends State<TabScreen> {
               ),
             ),
           )
+
 
 
     );

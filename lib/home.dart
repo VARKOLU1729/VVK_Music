@@ -11,7 +11,6 @@ import 'package:runo_music/Data/top_albums.dart';
 
 class Home extends StatefulWidget {
 
-
   Home({super.key});
 
   @override
@@ -110,6 +109,18 @@ class _HomeState extends State<Home> {
               children: [
               //   first child
                 Container(
+                  margin: EdgeInsets.only(top: getHeight(context) / 3.25),
+                  height:getHeight(context) / 7.25,
+                  // width: width,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.05),
+                            Colors.black.withOpacity(0.3),
+                            Colors.black.withOpacity(0.5)
+                          ])),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -144,18 +155,7 @@ class _HomeState extends State<Home> {
                         ),
                       ]
                   ),
-                  margin: EdgeInsets.only(top: getHeight(context) / 3.25),
-                  height:getHeight(context) / 7.25,
-                  // width: width,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.05),
-                            Colors.black.withOpacity(0.3),
-                            Colors.black.withOpacity(0.5)
-                          ])),
+
                 ),
 
                //   second child
