@@ -130,7 +130,7 @@ class _ArtistViewState extends State<ArtistView> {
                     child: IconButton(onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MusicPlayerView(
                         index: 0,
-                        trackPagingController: _artistTrackPagingController,
+                        items : _artistTrackPagingController.itemList,
                       )));
 
                     }, icon: Icon(Icons.play_arrow, size: 30,color: Colors.white,)),

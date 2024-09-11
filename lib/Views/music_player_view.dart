@@ -17,12 +17,10 @@ import '../Widgets/favourite_items_provider.dart';
 class MusicPlayerView extends StatefulWidget {
   List<dynamic>? items;
   int index;
-  final PagingController<int, dynamic>? trackPagingController;
 
   MusicPlayerView(
       {super.key,
-      this.items,
-        this.trackPagingController,
+      required this.items,
         required this.index});
 
 
@@ -75,18 +73,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
       {
         isFirstItem = true;
       }
-    if(widget.items==null)
-    {
-      items = widget.trackPagingController!.itemList!;
-    }
-    else
-    {
-      if(index==items.length-1)
+
+    if(index==items.length-1)
         {
           isLastItem = true;
         }
       items = widget.items!;
-    }
+
 
     trackId = items[index][0];
     trackName = items[index][1];

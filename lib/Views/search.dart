@@ -108,7 +108,7 @@ class _SearchState extends State<Search> {
                     builderDelegate: PagedChildBuilderDelegate<dynamic>(
                         itemBuilder: (context, item, index) {
                       return ListAllWidget(
-                          pagingController: _searchPagingController,
+                          items: _searchPagingController.itemList,
                           index: index);
                     })),
                 decoration: BoxDecoration(

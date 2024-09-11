@@ -20,7 +20,7 @@ class DisplayWithPagination extends StatelessWidget {
               itemBuilder: (context, item, index) {
             return TrackAlbumWidget(
               index: index,
-              pagingController: pagingController,
+              items: pagingController.itemList!,
               type: type
             );
           })),

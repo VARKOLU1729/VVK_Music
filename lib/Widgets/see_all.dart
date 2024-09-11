@@ -53,7 +53,7 @@ class _SeeAllState extends State<SeeAll> {
                 itemBuilder: (context, item, index) {
               return
               ListAllWidget(
-                  pagingController : widget.pagingController,
+                  items : widget.pagingController.itemList,
                   index:index) ;
             })) :
          PagedGridView<int, dynamic>(
@@ -61,7 +61,7 @@ class _SeeAllState extends State<SeeAll> {
              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
              builderDelegate: PagedChildBuilderDelegate<dynamic>(
                  itemBuilder: (context, item, index){
-                   return TrackAlbumWidget(index: index, type: Type.album,pagingController: widget.pagingController);
+                   return TrackAlbumWidget(index: index, type: Type.album,items:widget.pagingController.itemList!,);
                  }
              )
          ),

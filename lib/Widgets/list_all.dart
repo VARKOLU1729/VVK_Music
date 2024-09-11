@@ -7,13 +7,11 @@ import 'package:runo_music/Widgets/favourite_items_provider.dart';
 import 'messenger.dart';
 
 class ListAllWidget extends StatefulWidget {
-  PagingController<int, dynamic>? pagingController;
   List<dynamic>? items;
   final int index;
   ListAllWidget(
       {super.key,
-      this.pagingController,
-      this.items,
+      required this.items,
       required this.index,
       });
 
@@ -30,20 +28,14 @@ class _ListAllWidgetState extends State<ListAllWidget> {
   String? artistName;
   String? albumId;
   String? albumName;
-  List<dynamic>? items;
   void loadData() {
-    if (widget.items == null) {
-      items = widget.pagingController!.itemList!;
-    } else {
-      items = widget.items!;
-    }
-    id = items![widget.index][0];
-    name = items![widget.index][1];
-    imageUrl = items![widget.index][2];
-    artistId = items![widget.index][3];
-    artistName = items![widget.index][4];
-    albumName = items![widget.index][5];
-    albumId = items![widget.index][6];
+    id = widget.items![widget.index][0];
+    name = widget.items![widget.index][1];
+    imageUrl = widget.items![widget.index][2];
+    artistId = widget.items![widget.index][3];
+    artistName = widget.items![widget.index][4];
+    albumName = widget.items![widget.index][5];
+    albumId = widget.items![widget.index][6];
   }
 
   @override
@@ -63,13 +55,8 @@ class _ListAllWidgetState extends State<ListAllWidget> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => widget.pagingController == null
-                          ? MusicPlayerView(
-                        items: widget.items,
-                        index: widget.index,
-                      )
-                          : MusicPlayerView(
-                        trackPagingController: widget.pagingController,
+                      builder: (context) =>  MusicPlayerView(
+                        items : widget.items,
                         index: widget.index,
                       )));
             },
