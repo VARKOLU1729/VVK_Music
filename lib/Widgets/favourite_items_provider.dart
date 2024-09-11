@@ -197,11 +197,6 @@ class AudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setAudioState(List<dynamic> trackList, int index) {
-    _items = trackList;
-    _currentIndex = index;
-    notifyListeners();
-  }
 
   @override
   void dispose() {
