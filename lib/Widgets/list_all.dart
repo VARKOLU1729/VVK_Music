@@ -46,19 +46,14 @@ class _ListAllWidgetState extends State<ListAllWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<favouriteItemsProvider>(builder: (context, value, child){
+    return Consumer2<favouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider,  child){
       if(value.favourite_items.containsKey(id)) addedToFav=true;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>  MusicPlayerView(
-                        items : widget.items,
-                        index: widget.index,
-                      )));
+            onTap: () async{
+              await audioProvider.loadAudio(trackList:widget.items!,index: widget.index);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
             },
             child: ListTile(
               key: ValueKey(id),

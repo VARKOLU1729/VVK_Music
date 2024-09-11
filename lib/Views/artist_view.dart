@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
@@ -11,6 +12,7 @@ import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 
+import '../Widgets/favourite_items_provider.dart';
 import 'music_player_view.dart';
 
 
@@ -127,11 +129,11 @@ class _ArtistViewState extends State<ArtistView> {
                           ]
                         )
                     ),
-                    child: IconButton(onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MusicPlayerView(
-                        index: 0,
-                        items : _artistTrackPagingController.itemList,
-                      )));
+                    child: IconButton(onPressed: () async{
+                      final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+                      await audioProvider.loadAudio(trackList:  _artistTrackPagingController.itemList!,index:  0);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
+
 
                     }, icon: Icon(Icons.play_arrow, size: 30,color: Colors.white,)),
                   ),

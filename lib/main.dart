@@ -27,7 +27,9 @@ var kDarkTheme = ColorScheme(
 
 void main() {
   return runApp(
-      MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>favouriteItemsProvider())],
+      MultiProvider(providers: [ChangeNotifierProvider(create: (context)=>favouriteItemsProvider()),
+        ChangeNotifierProvider(create: (context)=>AudioProvider())
+      ],
         child:MaterialApp(
           debugShowCheckedModeBanner: false,
           home: TabScreen(),

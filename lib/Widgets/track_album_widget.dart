@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
 import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 
+import 'favourite_items_provider.dart';
 enum Type { album, track }
 
 class TrackAlbumWidget extends StatelessWidget {
@@ -26,15 +28,14 @@ class TrackAlbumWidget extends StatelessWidget {
     final String albumName = items![index][6];
 
     return InkWell(
-      onTap: () {
+      onTap: () async{
         // print(trackName);
         if (type == Type.track)
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MusicPlayerView(
-                index: index,
-                items:items,
-              )));
-
+        {
+          final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+          await audioProvider.loadAudio(trackList: items,index:  index);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
+        }
         else if (type == Type.album)
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AlbumView(

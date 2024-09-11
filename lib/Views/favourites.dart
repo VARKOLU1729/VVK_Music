@@ -21,7 +21,7 @@ class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
 
-    return Consumer<favouriteItemsProvider>(builder: (context, value, child)=>Scaffold(
+    return Consumer2<favouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider, child)=>Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
         leading:
@@ -108,11 +108,10 @@ class _FavouritesState extends State<Favourites> {
                         borderRadius: BorderRadius.circular(50),
                         color: Color.fromARGB(255, 12, 189, 189)
                     ),
-                    child: IconButton(onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MusicPlayerView(
-                        index: 0,
-                        items: value.favourite_items.values.toList(),
-                      )));
+                    child: IconButton(onPressed: () async{
+                      await audioProvider.loadAudio(trackList: value.favourite_items.values.toList(), index: 0);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
+
 
                     }, icon: Icon(Icons.play_arrow, size: 30,)),
                   ),
