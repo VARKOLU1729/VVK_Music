@@ -3,6 +3,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 
+import '../Helper/Responsive.dart';
+
 class SeeAll extends StatefulWidget {
   final Type type;
   final PagingController<int, dynamic> pagingController;
@@ -35,7 +37,7 @@ class _SeeAllState extends State<SeeAll> {
         ),
       ),
       body:Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding:  EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 end: Alignment.topCenter,
@@ -46,9 +48,12 @@ class _SeeAllState extends State<SeeAll> {
                   Colors.black.withOpacity(0.9),
                   Colors.black.withOpacity(0.88)
                 ])),
-        child: widget.type==Type.track ? PagedListView<int, dynamic>(
+        child: widget.type==Type.track ? PagedGridView<int, dynamic>(
             pagingController: widget.pagingController,
-            scrollDirection: Axis.vertical,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 80,
+                maxCrossAxisExtent: Responsive().isSmallScreen(context) ? 600 :(Responsive().isMediumScreen(context)? 800 : 1000)
+            ),
+            // scrollDirection: Axis.vertical,
             builderDelegate: PagedChildBuilderDelegate<dynamic>(
                 itemBuilder: (context, item, index) {
               return
@@ -58,7 +63,7 @@ class _SeeAllState extends State<SeeAll> {
             })) :
          PagedGridView<int, dynamic>(
              pagingController: widget.pagingController,
-             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 250),
              builderDelegate: PagedChildBuilderDelegate<dynamic>(
                  itemBuilder: (context, item, index){
                    return TrackAlbumWidget(index: index, type: Type.album,items:widget.pagingController.itemList!,);

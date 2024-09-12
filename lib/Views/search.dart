@@ -4,9 +4,11 @@ import 'package:runo_music/Widgets/see_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import '../Data/searchResults.dart';
 import '../Widgets/list_all.dart';
+import '../Widgets/search_bar.dart';
 
 class Search extends StatefulWidget {
-  const Search({super.key});
+  String? queryHomePage;
+  Search({super.key, this.queryHomePage});
 
   @override
   State<Search> createState() => _SearchState();
@@ -22,11 +24,11 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-
     _searchPagingController.addPageRequestListener((pageKey) {
       print("initiated");
       _loadTrackData(pageKey, _currentQuery);
     });
+    if(widget.queryHomePage!=null) search(widget.queryHomePage!);
   }
 
   void _loadTrackData(int pageKey, String query) async {
@@ -74,30 +76,9 @@ class _SearchState extends State<Search> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-            height: 45,
-            child: TextField(
-              style: TextStyle(color: Colors.black),
-             decoration: InputDecoration(
-               fillColor: Colors.white,
-               filled: true,
-               prefixIcon: Icon(Icons.search, color: Colors.grey,),
-               hintText: "Search music",
-               hintStyle: TextStyle(color: Colors.grey),
-               contentPadding: EdgeInsets.only(top: 10),
-               border: OutlineInputBorder(
-                 borderRadius: BorderRadius.circular(50),
-                 borderSide: BorderSide.none
-               )
-             ),
-              onSubmitted: (val) {
-                print(val);
-                search(val);
-              },
+          if(widget.queryHomePage==null)
+            searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,),
 
-            ),
-          ),
           if (_isSearched)
             Expanded(
               child: Container(

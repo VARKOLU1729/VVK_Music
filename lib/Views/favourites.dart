@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Widgets/deviceParams.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';

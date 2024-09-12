@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Data/fetch_data.dart';
-import 'package:runo_music/Widgets/deviceParams.dart';
+import 'package:runo_music/Helper/Responsive.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
@@ -85,6 +86,8 @@ class _HomeState extends State<Home> {
         child:Stack(
           children: [
             // first child
+            if(Responsive().isSmallScreen(context))
+            //   show the station image in the backgorund
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,10 +107,13 @@ class _HomeState extends State<Home> {
             ),
 
             // second child
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               //   first child
+                if(Responsive().isSmallScreen(context))
+                //   show the station details on top of the image
                 Container(
                   margin: EdgeInsets.only(top: getHeight(context) / 3.25),
                   height:getHeight(context) / 7.25,
@@ -145,12 +151,13 @@ class _HomeState extends State<Home> {
                                   color: Colors.white,
                                   fontSize: 15)
                           ),
-                          trailing:Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Color.fromARGB(255, 12, 189, 189)
+                          trailing:
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Container(
+                              color: Color.fromARGB(255, 12, 189, 189),
+                              child: IconButton(onPressed: () {}, icon: Icon(Icons.play_arrow, size: 30,)),
                             ),
-                            child: IconButton(onPressed: () {}, icon: Icon(Icons.play_arrow, size: 40,)),
                           ),
                         ),
                       ]
@@ -159,7 +166,7 @@ class _HomeState extends State<Home> {
                 ),
 
                //   second child
-                SizedBox(height: 20,),
+                SizedBox(height: 60,),
 
                 // Third box
                 Padding(
@@ -170,11 +177,15 @@ class _HomeState extends State<Home> {
                         Header(title: 'Top Tracks'),
                         InkWell(
                           onTap: () {
+                            Widget widget = SeeAll(type:Type.track, pagingController: _trackPagingController);
+                            if(Responsive().isSmallScreen(context))
                             showBottomSheet(
                                 context: context,
-                                builder: (context) => SeeAll(
-                                    type:Type.track,
-                                    pagingController: _trackPagingController));
+                                builder: (context) => widget);
+                            else
+                              {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                              }
                           },
                           child: Container(
                               width: 100,
@@ -204,11 +215,16 @@ class _HomeState extends State<Home> {
                         Header(title: 'Top Albums'),
                         InkWell(
                           onTap: () {
-                            showBottomSheet(
-                                context: context,
-                                builder: (context) => SeeAll(
-                                    type:Type.album,
-                                    pagingController: _albumPagingController));
+                            Widget widget = SeeAll(type:Type.album, pagingController: _albumPagingController);
+                            if(Responsive().isSmallScreen(context))
+                              showBottomSheet(
+                                  context: context,
+                                  builder: (context) => widget);
+                            else
+                            {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                            }
+
                           },
                           child: Container(
                               width: 100,
@@ -234,7 +250,7 @@ class _HomeState extends State<Home> {
             ),
             Positioned(
               child: Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.white.withOpacity(0.01),
                 child: Center(
                   child:
                   Text("Explore Music",

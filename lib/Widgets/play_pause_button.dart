@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:runo_music/Widgets/favourite_items_provider.dart';
 
 class PlayPauseButton extends StatelessWidget {
+  double iconSize = 10;
+  PlayPauseButton({super.key, required this.iconSize});
+
   @override
   Widget build(BuildContext context) {
     final audioProvider = Provider.of<AudioProvider>(context);
@@ -17,16 +20,15 @@ class PlayPauseButton extends StatelessWidget {
           ],
         ),
         color: Colors.red,
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(2*iconSize),
       ),
       child: IconButton(
         color: Colors.white,
-        iconSize: 40,
+        iconSize: iconSize,
         onPressed: () {
           audioProvider.togglePlayPause();
         },
-        icon:
-        audioProvider.isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+        icon: audioProvider.isPlaying ? Icon(Icons.pause, size: iconSize,) : Icon(Icons.play_arrow, size: iconSize,),
       ),
     );
   }

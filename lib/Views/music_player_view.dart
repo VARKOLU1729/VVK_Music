@@ -747,7 +747,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                   ? CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                                  : PlayPauseButton(),
+                                  : PlayPauseButton(iconSize: 40,),
                               IconButton(
                                 onPressed: audioProvider.currentIndex <
                                     audioProvider.items.length - 1

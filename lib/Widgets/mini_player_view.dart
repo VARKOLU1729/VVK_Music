@@ -56,7 +56,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
         return ListTile(
                 title: Text(trackName, style: TextStyle(color: Colors.white),),
                 subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
-                trailing: PlayPauseButton(),
+                trailing: PlayPauseButton(iconSize: 25,),
               );
       },
     );

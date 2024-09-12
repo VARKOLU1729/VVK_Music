@@ -5,13 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
-import 'package:runo_music/Widgets/deviceParams.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/display_with_pagination.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 
+import '../Helper/Responsive.dart';
 import '../Widgets/favourite_items_provider.dart';
 import 'music_player_view.dart';
 
@@ -169,12 +170,18 @@ class _ArtistViewState extends State<ArtistView> {
                             Header(title: 'Top Tracks'),
                             InkWell(
                               onTap: () {
-                                showModalBottomSheet(
-                                  constraints: BoxConstraints(minHeight:getHeight(context)),
-                                    context: context,
-                                    builder: (context) => SeeAll(
-                                        type:Type.track,
-                                        pagingController: _artistTrackPagingController));
+
+                                Widget widget = SeeAll(type:Type.track, pagingController: _artistTrackPagingController);
+                                if(Responsive().isSmallScreen(context))
+                                  showModalBottomSheet(
+                                      constraints: BoxConstraints(minHeight:getHeight(context)),
+                                      context: context,
+                                      builder: (context) => widget);
+                                else
+                                {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                                }
+
                               },
                               child: Container(
                                   width: 100,
@@ -203,11 +210,18 @@ class _ArtistViewState extends State<ArtistView> {
                             Header(title: 'Top Albums'),
                             InkWell(
                               onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => SeeAll(
-                                        type:Type.album,
-                                        pagingController: _artistAlbumPagingController));
+
+                                Widget widget = SeeAll(type:Type.album, pagingController: _artistAlbumPagingController);
+                                if(Responsive().isSmallScreen(context))
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) => widget);
+                                else
+                                {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                                }
+
+
                               },
                               child: Container(
                                   width: 100,
