@@ -59,37 +59,21 @@ class AudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Getters
   List<dynamic> get items => _items;
-
   int get currentIndex => _currentIndex;
-
   bool get isPlaying => _isPlaying;
-
   bool get isLoop => _isLoop;
-
   bool get isLoading => _isLoading;
-
   double get volume => _volume;
-
   Duration get currentPosition => _currentPosition;
-
   Duration get duration => _duration;
 
-  // Current Track Details
   String? get trackId => _items.isNotEmpty ? _items[_currentIndex][0] : null;
-
   String? get trackName => _items.isNotEmpty ? _items[_currentIndex][1] : null;
-
-  String? get trackImageUrl =>
-      _items.isNotEmpty ? _items[_currentIndex][2] : null;
-
+  String? get trackImageUrl => _items.isNotEmpty ? _items[_currentIndex][2] : null;
   String? get artistId => _items.isNotEmpty ? _items[_currentIndex][3] : null;
-
   String? get artistName => _items.isNotEmpty ? _items[_currentIndex][4] : null;
-
   String? get albumId => _items.isNotEmpty ? _items[_currentIndex][5] : null;
-
   String? get albumName => _items.isNotEmpty ? _items[_currentIndex][6] : null;
 
   AudioProvider() {

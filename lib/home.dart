@@ -232,6 +232,22 @@ class _HomeState extends State<Home> {
                 )
               ],
             ),
+            Positioned(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child:
+                  Text("Explore Music",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20
+                    ),
+                  ),
+                ),
+                height: 40,
+              ),
+              //
+            )
           ],
         ),
 

@@ -58,27 +58,7 @@ class _TabScreenState extends State<TabScreen> {
         toolbarHeight: 1,
       ),
 
-      body: selectedIndex==0 ? Stack(
-        children: [
-          activePage,
-          Positioned(
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child:
-                Text(title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
-                  ),
-                ),
-              ),
-              height: 40,
-            ),
-            // 
-          )
-        ],
-      ):activePage,
+      body:activePage,
       bottomNavigationBar:
           Container(
             alignment: Alignment.bottomCenter,

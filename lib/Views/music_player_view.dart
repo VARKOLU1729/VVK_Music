@@ -504,8 +504,6 @@
 
 
 
-// lib/Views/music_player_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vertical_slider/vertical_slider.dart';
