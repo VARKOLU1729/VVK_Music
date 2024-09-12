@@ -41,7 +41,7 @@ class _TabScreenState extends State<TabScreen> {
       setState(() {
         if(Responsive().isLargeScreen(context))
         {
-          activePage =Favourites();
+          activePage = Favourites();
         }
         else
         {
@@ -57,114 +57,114 @@ class _TabScreenState extends State<TabScreen> {
 
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 18, 20, 25),
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          toolbarHeight: 1,
-        ),
+    
         body: (Responsive().isSmallScreen(context))
             ? activePage
-            : Column(
-                mainAxisSize: MainAxisSize.min,
+            : Stack(
+                // mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                        color: Colors.black87,
-                        width: double.infinity,
-                        height: 500,
-                        child: Responsive().isMediumScreen(context)
-                            ?
-                            // Text("HI", style: TextStyle(color: Colors.white)
-                            Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 40),
-                                      child: Text("runo music",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w200,
-                                              fontSize: 25)),
-                                    ),
-                                  ),
-                                  // SizedBox(width: getWidth(context)/5,),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: BottomNavigationBar(
-                                          showUnselectedLabels: false,
-                                          showSelectedLabels: false,
-                                          backgroundColor: Colors.black87,
-                                          onTap: _selectIndex,
-                                          // elevation: 100,
-                                          unselectedItemColor: Colors.white70,
-                                          selectedItemColor:
-                                              Color.fromARGB(255, 12, 189, 189),
-                                          currentIndex: selectedIndex,
-                                          items: bottomNavItems(iconSize: 30)),
-                                    ),
-                                  )
-                                ],
-                              )
-                            : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: 400,
-                                    child: Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 1,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(left: 40),
-                                                child: Text("runo music",
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight: FontWeight.w200,
-                                                        fontSize: 25)),
-                                              )
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: BottomNavigationBar(
-                                              backgroundColor: Colors.black87,
-                                              landscapeLayout:
-                                                  BottomNavigationBarLandscapeLayout
-                                                      .linear,
-                                              onTap: _selectIndex,
-                                              unselectedFontSize: 15,
-                                              selectedFontSize: 15,
-                                              unselectedItemColor: Colors.white70,
-                                              selectedItemColor:
-                                                  Color.fromARGB(255, 12, 189, 189),
-                                              currentIndex: selectedIndex,
-                                              items: [
-                                                bottomNavItems(iconSize: 30)[0],
-                                                bottomNavItems(iconSize: 30)[2]
-                                              ],
-                                            ),
-                                          ),
-                                      ]
-                                    ),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: searchBar(
-                                        onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
-                                        height: 35,
-                                        isMarginReq: false,
-                                        width: getWidth(context) / 4,
-                                      )),
-                                ],
-                              )),
+                  Column(
+                    children: [
+                      SizedBox(height: 72,),
+                      Expanded(child: activePage)
+                    ],
                   ),
-                  Expanded(flex: 10, child: activePage)
+                  Container(
+                      color: Colors.black87,
+                      width: double.infinity,
+                      height: 72,
+                      child: Responsive().isMediumScreen(context)
+                          ?
+                          // Text("HI", style: TextStyle(color: Colors.white)
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 40),
+                                    child: Text("runo music",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w200,
+                                            fontSize: 25)),
+                                  ),
+                                ),
+                                // SizedBox(width: getWidth(context)/5,),
+                                Expanded(
+                                  flex: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: BottomNavigationBar(
+                                        showUnselectedLabels: false,
+                                        showSelectedLabels: false,
+                                        backgroundColor: Colors.black87,
+                                        onTap: _selectIndex,
+                                        // elevation: 100,
+                                        unselectedItemColor: Colors.white70,
+                                        selectedItemColor:
+                                            Color.fromARGB(255, 12, 189, 189),
+                                        currentIndex: selectedIndex,
+                                        items: bottomNavItems(iconSize: 25)),
+                                  ),
+                                )
+                              ],
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 550,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                              padding: EdgeInsets.only(left: 40),
+                                              child: Text("runo music",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w200,
+                                                      fontSize: 25)),
+                                            )
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: BottomNavigationBar(
+                                            backgroundColor: Colors.black87,
+                                            landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
+                                            onTap: _selectIndex,
+                                            unselectedFontSize: 15,
+                                            selectedFontSize: 15,
+                                            selectedLabelStyle:TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                            unselectedLabelStyle:TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                            unselectedItemColor: Colors.white,
+                                            selectedItemColor:
+                                                Color.fromARGB(255, 12, 189, 189),
+                                            currentIndex: selectedIndex,
+                                            items: [
+                                              bottomNavItems(iconSize: 30)[0],
+                                              bottomNavItems(iconSize: 30)[2]
+                                            ],
+                                          ),
+                                        ),
+                                    ]
+                                  ),
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: searchBar(
+                                      onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
+                                      height: 35,
+                                      isMarginReq: false,
+                                      width: getWidth(context) / 4,
+                                    )),
+                              ],
+                            )),
                 ],
               ),
         bottomNavigationBar: Container(

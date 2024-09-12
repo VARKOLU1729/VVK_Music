@@ -248,6 +248,7 @@ class _HomeState extends State<Home> {
                 )
               ],
             ),
+            if(Responsive().isSmallScreen(context))
             Positioned(
               child: Container(
                 color: Colors.white.withOpacity(0.01),

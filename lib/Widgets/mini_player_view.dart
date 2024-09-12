@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/Responsive.dart';
 import 'package:vertical_slider/vertical_slider.dart';
 import '../Widgets/back_ground_blur.dart';
 import '../Widgets/favourite_items_provider.dart';
 import '../Widgets/pop_out.dart';
 import '../Views/album_view.dart';
 import '../Views/artist_view.dart';
-import '../Widgets/play_pause_button.dart';
+import '../audio_controllers/play_pause_button.dart';
 import '../Widgets/bottom_icon.dart';
 import 'dart:math' as math;
 
@@ -54,12 +55,84 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
         bool addedToFav = favProvider.checkInFav(id: trackId);
 
         return ListTile(
-                title: Text(trackName, style: TextStyle(color: Colors.white),),
-                subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
-                trailing: PlayPauseButton(iconSize: 25,),
-              );
+            leading: Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  trackImageUrl!,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          title: Text(trackName, style: TextStyle(color: Colors.white),),
+          subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
+          trailing: PlayPauseButton(iconSize: 25,),
+        );
+
+        // return Responsive().isSmallScreen(context) ? ListTile(
+        //         leading: Container(
+        //           child: ClipRRect(
+        //             borderRadius: BorderRadius.circular(5),
+        //             child: Image.network(
+        //               trackImageUrl!,
+        //               fit: BoxFit.cover,
+        //             ),
+        //           ),
+        //         ),
+        //         title: Text(trackName, style: TextStyle(color: Colors.white),),
+        //         subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
+        //         trailing: PlayPauseButton(iconSize: 25,),
+        //       ):(Responsive().isMediumScreen(context) ?
+        // Row(children: [
+        //   ListTile()
+        // ],):
+        //     Row(
+        //       children: [
+        //         ListTile()
+        //       ],
+        //     )
+        // );
       },
     );
   }
 
 }
+
+
+// class miniControls extends StatefulWidget {
+//   const miniControls({super.key});
+//
+//   @override
+//   State<miniControls> createState() => _miniControlsState();
+// }
+
+// class _miniControlsState extends State<miniControls> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       children: [
+//         ListTile(
+//           leading: Container(
+//             child: ClipRRect(
+//               borderRadius: BorderRadius.circular(5),
+//               child: Image.network(
+//                 trackImageUrl!,
+//                 fit: BoxFit.cover,
+//               ),
+//             ),
+//           ),
+//           title: Text(trackName, style: TextStyle(color: Colors.white),),
+//           subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
+//         ),
+//         Container(
+//           width: ,
+//           child: Row(
+//             children: [
+//
+//             ],
+//           ),
+//         )
+//       ],
+//     );
+//   }
+// }

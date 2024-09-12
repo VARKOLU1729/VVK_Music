@@ -76,8 +76,15 @@ class _SearchState extends State<Search> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          if(widget.queryHomePage==null)
-            searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,),
+            Row(
+              children: [
+                Expanded(flex: 6,
+                    child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,)),
+                Expanded(
+                  flex: 1,
+                    child: TextButton(onPressed: (){Navigator.pop(context);}, child: Text("CANCEL", style: TextStyle(color: Colors.white),)))
+              ],
+            ),
 
           if (_isSearched)
             Expanded(

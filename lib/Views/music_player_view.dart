@@ -506,13 +506,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/audio_controllers/loop_button.dart';
+import 'package:runo_music/audio_controllers/next_button.dart';
+import 'package:runo_music/audio_controllers/previous_button.dart';
 import 'package:vertical_slider/vertical_slider.dart';
 import '../Widgets/back_ground_blur.dart';
 import '../Widgets/favourite_items_provider.dart';
 import '../Widgets/pop_out.dart';
+import '../audio_controllers/volume_button.dart';
 import 'album_view.dart';
 import 'artist_view.dart';
-import '../Widgets/play_pause_button.dart';
+import '../audio_controllers/play_pause_button.dart';
 import '../Widgets/bottom_icon.dart';
 import 'dart:math' as math;
 
@@ -729,41 +733,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              IconButton(
-                                onPressed: audioProvider.currentIndex > 0
-                                    ? () {
-                                  audioProvider.previousTrack();
-                                }
-                                    : null,
-                                icon: Icon(
-                                  Icons.skip_previous,
-                                  size: 40,
-                                  color: audioProvider.currentIndex > 0
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
+                              PreviousButton(audioProvider: audioProvider, iconSize: 40),
                               audioProvider.isLoading
                                   ? CircularProgressIndicator(
                                 color: Colors.white,
                               )
                                   : PlayPauseButton(iconSize: 40,),
-                              IconButton(
-                                onPressed: audioProvider.currentIndex <
-                                    audioProvider.items.length - 1
-                                    ? () {
-                                  audioProvider.nextTrack();
-                                }
-                                    : null,
-                                icon: Icon(
-                                  Icons.skip_next,
-                                  size: 40,
-                                  color: audioProvider.currentIndex <
-                                      audioProvider.items.length - 1
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
+                              NextButton(audioProvider: audioProvider, iconSize: 40)
                             ],
                           ),
                           SizedBox(height: 30),
@@ -771,35 +747,51 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               bottomIcon(
-                                icon: IconButton(
-                                  onPressed: () {
+                                icon: VolumeButton(
+                                  audioProvider:audioProvider,
+                                  onPress: () {
                                     setState(() {
                                       _setVolume = !_setVolume;
                                     });
                                   },
-                                  icon: audioProvider.volume < 0.5
-                                      ? (audioProvider.volume == 0
-                                      ? Icon(Icons.volume_off,
-                                      color: Colors.white)
-                                      : Icon(Icons.volume_down,
-                                      color: Colors.white))
-                                      : Icon(Icons.volume_up,
-                                      color: Colors.white, size: 20),
+                                  iconSize: 20,
                                 ),
                               ),
+                              //   IconButton(
+                              //     onPressed: () {
+                              //       setState(() {
+                              //         _setVolume = !_setVolume;
+                              //       });
+                              //     },
+                              //     icon: audioProvider.volume < 0.5
+                              //         ? (audioProvider.volume == 0
+                              //         ? Icon(Icons.volume_off,
+                              //         color: Colors.white)
+                              //         : Icon(Icons.volume_down,
+                              //         color: Colors.white))
+                              //         : Icon(Icons.volume_up,
+                              //         color: Colors.white, size: 20),
+                              //   ),
+                              // ),
                               bottomIcon(
-                                icon: IconButton(
-                                  onPressed: () {
-                                    audioProvider.toggleLoop();
-                                  },
-                                  icon: Icon(
-                                    Icons.loop,
-                                    color: audioProvider.isLoop
-                                        ? Colors.blue
-                                        : Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
+                                icon: LoopButton(
+                                  audioProvider: audioProvider,
+                                      onPress: () {
+                                        audioProvider.toggleLoop();
+                                      },
+                                        iconSize: 20),
+                                // IconButton(
+                                //   onPressed: () {
+                                //     audioProvider.toggleLoop();
+                                //   },
+                                //   icon: Icon(
+                                //     Icons.loop,
+                                //     color: audioProvider.isLoop
+                                //         ? Colors.blue
+                                //         : Colors.white,
+                                //     size: 20,
+                                //   ),
+                                // ),
                               ),
                             ],
                           ),
