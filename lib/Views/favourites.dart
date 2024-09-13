@@ -109,9 +109,16 @@ class _FavouritesState extends State<Favourites> {
                         color: Color.fromARGB(255, 12, 189, 189)
                     ),
                     child: IconButton(onPressed: () async{
-                      await audioProvider.loadAudio(trackList: value.favourite_items.values.toList(), index: 0);
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
 
+                      if(value.favourite_items.isEmpty)
+                        {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
+                        }
+                      else
+                        {
+                          await audioProvider.loadAudio(trackList: value.favourite_items.values.toList(), index: 0);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
+                        }
 
                     }, icon: Icon(Icons.play_arrow, size: 30,)),
                   ),

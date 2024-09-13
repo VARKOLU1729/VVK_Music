@@ -65,7 +65,7 @@ class _TabScreenState extends State<TabScreen> {
                 children: [
                   Column(
                     children: [
-                      SizedBox(height: 72,),
+                      SizedBox(height: 72,), //To match with the tab bar height
                       Expanded(child: activePage)
                     ],
                   ),
@@ -112,7 +112,8 @@ class _TabScreenState extends State<TabScreen> {
                                 )
                               ],
                             )
-                          : Row(
+                          : //Large screen
+                          Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -169,7 +170,7 @@ class _TabScreenState extends State<TabScreen> {
               ),
         bottomNavigationBar: Container(
           alignment: Alignment.bottomCenter,
-          height: audioProvider.openMiniPlayer && Responsive().isSmallScreen(context) ? 130 : 60,
+          height: audioProvider.openMiniPlayer && Responsive().isSmallScreen(context) ? 130 : (Responsive().isSmallScreen(context)?60:80) ,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,

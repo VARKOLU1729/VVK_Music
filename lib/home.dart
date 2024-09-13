@@ -96,8 +96,8 @@ class _HomeState extends State<Home> {
                   child: Image.network(
                     stationImageUrl,
                     width: getWidth(context),
-                    height: getHeight(context)/2.25,
-                    fit: BoxFit.fitHeight,
+                    // height: getHeight(context)/2.25,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Container(
@@ -130,33 +130,39 @@ class _HomeState extends State<Home> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15),
-                          child: Text(
-                            "STATION",
-                            style: TextStyle(color: Color.fromARGB(255, 12, 189, 189), fontSize: 10, fontWeight: FontWeight.bold),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Text(
+                              "STATION",
+                              style: TextStyle(color: Color.fromARGB(255, 12, 189, 189), fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                        ListTile(
-                          title: Text("My Soundtrack",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30)),
-                          subtitle: Text(
-                              "Based on $stationArtistName",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15)
-                          ),
-                          trailing:
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: Container(
-                              color: Color.fromARGB(255, 12, 189, 189),
-                              child: IconButton(onPressed: () {}, icon: Icon(Icons.play_arrow, size: 30,)),
+                        Expanded(
+                          flex: 2,
+                          child: ListTile(
+                            title: Text("My Soundtrack",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30)),
+                            subtitle: Text(
+                                "Based on $stationArtistName",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15)
+                            ),
+                            trailing:
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Container(
+                                color: Color.fromARGB(255, 12, 189, 189),
+                                child: IconButton(onPressed: () {}, icon: Icon(Icons.play_arrow, size: 30,)),
+                              ),
                             ),
                           ),
                         ),

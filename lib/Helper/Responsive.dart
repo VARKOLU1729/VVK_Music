@@ -8,14 +8,14 @@ class Responsive{
 
   bool isSmallScreen(context)
   {
-    if(getWidth(context)<smallScreenSize) return true;
+    if(getWidth(context)<=smallScreenSize) return true;
     return false;
   }
 
   bool isMediumScreen(context)
   {
     double width = getWidth(context);
-    if(width>smallScreenSize && width<mediumScreenSize) return true;
+    if(width>smallScreenSize && width<=mediumScreenSize) return true;
     return false;
   }
 

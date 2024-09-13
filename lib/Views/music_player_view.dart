@@ -504,8 +504,12 @@
 
 
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/Responsive.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/audio_controllers/loop_button.dart';
 import 'package:runo_music/audio_controllers/next_button.dart';
 import 'package:runo_music/audio_controllers/previous_button.dart';
@@ -561,30 +565,34 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
         return Scaffold(
           body: Stack(
             children: [
+
               Image.network(
                 trackImageUrl,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
               ),
+
               BackGroundBlur(),
-            Positioned(
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(40)),
-                child: IconButton(
-                    onPressed: () {
-                      audioProvider.setminiplayer();
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(color: Colors.white, Icons.keyboard_arrow_left)),
+
+              Positioned(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(40)),
+                  child: IconButton(
+                      onPressed: () {
+                        audioProvider.setminiplayer();
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(color: Colors.white, Icons.keyboard_arrow_down)),
+                ),
+                left: 15,
+                top: 40,
               ),
-              left: 15,
-              top: 40,
-            ),
+
               if (_setVolume)
                 Positioned.directional(
                   textDirection: TextDirection.rtl,
@@ -603,151 +611,176 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                     },
                   ),
                 ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 80),
+
                     Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
                             trackImageUrl,
+                            width: Responsive().isSmallScreen(context) ? 200 : (Responsive().isMediumScreen(context) ? math.max(300, getWidth(context)/3.5) : math.min(getWidth(context)/3.5, 400)) ,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 40),
+
                     Expanded(
                       flex: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 40),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AlbumView(
-                                        albumId: albumId,
-                                        albumName: albumName,
-                                        albumImageUrl: trackImageUrl,
-                                        artistId: artistId,
-                                        artistName: artistName,
+                          // SizedBox(height: 40),
+                          Expanded(
+                            flex:1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+
+                                //Track Name - on tap album View
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AlbumView(
+                                          albumId: albumId,
+                                          albumName: albumName,
+                                          albumImageUrl: trackImageUrl,
+                                          artistId: artistId,
+                                          artistName: artistName,
+                                        ),
                                       ),
+                                    );
+                                  },
+                                  child: Text(
+                                    trackName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: Responsive().isSmallScreen(context) ? 18 : 40,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  trackName,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
                                   ),
                                 ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  favProvider.toggleFavourite(
-                                      id: trackId,
-                                      details: track,
-                                      context: context);
-                                },
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: addedToFav ? Colors.red : Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ArtistView(
-                                    artistId: artistId,
+
+                                //fav icon - on tap add/remove from fav
+                                InkWell(
+                                  onTap: () {
+                                    favProvider.toggleFavourite(
+                                        id: trackId,
+                                        details: track,
+                                        context: context);
+                                  },
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: addedToFav ? Colors.red : Colors.white,
                                   ),
                                 ),
-                              );
-                            },
-                            child: Text(
-                              artistName,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
+
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          SliderTheme(
-                            data: SliderThemeData(
-                              trackHeight: 3,
-                              trackShape: RectangularSliderTrackShape(),
-                              overlayShape:
-                              RoundSliderOverlayShape(overlayRadius: 6),
-                              thumbShape: RoundSliderThumbShape(
-                                  enabledThumbRadius: 5),
-                            ),
-                            child: Slider(
-                              allowedInteraction:
-                              SliderInteraction.tapAndSlide,
-                              thumbColor: Colors.white,
-                              activeColor: Colors.white,
-                              inactiveColor: Colors.grey,
-                              value: audioProvider.duration.inMilliseconds > 0
-                                  ? math.min(audioProvider.currentPosition.inMilliseconds /
-                                  audioProvider.duration.inMilliseconds,1)
-                                  : 0.0,
-                              min: 0.0,
-                              max: 1.0,
-                              onChanged: (value) {
-                                audioProvider.seekTo(value);
+
+                          //artist Name - on tap artist view
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArtistView(
+                                      artistId: artistId,
+                                    ),
+                                  ),
+                                );
                               },
+                              child: Text(
+                                artistName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize:  Responsive().isSmallScreen(context) ? 14 : 20,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _formatDuration(audioProvider.currentPosition),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              Text(
-                                _formatDuration(audioProvider.duration),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
+
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              PreviousButton(audioProvider: audioProvider, iconSize: 40),
-                              audioProvider.isLoading
-                                  ? CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                                  : PlayPauseButton(iconSize: 40,),
-                              NextButton(audioProvider: audioProvider, iconSize: 40)
-                            ],
+
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex:1,
+                                  child: SliderTheme(
+                                    data: SliderThemeData(
+                                      trackHeight: 3,
+                                      trackShape: RectangularSliderTrackShape(),
+                                      overlayShape:
+                                      RoundSliderOverlayShape(overlayRadius: 6),
+                                      thumbShape: RoundSliderThumbShape(
+                                          enabledThumbRadius: 5),
+                                    ),
+                                    child: Slider(
+                                      allowedInteraction:
+                                      SliderInteraction.tapAndSlide,
+                                      thumbColor: Colors.white,
+                                      activeColor: Colors.white,
+                                      inactiveColor: Colors.grey,
+                                      value: audioProvider.duration.inMilliseconds > 0
+                                          ? math.min(audioProvider.currentPosition.inMilliseconds /
+                                          audioProvider.duration.inMilliseconds,1)
+                                          : 0.0,
+                                      min: 0.0,
+                                      max: 1.0,
+                                      onChanged: (value) {
+                                        audioProvider.seekTo(value);
+                                      },
+                                    ),
+                                  ),
+                                ),
+
+                                Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        _formatDuration(audioProvider.currentPosition),
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                      Text(
+                                        _formatDuration(audioProvider.duration),
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              bottomIcon(
-                                icon: VolumeButton(
+
+
+                          Expanded(
+                            flex: 2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+
+                                if(!Responsive().isSmallScreen(context))
+                                VolumeButton(
                                   audioProvider:audioProvider,
                                   onPress: () {
                                     setState(() {
@@ -756,47 +789,62 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                   },
                                   iconSize: 20,
                                 ),
-                              ),
-                              //   IconButton(
-                              //     onPressed: () {
-                              //       setState(() {
-                              //         _setVolume = !_setVolume;
-                              //       });
-                              //     },
-                              //     icon: audioProvider.volume < 0.5
-                              //         ? (audioProvider.volume == 0
-                              //         ? Icon(Icons.volume_off,
-                              //         color: Colors.white)
-                              //         : Icon(Icons.volume_down,
-                              //         color: Colors.white))
-                              //         : Icon(Icons.volume_up,
-                              //         color: Colors.white, size: 20),
-                              //   ),
-                              // ),
-                              bottomIcon(
-                                icon: LoopButton(
-                                  audioProvider: audioProvider,
-                                      onPress: () {
-                                        audioProvider.toggleLoop();
-                                      },
-                                        iconSize: 20),
-                                // IconButton(
-                                //   onPressed: () {
-                                //     audioProvider.toggleLoop();
-                                //   },
-                                //   icon: Icon(
-                                //     Icons.loop,
-                                //     color: audioProvider.isLoop
-                                //         ? Colors.blue
-                                //         : Colors.white,
-                                //     size: 20,
-                                //   ),
-                                // ),
-                              ),
-                            ],
+
+                                PreviousButton(audioProvider: audioProvider, iconSize: 40),
+
+                                audioProvider.isLoading
+                                    ? CircularProgressIndicator(color: Colors.white,)
+                                    : PlayPauseButton(iconSize: 40,),
+
+                                NextButton(audioProvider: audioProvider, iconSize: 40),
+
+                                if(!Responsive().isSmallScreen(context))
+                                LoopButton(
+                                    audioProvider: audioProvider,
+                                    onPress: () {
+                                      audioProvider.toggleLoop();
+                                    },
+                                    iconSize: 20),
+                              ],
+                            ),
                           ),
+
+                          // SizedBox(height: 30),
+                          if(Responsive().isSmallScreen(context))
+                          Expanded(
+                            flex: 2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+
+                                bottomIcon(
+                                  icon: VolumeButton(
+                                    audioProvider:audioProvider,
+                                    onPress: () {
+                                      setState(() {
+                                        _setVolume = !_setVolume;
+                                      });
+                                    },
+                                    iconSize: 20,
+                                  ),
+                                ),
+
+                                bottomIcon(
+                                  icon: LoopButton(
+                                    audioProvider: audioProvider,
+                                        onPress: () {
+                                          audioProvider.toggleLoop();
+                                        },
+                                      iconSize: 20),
+                                ),
+
+                              ],
+                            ),
+                          ),
+
                         ],
                       ),
+
                     ),
                   ],
                 ),

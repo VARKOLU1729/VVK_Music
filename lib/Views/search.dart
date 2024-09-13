@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Widgets/see_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 import '../Data/searchResults.dart';
@@ -25,14 +26,12 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     _searchPagingController.addPageRequestListener((pageKey) {
-      print("initiated");
       _loadTrackData(pageKey, _currentQuery);
     });
     if(widget.queryHomePage!=null) search(widget.queryHomePage!);
   }
 
   void _loadTrackData(int pageKey, String query) async {
-    print("searching");
     try {
       // Fetch your track data
       List<List<dynamic>> trackData = await FetchSearchTracks(
@@ -49,14 +48,12 @@ class _SearchState extends State<Search> {
         _searchPagingController.appendPage(trackData, pageKey + 1);
       }
 
-      print('searched');
     } catch (error) {
       _searchPagingController.error = error;
     }
   }
 
   void search(String query) {
-    print("into search");
     setState(() {
       _currentQuery = query;
       _isSearched = true;
@@ -80,6 +77,7 @@ class _SearchState extends State<Search> {
               children: [
                 Expanded(flex: 6,
                     child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,)),
+                if(Responsive().isLargeScreen(context))
                 Expanded(
                   flex: 1,
                     child: TextButton(onPressed: (){Navigator.pop(context);}, child: Text("CANCEL", style: TextStyle(color: Colors.white),)))
