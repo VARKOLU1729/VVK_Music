@@ -175,37 +175,20 @@ class _HomeState extends State<Home> {
                 SizedBox(height: 60,),
 
                 // Third box
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Header(title: 'Top Tracks'),
-                        InkWell(
-                          onTap: () {
-                            Widget widget = SeeAll(type:Type.track, pagingController: _trackPagingController);
-                            if(Responsive().isSmallScreen(context))
-                            showBottomSheet(
-                                context: context,
-                                builder: (context) => widget);
-                            else
-                              {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
-                              }
-                          },
-                          child: Container(
-                              width: 100,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Center(
-                                  child: Text("SEE MORE",
-                                      style: TextStyle(color: Colors.white)))),
-                        ),
-                      ]
-                  ),
-                ),
+                Header(
+                    onTap: () {
+                    Widget widget = SeeAll(type:Type.track, pagingController: _trackPagingController);
+                    if(Responsive().isSmallScreen(context))
+                    showBottomSheet(
+                        context: context,
+                        builder: (context) => widget);
+                    else
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                      }
+                  },
+                    title: "Top Tracks"),
+                
                 SizedBox(
                   height: 10,
                 ),
@@ -213,38 +196,23 @@ class _HomeState extends State<Home> {
                     pagingController: _trackPagingController,
                     type: Type.track,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Header(title: 'Top Albums'),
-                        InkWell(
-                          onTap: () {
-                            Widget widget = SeeAll(type:Type.album, pagingController: _albumPagingController);
-                            if(Responsive().isSmallScreen(context))
-                              showBottomSheet(
-                                  context: context,
-                                  builder: (context) => widget);
-                            else
-                            {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
-                            }
 
-                          },
-                          child: Container(
-                              width: 100,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Center(
-                                  child: Text("SEE MORE",
-                                      style: TextStyle(color: Colors.white)))),
-                        ),
-                      ]
-                  ),
-                ),
+                Header(
+                    onTap: () {
+                    Widget widget = SeeAll(type:Type.album, pagingController: _albumPagingController);
+                    if(Responsive().isSmallScreen(context))
+                      showBottomSheet(
+                          context: context,
+                          builder: (context) => widget);
+                    else
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                    }
+
+                    },
+                    title: "Top Tracks"),
+
+
                 SizedBox(
                   height: 10,
                 ),
@@ -257,7 +225,7 @@ class _HomeState extends State<Home> {
             if(Responsive().isSmallScreen(context))
             Positioned(
               child: Container(
-                color: Colors.white.withOpacity(0.01),
+                color: Colors.black.withOpacity(0.5),
                 child: Center(
                   child:
                   Text("Explore Music",

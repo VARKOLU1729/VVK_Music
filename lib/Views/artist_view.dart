@@ -162,80 +162,48 @@ class _ArtistViewState extends State<ArtistView> {
                     SizedBox(
                       height: 20,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Header(title: 'Top Tracks'),
-                            InkWell(
-                              onTap: () {
 
-                                Widget widget = SeeAll(type:Type.track, pagingController: _artistTrackPagingController);
-                                if(Responsive().isSmallScreen(context))
-                                  showModalBottomSheet(
-                                      constraints: BoxConstraints(minHeight:getHeight(context)),
-                                      context: context,
-                                      builder: (context) => widget);
-                                else
-                                {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
-                                }
+                    Header(
+                        onTap: () {
 
-                              },
-                              child: Container(
-                                  width: 100,
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Center(
-                                      child: Text("SEE MORE",
-                                          style: TextStyle(color: Colors.white)))),
-                            ),
-                          ]
-                      ),
-                    ),
+                          Widget widget = SeeAll(type:Type.track, pagingController: _artistTrackPagingController);
+                          if(Responsive().isSmallScreen(context))
+                            showModalBottomSheet(
+                                constraints: BoxConstraints(minHeight:getHeight(context)),
+                                context: context,
+                                builder: (context) => widget);
+                          else
+                          {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                          }
+
+                        },
+                        title: "Top Tracks"),
+
+
                     SizedBox(
                       height: 10,
                     ),
                     DisplayWithPagination(
                         pagingController: _artistTrackPagingController,
                         type: Type.track),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Header(title: 'Top Albums'),
-                            InkWell(
-                              onTap: () {
 
-                                Widget widget = SeeAll(type:Type.album, pagingController: _artistAlbumPagingController);
-                                if(Responsive().isSmallScreen(context))
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) => widget);
-                                else
-                                {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
-                                }
+                    Header(
+                        onTap: () {
 
+                          Widget widget = SeeAll(type:Type.album, pagingController: _artistAlbumPagingController);
+                          if(Responsive().isSmallScreen(context))
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) => widget);
+                          else
+                          {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                          }
 
-                              },
-                              child: Container(
-                                  width: 100,
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Center(
-                                      child: Text("SEE MORE",
-                                          style: TextStyle(color: Colors.white)))),
-                            ),
-                          ]
-                      ),
-                    ),
+                        },
+                        title: "Top Tracks"),
+
                     SizedBox(
                       height: 10,
                     ),
