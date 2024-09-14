@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
-import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/audio_controllers/loop_button.dart';
 import 'package:runo_music/audio_controllers/previous_button.dart';
 import 'package:runo_music/audio_controllers/volume_button.dart';
-import 'package:vertical_slider/vertical_slider.dart';
-import '../Widgets/back_ground_blur.dart';
 import '../Widgets/favourite_items_provider.dart';
-import '../Widgets/pop_out.dart';
-import '../Views/album_view.dart';
-import '../Views/artist_view.dart';
 import '../audio_controllers/next_button.dart';
 import '../audio_controllers/play_pause_button.dart';
-import '../Widgets/bottom_icon.dart';
-import 'dart:math' as math;
 
 
 class MiniPlayerView extends StatefulWidget {
@@ -50,18 +41,18 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
           );
         }
 
-        final String trackId = track[0];
-        final String trackName = track[1];
-        final String trackImageUrl = track[2];
-        final String artistId = track[3];
-        final String artistName = track[4];
-        final String albumId = track[5];
-        final String albumName = track[6];
+        final String trackId = track.id;
+        final String trackName = track.name;
+        final String trackImageUrl = track.imageUrl;
+        final String artistId = track.artistId;
+        final String artistName = track.artistName;
+        final String albumId = track.albumId;
+        final String albumName = track.albumName;
 
         bool addedToFav = favProvider.checkInFav(id: trackId);
 
 
-        return Responsive().isSmallScreen(context) ? ListTile(
+        return Responsive.isSmallScreen(context) ? ListTile(
                 leading: Container(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
@@ -73,7 +64,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
                 ),
                 title: Text(trackName, style: TextStyle(color: Colors.white),),
                 subtitle: Text(artistName, style: TextStyle(color: Colors.grey),),
-                trailing: PlayPauseButton(iconSize: 25,),
+                trailing:Row(mainAxisSize: MainAxisSize.min, children: [PlayPauseButton(iconSize: 25,isDecoration: false,), NextButton(audioProvider: audioProvider, iconSize: 25)],) ,
               ): miniControls(audioProvider: audioProvider, favProvider: favProvider);
       },
     );
@@ -98,13 +89,13 @@ class _miniControlsState extends State<miniControls> {
     final track = widget.audioProvider.items.isNotEmpty
         ? widget.audioProvider.items[widget.audioProvider.currentIndex]
         : null;
-    final String trackId = track[0];
-    final String trackName = track[1];
-    final String trackImageUrl = track[2];
-    final String artistId = track[3];
-    final String artistName = track[4];
-    final String albumId = track[5];
-    final String albumName = track[6];
+    final String trackId = track.id;
+    final String trackName = track.name;
+    final String trackImageUrl = track.imageUrl;
+    final String artistId = track.artistId;
+    final String artistName = track.artistName;
+    final String albumId = track.albumId;
+    final String albumName = track.albumName;
     bool addedToFav = widget.favProvider.checkInFav(id: trackId);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,11 +125,11 @@ class _miniControlsState extends State<miniControls> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-                if(Responsive().isLargeScreen(context)) LoopButton(audioProvider: widget.audioProvider, onPress: (){widget.audioProvider.toggleLoop();}, iconSize: 25),
+                if(Responsive.isLargeScreen(context)) LoopButton(audioProvider: widget.audioProvider, onPress: (){widget.audioProvider.toggleLoop();}, iconSize: 25),
                 PreviousButton(audioProvider: widget.audioProvider, iconSize: 30),
-                PlayPauseButton(iconSize: 30),
+                PlayPauseButton(iconSize: 30, isDecoration: true,),
                 NextButton(audioProvider: widget.audioProvider, iconSize: 30),
-                if(Responsive().isLargeScreen(context))
+                if(Responsive.isLargeScreen(context))
                 InkWell(
                   onTap: () {
                     widget.favProvider.toggleFavourite(

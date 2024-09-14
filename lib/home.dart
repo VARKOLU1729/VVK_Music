@@ -10,6 +10,8 @@ import 'package:runo_music/Widgets/header.dart';
 import 'package:runo_music/Data/top_tracks.dart';
 import 'package:runo_music/Data/top_albums.dart';
 
+import 'Data/top_artists.dart';
+
 class Home extends StatefulWidget {
 
   Home({super.key});
@@ -28,9 +30,11 @@ class _HomeState extends State<Home> {
       PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   PagingController<int, dynamic> _albumPagingController =
       PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
+  PagingController<int, dynamic> _artistPagingController =
+  PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
 
   void _loadTrackData(pageKey) async {
-    List<List<dynamic>> trackData = await FetchTopTracks(
+    List<dynamic> trackData = await FetchTopTracks(
         path: 'tracks/top',
         controller: _trackPagingController,
         pageKey: pageKey);
@@ -39,12 +43,21 @@ class _HomeState extends State<Home> {
   }
 
   void _loadAlbumData(pageKey) async {
-    List<List<String>> albumData = await FetchTopAlbums(
+    List<dynamic> albumData = await FetchTopAlbums(
         path: 'albums/top',
         controller: _albumPagingController,
         pageKey: pageKey);
     if(albumData.isEmpty) _albumPagingController.appendLastPage(albumData);
     else _albumPagingController.appendPage(albumData, pageKey + 1);
+  }
+
+  void _loadArtistData(pageKey) async {
+    List<dynamic> artistData = await FetchTopArtists(
+        path: 'artists/top',
+        controller: _artistPagingController,
+        pageKey: pageKey);
+    if(artistData.isEmpty) _artistPagingController.appendLastPage(artistData);
+    else _artistPagingController.appendPage(artistData, pageKey + 1);
   }
 
   void _loadStationData() async {
@@ -68,12 +81,16 @@ class _HomeState extends State<Home> {
     _albumPagingController.addPageRequestListener((pageKey) {
       _loadAlbumData(pageKey);
     });
+    _artistPagingController.addPageRequestListener((pageKey) {
+      _loadArtistData(pageKey);
+    });
   }
 
   @override
   void dispose() {
     _trackPagingController.dispose();
     _albumPagingController.dispose();
+    _artistPagingController.dispose();
     super.dispose();
   }
 
@@ -86,7 +103,7 @@ class _HomeState extends State<Home> {
         child:Stack(
           children: [
             // first child
-            if(Responsive().isSmallScreen(context))
+            if(Responsive.isSmallScreen(context))
             //   show the station image in the backgorund
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +129,7 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               //   first child
-                if(Responsive().isSmallScreen(context))
+                if(Responsive.isSmallScreen(context))
                 //   show the station details on top of the image
                 Container(
                   margin: EdgeInsets.only(top: getHeight(context) / 3.25),
@@ -178,7 +195,7 @@ class _HomeState extends State<Home> {
                 Header(
                     onTap: () {
                     Widget widget = SeeAll(type:Type.track, pagingController: _trackPagingController);
-                    if(Responsive().isSmallScreen(context))
+                    if(Responsive.isSmallScreen(context))
                     showBottomSheet(
                         context: context,
                         builder: (context) => widget);
@@ -200,7 +217,7 @@ class _HomeState extends State<Home> {
                 Header(
                     onTap: () {
                     Widget widget = SeeAll(type:Type.album, pagingController: _albumPagingController);
-                    if(Responsive().isSmallScreen(context))
+                    if(Responsive.isSmallScreen(context))
                       showBottomSheet(
                           context: context,
                           builder: (context) => widget);
@@ -210,7 +227,7 @@ class _HomeState extends State<Home> {
                     }
 
                     },
-                    title: "Top Tracks"),
+                    title: "Top Albums"),
 
 
                 SizedBox(
@@ -219,10 +236,34 @@ class _HomeState extends State<Home> {
                 DisplayWithPagination(
                     pagingController: _albumPagingController,
                     type: Type.album
+                ),
+
+                Header(
+                    onTap: () {
+                      Widget widget = SeeAll(type:Type.artist, pagingController: _artistPagingController);
+                      if(Responsive.isSmallScreen(context))
+                        showBottomSheet(
+                            context: context,
+                            builder: (context) => widget);
+                      else
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>widget));
+                      }
+
+                    },
+                    title: "Top Artists"),
+
+
+                SizedBox(
+                  height: 10,
+                ),
+                DisplayWithPagination(
+                    pagingController: _artistPagingController,
+                    type: Type.artist
                 )
               ],
             ),
-            if(Responsive().isSmallScreen(context))
+            if(Responsive.isSmallScreen(context))
             Positioned(
               child: Container(
                 color: Colors.black.withOpacity(0.5),

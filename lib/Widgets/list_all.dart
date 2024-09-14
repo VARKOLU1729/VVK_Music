@@ -3,6 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Widgets/favourite_items_provider.dart';
+import 'package:runo_music/models/track_model.dart';
 
 import '../Helper/messenger.dart';
 
@@ -29,13 +30,13 @@ class _ListAllWidgetState extends State<ListAllWidget> {
   String? albumId;
   String? albumName;
   void loadData() {
-    id = widget.items![widget.index][0];
-    name = widget.items![widget.index][1];
-    imageUrl = widget.items![widget.index][2];
-    artistId = widget.items![widget.index][3];
-    artistName = widget.items![widget.index][4];
-    albumName = widget.items![widget.index][5];
-    albumId = widget.items![widget.index][6];
+    id = widget.items![widget.index].id;
+    name = widget.items![widget.index].name;
+    imageUrl = widget.items![widget.index].imageUrl;
+    artistId = widget.items![widget.index].artistId;
+    artistName = widget.items![widget.index].artistName;
+    albumName = widget.items![widget.index].albumName;
+    albumId = widget.items![widget.index].albumId;
   }
 
   @override
@@ -80,7 +81,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                         {
                           print("added $id");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration:Duration(milliseconds: 30) ,content:addedSnackbarContent()));
-                          value.addToFavourite(id: id!, details: [id, name,imageUrl, artistId, artistName, albumId, albumName]);
+                          value.addToFavourite(id: id!, details:TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!));
                           addedToFav = !addedToFav;
                         }
                       else

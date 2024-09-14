@@ -39,7 +39,7 @@ class _TabScreenState extends State<TabScreen> {
     }
     if (selectedIndex == 1) {
       setState(() {
-        if(Responsive().isLargeScreen(context))
+        if(Responsive.isLargeScreen(context))
         {
           activePage = Favourites();
         }
@@ -58,7 +58,7 @@ class _TabScreenState extends State<TabScreen> {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 18, 20, 25),
     
-        body: (Responsive().isSmallScreen(context))
+        body: (Responsive.isSmallScreen(context))
             ? activePage
             : Stack(
                 // mainAxisSize: MainAxisSize.min,
@@ -73,7 +73,7 @@ class _TabScreenState extends State<TabScreen> {
                       color: Colors.black87,
                       width: double.infinity,
                       height: 72,
-                      child: Responsive().isMediumScreen(context)
+                      child: Responsive.isMediumScreen(context)
                           ?
                           // Text("HI", style: TextStyle(color: Colors.white)
                           Row(
@@ -170,7 +170,7 @@ class _TabScreenState extends State<TabScreen> {
               ),
         bottomNavigationBar: Container(
           alignment: Alignment.bottomCenter,
-          height: audioProvider.openMiniPlayer && Responsive().isSmallScreen(context) ? 130 : (Responsive().isSmallScreen(context)?60:80) ,
+          height: audioProvider.openMiniPlayer && Responsive.isSmallScreen(context) ? 130 : (Responsive.isMediumScreen(context)?60:80) ,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -197,7 +197,7 @@ class _TabScreenState extends State<TabScreen> {
                         child: MiniPlayerView(),
                       ),
                     ),
-                  if (Responsive().isSmallScreen(context))
+                  if (Responsive.isSmallScreen(context))
                     Expanded(
                       flex: 1,
                       child: BottomNavigationBar(

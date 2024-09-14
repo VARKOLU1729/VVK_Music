@@ -34,7 +34,7 @@ class _SearchState extends State<Search> {
   void _loadTrackData(int pageKey, String query) async {
     try {
       // Fetch your track data
-      List<List<dynamic>> trackData = await FetchSearchTracks(
+      List<dynamic> trackData = await FetchSearchTracks(
         path: 'search',
         Query: query,
         controller: _searchPagingController,
@@ -77,7 +77,7 @@ class _SearchState extends State<Search> {
               children: [
                 Expanded(flex: 6,
                     child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,)),
-                if(Responsive().isLargeScreen(context))
+                if(Responsive.isLargeScreen(context))
                 Expanded(
                   flex: 1,
                     child: TextButton(onPressed: (){Navigator.pop(context);}, child: Text("CANCEL", style: TextStyle(color: Colors.white),)))
@@ -92,6 +92,7 @@ class _SearchState extends State<Search> {
                     pagingController: _searchPagingController,
                     scrollDirection: Axis.vertical,
                     builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                        noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
                         itemBuilder: (context, item, index) {
                       return ListAllWidget(
                           items: _searchPagingController.itemList,

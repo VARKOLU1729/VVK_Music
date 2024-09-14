@@ -51,10 +51,11 @@ class _SeeAllState extends State<SeeAll> {
         child: widget.type==Type.track ? PagedGridView<int, dynamic>(
             pagingController: widget.pagingController,
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 80,
-                maxCrossAxisExtent: Responsive().isSmallScreen(context) ? 600 :(Responsive().isMediumScreen(context)? 800 : 1000)
+                maxCrossAxisExtent: Responsive.isSmallScreen(context) ? 600 :(Responsive.isMediumScreen(context)? 800 : 1000)
             ),
             // scrollDirection: Axis.vertical,
             builderDelegate: PagedChildBuilderDelegate<dynamic>(
+              noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
                 itemBuilder: (context, item, index) {
               return
               ListAllWidget(

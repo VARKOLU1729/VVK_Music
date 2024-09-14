@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
-import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/list_all.dart';
+import 'package:runo_music/models/track_model.dart';
 
-List<List<dynamic>> albumTrackData = [];
+List<TrackModel> albumTrackData = [];
 
 class AlbumView extends StatefulWidget {
   final String albumId;
@@ -33,23 +31,13 @@ class _AlbumViewState extends State<AlbumView> {
 
   //paging option is not there , so directly fetched all the results
   void _loadData() async {
-    List<List<dynamic>> albumTrackDat = [];
-    var albumTracksJson =
-        await fetchData(path: '/albums/${widget.albumId}/tracks');
+    List<TrackModel> albumTrackDat = [];
+    var albumTracksJson =  await fetchData(path: '/albums/${widget.albumId}/tracks');
     var noAlbumTracks = albumTracksJson['meta']['returnedCount'];
     for (int i = 0; i < noAlbumTracks; i++) {
-      var albumTrackId = albumTracksJson['tracks'][i]['id'];
-      var albumTrackName = albumTracksJson['tracks'][i]['name'];
-      albumTrackDat.add([
-        albumTrackId,
-        albumTrackName,
-        widget.albumImageUrl,
-        widget.artistId,
-        widget.artistName,
-        widget.albumId,
-        widget.albumName
-      ]);
-      // print(albumTrackData);
+
+      var track = await TrackModel.fromJson(albumTracksJson['tracks'][i]) ;
+      albumTrackDat.add(track);
     }
     setState(() {
       albumTrackData = albumTrackDat;

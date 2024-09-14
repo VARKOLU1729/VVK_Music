@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 
+import '../Views/artist_view.dart';
 import 'favourite_items_provider.dart';
-enum Type { album, track }
+enum Type { album, track, artist }
 
 class TrackAlbumWidget extends StatelessWidget {
   List<dynamic> items;
@@ -19,13 +20,9 @@ class TrackAlbumWidget extends StatelessWidget {
       });
   Widget build(BuildContext context) {
 
-    final String id = items![index][0];
-    final String name = items![index][1];
-    final String imageUrl = items![index][2];
-    final String artistId = items![index][3];
-    final String artistName = items![index][4];
-    final String albumId = items![index][5];
-    final String albumName = items![index][6];
+    final String id = items[index].id;
+    final String name = items[index].name;
+    final String imageUrl = items[index].imageUrl;
 
     return InkWell(
       onTap: () async{
@@ -38,15 +35,18 @@ class TrackAlbumWidget extends StatelessWidget {
         }
         else if (type == Type.album)
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AlbumView(
+              builder: (context) {
+                return AlbumView(
                   albumId: id,
                   albumName: name,
                   albumImageUrl: imageUrl,
-                  artistId: artistId,
-                  artistName: artistName
-              )));
+                  artistId: items[index].artistId,
+                  artistName: items[index].artistName
+              );}));
+        else if(type==Type.artist)
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ArtistView(artistId: id,)));
       },
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: type==Type.artist ?BorderRadius.circular(100): BorderRadius.circular(10),
       hoverColor: Color(0xff2d505e),
       child: Container(
         width: 180,
@@ -61,7 +61,7 @@ class TrackAlbumWidget extends StatelessWidget {
               //   borderRadius: BorderRadius.circular(20),
               // ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius:type==Type.artist ?BorderRadius.circular(100): BorderRadius.circular(10),
                 child: Image.network(
                   imageUrl,
                   fit: BoxFit.cover,

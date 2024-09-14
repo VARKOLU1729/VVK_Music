@@ -3,11 +3,12 @@ import 'package:runo_music/Helper/messenger.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../Data/fetch_data.dart';
+import '../models/track_model.dart';
 
 class favouriteItemsProvider extends ChangeNotifier {
-  Map<String, List<dynamic>> favourite_items = new Map();
+  Map<String, TrackModel> favourite_items = new Map();
 
-  void addToFavourite({required String id, required List<dynamic> details}) {
+  void addToFavourite({required String id, required TrackModel details}) {
     favourite_items[id] = details;
     notifyListeners();
   }
@@ -23,8 +24,7 @@ class favouriteItemsProvider extends ChangeNotifier {
     return false;
   }
 
-  void toggleFavourite({ required String id, required List<
-      dynamic> details, required BuildContext context}) {
+  void toggleFavourite({ required String id, required TrackModel details, required BuildContext context}) {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,13 +68,13 @@ class AudioProvider extends ChangeNotifier {
   Duration get currentPosition => _currentPosition;
   Duration get duration => _duration;
 
-  String? get trackId => _items.isNotEmpty ? _items[_currentIndex][0] : null;
-  String? get trackName => _items.isNotEmpty ? _items[_currentIndex][1] : null;
-  String? get trackImageUrl => _items.isNotEmpty ? _items[_currentIndex][2] : null;
-  String? get artistId => _items.isNotEmpty ? _items[_currentIndex][3] : null;
-  String? get artistName => _items.isNotEmpty ? _items[_currentIndex][4] : null;
-  String? get albumId => _items.isNotEmpty ? _items[_currentIndex][5] : null;
-  String? get albumName => _items.isNotEmpty ? _items[_currentIndex][6] : null;
+  String? get trackId => _items.isNotEmpty ? _items[_currentIndex].id : null;
+  String? get trackName => _items.isNotEmpty ? _items[_currentIndex].name : null;
+  String? get trackImageUrl => _items.isNotEmpty ? _items[_currentIndex].imageUrl : null;
+  String? get artistId => _items.isNotEmpty ? _items[_currentIndex].artistId : null;
+  String? get artistName => _items.isNotEmpty ? _items[_currentIndex].artistName : null;
+  String? get albumId => _items.isNotEmpty ? _items[_currentIndex].albumId : null;
+  String? get albumName => _items.isNotEmpty ? _items[_currentIndex].albumName : null;
 
   AudioProvider() {
     _initializePlayer();
@@ -119,7 +119,7 @@ class AudioProvider extends ChangeNotifier {
     if (_items.isEmpty) return;
 
     final track = _items[_currentIndex];
-    final trackId = track[0];
+    final trackId = track.id;
     final urlData = await fetchData(path: 'tracks/$trackId');
     final previewUrl = urlData['tracks'][0]['previewURL'];
 

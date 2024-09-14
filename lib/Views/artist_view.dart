@@ -36,7 +36,7 @@ class _ArtistViewState extends State<ArtistView> {
       PagingController(firstPageKey: 0);
 
   void _loadTrackData(pageKey) async {
-    List<List<dynamic>> trackData = await FetchTopTracks(
+    List<dynamic> trackData = await FetchTopTracks(
         path: 'artists/${widget.artistId}/tracks/top',
         controller: _artistTrackPagingController,
         pageKey: pageKey);
@@ -44,7 +44,7 @@ class _ArtistViewState extends State<ArtistView> {
   }
 
   void _loadAlbumData(pageKey) async {
-    List<List<dynamic>> albumData = await FetchTopAlbums(
+    List<dynamic> albumData = await FetchTopAlbums(
         path: 'artists/${widget.artistId}/albums/top',
         controller: _artistAlbumPagingController,
         pageKey: pageKey);
@@ -167,7 +167,7 @@ class _ArtistViewState extends State<ArtistView> {
                         onTap: () {
 
                           Widget widget = SeeAll(type:Type.track, pagingController: _artistTrackPagingController);
-                          if(Responsive().isSmallScreen(context))
+                          if(Responsive.isSmallScreen(context))
                             showModalBottomSheet(
                                 constraints: BoxConstraints(minHeight:getHeight(context)),
                                 context: context,
@@ -192,7 +192,7 @@ class _ArtistViewState extends State<ArtistView> {
                         onTap: () {
 
                           Widget widget = SeeAll(type:Type.album, pagingController: _artistAlbumPagingController);
-                          if(Responsive().isSmallScreen(context))
+                          if(Responsive.isSmallScreen(context))
                             showModalBottomSheet(
                                 context: context,
                                 builder: (context) => widget);
@@ -202,7 +202,7 @@ class _ArtistViewState extends State<ArtistView> {
                           }
 
                         },
-                        title: "Top Tracks"),
+                        title: "Top Albums"),
 
                     SizedBox(
                       height: 10,

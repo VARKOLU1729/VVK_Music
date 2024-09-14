@@ -552,13 +552,13 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
           );
         }
 
-        final String trackId = track[0];
-        final String trackName = track[1];
-        final String trackImageUrl = track[2];
-        final String artistId = track[3];
-        final String artistName = track[4];
-        final String albumId = track[5];
-        final String albumName = track[6];
+        final String trackId = track.id;
+        final String trackName = track.name;
+        final String trackImageUrl = track.imageUrl;
+        final String artistId = track.artistId;
+        final String artistName = track.artistName;
+        final String albumId = track.albumId;
+        final String albumName = track.albumName;
 
         bool addedToFav = favProvider.checkInFav(id: trackId);
 
@@ -625,7 +625,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
                             trackImageUrl,
-                            width: Responsive().isSmallScreen(context) ? 200 : (Responsive().isMediumScreen(context) ? math.max(300, getWidth(context)/3.5) : math.min(getWidth(context)/3.5, 400)) ,
+                            width: Responsive.isSmallScreen(context) ? 200 : (Responsive.isMediumScreen(context) ? math.max(300, getWidth(context)/3.5) : math.min(getWidth(context)/3.5, 400)) ,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -665,7 +665,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      fontSize: Responsive().isSmallScreen(context) ? 18 : 40,
+                                      fontSize: Responsive.isSmallScreen(context) ? 18 : 40,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -709,7 +709,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize:  Responsive().isSmallScreen(context) ? 14 : 20,
+                                  fontSize:  Responsive.isSmallScreen(context) ? 14 : 20,
                                   color: Colors.white,
                                 ),
                               ),
@@ -779,7 +779,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
 
-                                if(!Responsive().isSmallScreen(context))
+                                if(!Responsive.isSmallScreen(context))
                                 VolumeButton(
                                   audioProvider:audioProvider,
                                   onPress: () {
@@ -794,11 +794,11 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
                                 audioProvider.isLoading
                                     ? CircularProgressIndicator(color: Colors.white,)
-                                    : PlayPauseButton(iconSize: 40,),
+                                    : PlayPauseButton(iconSize: 40,isDecoration: true,),
 
                                 NextButton(audioProvider: audioProvider, iconSize: 40),
 
-                                if(!Responsive().isSmallScreen(context))
+                                if(!Responsive.isSmallScreen(context))
                                 LoopButton(
                                     audioProvider: audioProvider,
                                     onPress: () {
@@ -810,7 +810,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           ),
 
                           // SizedBox(height: 30),
-                          if(Responsive().isSmallScreen(context))
+                          if(Responsive.isSmallScreen(context))
                           Expanded(
                             flex: 2,
                             child: Row(

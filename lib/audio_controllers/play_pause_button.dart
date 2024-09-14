@@ -4,13 +4,14 @@ import 'package:runo_music/Widgets/favourite_items_provider.dart';
 
 class PlayPauseButton extends StatelessWidget {
   double iconSize = 10;
-  PlayPauseButton({super.key, required this.iconSize});
+  bool isDecoration = true;
+  PlayPauseButton({super.key, required this.iconSize,required this.isDecoration});
 
   @override
   Widget build(BuildContext context) {
     final audioProvider = Provider.of<AudioProvider>(context);
     return Container(
-      decoration: BoxDecoration(
+      decoration: isDecoration ? BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
@@ -21,7 +22,7 @@ class PlayPauseButton extends StatelessWidget {
         ),
         color: Colors.red,
         borderRadius: BorderRadius.circular(2*iconSize),
-      ),
+      ):null,
       child: IconButton(
         color: Colors.white,
         iconSize: iconSize,
