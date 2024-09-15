@@ -211,7 +211,7 @@ class _TabScreenState extends State<TabScreen> {
                           unselectedItemColor: Colors.white70,
                           selectedItemColor: Color.fromARGB(255, 12, 189, 189),
                           currentIndex: selectedIndex,
-                          items: bottomNavItems(iconSize: 20)),
+                          items: bottomNavItems(iconSize: 20.0)),
                     ),
                 ],
               ),

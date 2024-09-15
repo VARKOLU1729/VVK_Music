@@ -19,6 +19,7 @@ class _SeeAllState extends State<SeeAll> {
   Widget build(BuildContext context) {
     String title = "Tracks for You";
     if(widget.type==Type.album) title = "Albums for You";
+    else if(widget.type==Type.artist) title = "Artists for You";
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -67,7 +68,7 @@ class _SeeAllState extends State<SeeAll> {
              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 250),
              builderDelegate: PagedChildBuilderDelegate<dynamic>(
                  itemBuilder: (context, item, index){
-                   return TrackAlbumWidget(index: index, type: Type.album,items:widget.pagingController.itemList!,);
+                   return TrackAlbumWidget(index: index, type: widget.type,items:widget.pagingController.itemList!,);
                  }
              )
          ),
