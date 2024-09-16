@@ -28,12 +28,12 @@ class favouriteItemsProvider extends ChangeNotifier {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: removedSnackbarContent()),
+        SnackBar(duration:Duration(milliseconds: 30),content: removedSnackbarContent()),
       );
     } else {
       addToFavourite(id: id, details: details);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: addedSnackbarContent()),
+        SnackBar(duration:Duration(milliseconds: 30),content: addedSnackbarContent()),
       );
     }
   }

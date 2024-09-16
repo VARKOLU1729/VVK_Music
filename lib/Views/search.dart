@@ -70,6 +70,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:Responsive.isSmallScreen(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
       backgroundColor: Colors.black,
       body: Column(
         children: [

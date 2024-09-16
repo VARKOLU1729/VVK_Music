@@ -78,13 +78,12 @@ class _TabScreenState extends State<TabScreen> {
                           // Text("HI", style: TextStyle(color: Colors.white)
                           Row(
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
                                   flex: 3,
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 40),
+                                    padding: EdgeInsets.only(left:40),
                                     child: Text("runo music",
                                         style: TextStyle(
                                             color: Colors.white,
@@ -123,9 +122,9 @@ class _TabScreenState extends State<TabScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       children: [
                                         Expanded(
-                                            flex: 1,
+                                            flex: 2,
                                             child: Padding(
-                                              padding: EdgeInsets.only(left: 40),
+                                              padding: EdgeInsets.only(left: 60),
                                               child: Text("runo music",
                                                   style: TextStyle(
                                                       color: Colors.white,
@@ -168,21 +167,26 @@ class _TabScreenState extends State<TabScreen> {
                             )),
                 ],
               ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: (Responsive.isSmallScreen(context) || (audioProvider.openMiniPlayer)) ? Container(
           alignment: Alignment.bottomCenter,
-          height: audioProvider.openMiniPlayer && Responsive.isSmallScreen(context) ? 130 : (Responsive.isMediumScreen(context)?60:80) ,
+          height: (Responsive.isSmallScreen(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isSmallScreen(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)?60:80)) ,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
-                Color.fromARGB(255, 51, 62, 71).withOpacity(0.5)
+                Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
+                    Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
+                Colors.black87.withOpacity(0.5)
               ])),
           child: Container(
-            color: Color.fromARGB(255, 44, 54, 62),
+            margin: Responsive.isSmallScreen(context)? EdgeInsets.symmetric(horizontal: 10):null,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 44, 54, 62),
+                borderRadius: BorderRadius.circular(10)
+            ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -217,7 +221,8 @@ class _TabScreenState extends State<TabScreen> {
               ),
             ),
           ),
-        ));
+        ):null
+    );
   }
 }
 

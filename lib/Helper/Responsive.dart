@@ -3,7 +3,7 @@ import 'package:runo_music/Helper/deviceParams.dart';
 
 class Responsive{
 
-  static int smallScreenSize = 580;
+  static int smallScreenSize = 700;
   static int mediumScreenSize = 1100;
 
   static bool isSmallScreen(context)
