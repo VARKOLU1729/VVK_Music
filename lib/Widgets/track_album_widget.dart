@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/album_view.dart';
@@ -11,14 +10,16 @@ import 'favourite_items_provider.dart';
 enum Type { album, track, artist }
 
 class TrackAlbumWidget extends StatelessWidget {
-  List<dynamic> items;
+  final List<dynamic> items;
   final int index;
   final Type type;
-  TrackAlbumWidget(
+  const TrackAlbumWidget(
       {super.key,
       required this.index,
       required this.items,
       required this.type});
+
+  @override
   Widget build(BuildContext context) {
     final String id = items[index].id;
     final String name = items[index].name;
@@ -28,8 +29,7 @@ class TrackAlbumWidget extends StatelessWidget {
       onTap: () async {
         // print(trackName);
         if (type == Type.track) {
-          final audioProvider =
-              Provider.of<AudioProvider>(context, listen: false);
+          final audioProvider = Provider.of<AudioProvider>(context, listen: false);
           await audioProvider.loadAudio(trackList: items, index: index);
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => MusicPlayerView()),

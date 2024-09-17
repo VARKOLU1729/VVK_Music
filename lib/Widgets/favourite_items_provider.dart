@@ -6,7 +6,7 @@ import '../Data/fetch_data.dart';
 import '../models/track_model.dart';
 
 class favouriteItemsProvider extends ChangeNotifier {
-  Map<String, TrackModel> favourite_items = new Map();
+  Map<String, TrackModel> favourite_items = {};
 
   void addToFavourite({required String id, required TrackModel details}) {
     favourite_items[id] = details;

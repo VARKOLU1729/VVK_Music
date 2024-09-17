@@ -8,7 +8,7 @@ class DisplayWithPagination extends StatelessWidget {
   final PagingController<int, dynamic> pagingController;
   final Type type;
 
-  DisplayWithPagination({super.key, required this.pagingController, required this.type });
+  const DisplayWithPagination({super.key, required this.pagingController, required this.type });
 
   @override
   Widget build(BuildContext context) {

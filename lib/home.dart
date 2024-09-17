@@ -68,15 +68,18 @@ class _HomeState extends State<Home> {
   }
 
   void _loadStationData() async {
-    var stationData = await fetchData(path: 'stations/$stationId');
-    setState(() {
-      stationArtistName = stationData['stations'][0]['artists'];
-      stationImageUrl =
-          stationData['stations'][0]['links']['largeImage']['href'];
-    });
-
-    print(stationArtistName);
-    print(stationImageUrl);
+    try{
+      var stationData = await fetchData(path: 'stations/$stationId');
+      setState(() {
+        stationArtistName = stationData['stations'][0]['artists'];
+        stationImageUrl =
+        stationData['stations'][0]['links']['largeImage']['href'];
+      });
+    }
+    catch(error)
+    {
+      print("$error");
+    }
   }
 
   @override
@@ -131,63 +134,65 @@ class _HomeState extends State<Home> {
                           image: DecorationImage(
                               image: NetworkImage(stationImageUrl, scale: 20),
                               fit: BoxFit.cover)),
-                      child: Container(
-                        margin: EdgeInsets.only(top: getHeight(context) / 3.25),
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                              Colors.black.withOpacity(0.05),
-                              Colors.black.withOpacity(0.3),
-                              Colors.black.withOpacity(0.5)
-                            ])),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 15),
-                                  child: Text(
-                                    "STATION",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 12, 189, 189),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: ListTile(
-                                  title: Text("My Soundtrack",
+                      child: Stack(
+                        children:[
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                  Colors.black.withOpacity(0.05),
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.5)
+                                ])),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Text(
+                                      "STATION",
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 30)),
-                                  subtitle: Text("Based on $stationArtistName",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15)),
-                                  trailing: ClipRRect(
-                                    borderRadius: BorderRadius.circular(60),
-                                    child: Container(
-                                      color: Color.fromARGB(255, 12, 189, 189),
-                                      child: IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.play_arrow,
-                                            size: 30,
-                                          )),
+                                          color:
+                                              Color.fromARGB(255, 12, 189, 189),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ]),
+                                  ListTile(
+                                    title: Text("My Soundtrack",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30)),
+                                    subtitle: Text("Based on $stationArtistName",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                    trailing: ClipRRect(
+                                      borderRadius: BorderRadius.circular(60),
+                                      child: Container(
+                                        color: Color.fromARGB(255, 12, 189, 189),
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(
+                                              Icons.play_arrow,
+                                              size: 30,
+                                            )),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                                                    ),
+                          ),
+                        ]
                       ),
                     ),
                     Container(

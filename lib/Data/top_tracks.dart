@@ -25,27 +25,4 @@ Future<List<dynamic>> FetchTopTracks({required String path,  required PagingCont
       }
 
 
-
-  // List<List<dynamic>> trackData = [];
-  //
-  // for (int i = 0; i < 5; i++)
-  // {
-  //   var trackAlbumId = trackDetailsJson['tracks'][i]['albumId'];
-  //   var trackId = trackDetailsJson['tracks'][i]['id'];
-  //   var trackName = trackDetailsJson['tracks'][i]['name'];
-  //   var trackArtistId = trackDetailsJson['tracks'][i]['artistId'];
-  //   var trackArtistName = trackDetailsJson['tracks'][i]['artistName'];
-  //   var trackImageUrl = await fetchData(path: 'albums/$trackAlbumId/images');
-  //   var trackAlbumName = trackDetailsJson['tracks'][i]['albumName'];
-  //   trackData.add([
-  //     trackId,
-  //     trackName,
-  //     trackImageUrl['images'][3]['url'],
-  //     trackArtistId,
-  //     trackArtistName,
-  //     trackAlbumId,
-  //     trackAlbumName
-  //   ]);
-  // }
-  // return trackData;
 }

@@ -206,73 +206,92 @@ class _ArtistViewState extends State<ArtistView> {
               if (Responsive.isSmallScreen(context))
                 Expanded(
                   flex: 2,
-                  child: Container(
+                  child:Container(
                     height: getHeight(context) / 3.25,
                     decoration: artistImageUrl == null
                         ? null
                         : BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(artistImageUrl!),
-                                fit: BoxFit.cover)),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 20),
-                      margin: EdgeInsets.only(top: getHeight(context) / 5),
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                            Colors.black.withOpacity(0.05),
-                            Colors.black.withOpacity(0.1),
-                            Colors.black.withOpacity(0.2)
-                          ])),
-                      child: ListTile(
-                        title: artistName == null
-                            ? CircularProgressIndicator()
-                            : Text(
-                                artistName!,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 30),
-                              ),
-                        subtitle: Text(
-                          "6L Monthly Listeners",
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                        trailing: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.red.withOpacity(0.66),
-                                    Colors.red.withOpacity(0.99)
-                                  ])),
-                          child: IconButton(
-                              onPressed: () async {
-                                final audioProvider =
-                                    Provider.of<AudioProvider>(context,
-                                        listen: false);
-                                await audioProvider.loadAudio(
-                                    trackList:
-                                        _artistTrackPagingController.itemList!,
-                                    index: 0);
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => MusicPlayerView()),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.play_arrow,
-                                size: 30,
-                                color: Colors.white,
-                              )),
-                        ),
+                      image: DecorationImage(
+                        image: NetworkImage(artistImageUrl!),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: Stack(
+                      children: [
+                        // The ListTile with the gradient overlay applied only to the bottom
+                        Positioned(
+                          bottom: 0, // Ensures it stays at the bottom
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.05),
+                                  Colors.black.withOpacity(0.1),
+                                  Colors.black.withOpacity(0.2),
+                                ],
+                              ),
+                            ),
+                            child: ListTile(
+                              title: artistName == null
+                                  ? CircularProgressIndicator()
+                                  : Text(
+                                artistName!,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "6L Monthly Listeners",
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.red.withOpacity(0.66),
+                                      Colors.red.withOpacity(0.99),
+                                    ],
+                                  ),
+                                ),
+                                child: IconButton(
+                                  onPressed: () async {
+                                    final audioProvider = Provider.of<AudioProvider>(
+                                      context,
+                                      listen: false,
+                                    );
+                                    await audioProvider.loadAudio(
+                                      trackList: _artistTrackPagingController.itemList!,
+                                      index: 0,
+                                    );
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => MusicPlayerView(),
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.play_arrow,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+
                 ),
               //
               // Container(
