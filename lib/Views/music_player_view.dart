@@ -47,7 +47,6 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
   Widget build(BuildContext context) {
     return Consumer2<AudioProvider, FavouriteItemsProvider>(
       builder: (context, audioProvider, favProvider, child) {
-
         final track = audioProvider.items.isNotEmpty
             ? audioProvider.items[audioProvider.currentIndex]
             : null;

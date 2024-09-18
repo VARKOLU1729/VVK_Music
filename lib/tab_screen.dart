@@ -15,8 +15,6 @@ import '../Widgets/provider.dart';
 import '../home.dart';
 
 
-
-
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
 
@@ -54,7 +52,7 @@ class _TabScreenState extends State<TabScreen> {
         }
         else
         {
-          activePage = Search();
+          activePage = const Search();
         }
       });
     }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:runo_music/tab_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Widgets/provider.dart';
+
+import '../tab_screen.dart';
+import '../Widgets/provider.dart';
 
 var kDarkTheme = const ColorScheme(
     brightness: Brightness.dark,

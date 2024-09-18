@@ -27,7 +27,6 @@ class TrackAlbumWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
-        // print(trackName);
         if (type == Type.track)
         {
           final audioProvider = Provider.of<AudioProvider>(context, listen: false);
@@ -55,7 +54,7 @@ class TrackAlbumWidget extends StatelessWidget {
       borderRadius: type == Type.artist
           ? BorderRadius.circular(100)
           : BorderRadius.circular(10),
-      hoverColor: Color(0xff2d505e),
+      hoverColor: const Color(0xff2d505e),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -64,11 +63,8 @@ class TrackAlbumWidget extends StatelessWidget {
             child: Container(
               height:  Responsive.isSmallScreen(context) ? 220 :(Responsive.isMediumScreen(context)?230:260),
               padding: Responsive.isSmallScreen(context)
-                  ? EdgeInsets.all(5)
-                  : EdgeInsets.all(10),
-              // decoration:type==Type.artist ? BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     image: DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover)):null,
+                  ? const EdgeInsets.all(5)
+                  : const EdgeInsets.all(10),
               child:type==Type.artist? Container(
                 width: Responsive.isSmallScreen(context) ? 170 :(Responsive.isMediumScreen(context)?170:190),
                 decoration:BoxDecoration(
@@ -92,7 +88,7 @@ class TrackAlbumWidget extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ))

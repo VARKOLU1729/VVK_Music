@@ -1,5 +1,5 @@
 import 'package:runo_music/Helper/deviceParams.dart';
-
+// platform specific checks
 class Responsive{
 
   static int smallScreenSize = 700;
