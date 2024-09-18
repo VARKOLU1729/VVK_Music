@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:runo_music/Widgets/favourite_items_provider.dart';
+import 'package:runo_music/Widgets/provider.dart';
 
 class PreviousButton extends StatelessWidget {
-  AudioProvider audioProvider;
-  double iconSize = 40;
-  PreviousButton({super.key, required this.audioProvider, required this.iconSize});
+  final AudioProvider audioProvider;
+  final double iconSize;
+  const PreviousButton({super.key, required this.audioProvider, required this.iconSize});
 
   @override
   Widget build(BuildContext context) {

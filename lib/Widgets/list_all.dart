@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Widgets/favourite_items_provider.dart';
+import 'package:runo_music/Widgets/provider.dart';
 import 'package:runo_music/models/track_model.dart';
 
 import '../Helper/messenger.dart';
@@ -47,8 +47,8 @@ class _ListAllWidgetState extends State<ListAllWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<favouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider,  child){
-      if(value.favourite_items.containsKey(id)) addedToFav=true;
+    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider,  child){
+      if(value.favouriteItems.containsKey(id)) addedToFav=true;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: InkWell(

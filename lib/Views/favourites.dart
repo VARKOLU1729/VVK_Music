@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Helper/deviceParams.dart';
-import 'package:runo_music/Widgets/list_all.dart';
-import 'package:runo_music/Widgets/track_album_widget.dart';
-import 'package:runo_music/Widgets/back_ground_blur.dart';
 
-import '../Widgets/favourite_items_provider.dart';
+import '../Views/music_player_view.dart';
+
+import '../Helper/deviceParams.dart';
+
+import '../Widgets/list_all.dart';
+import '../Widgets/back_ground_blur.dart';
+import '../Widgets/provider.dart';
 
 class Favourites extends StatefulWidget {
-  Favourites({super.key});
+
+  const Favourites({super.key});
 
   @override
   State<Favourites> createState() => _FavouritesState();
@@ -21,7 +23,7 @@ class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
 
-    return Consumer2<favouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider, child)=>Scaffold(
+    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider, child)=>Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
         leading:
@@ -29,17 +31,17 @@ class _FavouritesState extends State<Favourites> {
             onPressed: (){
               // Navigator.pop(context);
             },
-            icon:Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+            icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
         ),
         backgroundColor: Colors.white.withOpacity(0.0001),
         actions: [IconButton(
             onPressed: (){
               // Navigator.pop(context);
             },
-            icon:Icon(Icons.more_vert, color: Colors.white,size: 25,)
+            icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
         ),],
       ),
-        backgroundColor: Color.fromARGB(200, 88, 86, 86),
+        backgroundColor: const Color.fromARGB(200, 88, 86, 86),
         body: Stack(
           children: [
             Image.network(
@@ -48,7 +50,7 @@ class _FavouritesState extends State<Favourites> {
               height: double.infinity,
               fit: BoxFit.cover,
             ),
-            BackGroundBlur(),
+            const BackGroundBlur(),
             Container(
               margin: EdgeInsets.only(top: getHeight(context)/3),
               decoration: BoxDecoration(
@@ -67,13 +69,13 @@ class _FavouritesState extends State<Favourites> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Expanded(
                   flex: 2,
                   child: Center(
-                    child: Container(
+                    child: SizedBox(
                       height: 250,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
@@ -86,18 +88,18 @@ class _FavouritesState extends State<Favourites> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ListTile(
-                  title: Text(
+                  title: const Text(
                     "My Favourites",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text('PRIVATE . ${value.favourite_items.length} SONGS . ${value.favourite_items.length*30} SECS',
+                  subtitle: Text('PRIVATE . ${value.favouriteItems.length} SONGS . ${value.favouriteItems.length*30} SECS',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.5),
                       fontWeight: FontWeight.bold
@@ -106,27 +108,27 @@ class _FavouritesState extends State<Favourites> {
                   trailing:Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Color.fromARGB(255, 12, 189, 189)
+                        color: const Color.fromARGB(255, 12, 189, 189)
                     ),
                     child: IconButton(onPressed: () async{
 
-                      if(value.favourite_items.isEmpty)
+                      if(value.favouriteItems.isEmpty)
                         {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
                         }
                       else
                         {
-                          await audioProvider.loadAudio(trackList: value.favourite_items.values.toList(), index: 0);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
+                          await audioProvider.loadAudio(trackList: value.favouriteItems.values.toList(), index: 0);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                         }
 
-                    }, icon: Icon(Icons.play_arrow, size: 30,)),
+                    }, icon: const Icon(Icons.play_arrow, size: 30,)),
                   ),
                 ),
                 Expanded(
                   flex: 4,
-                  child: ListView.builder(key: ValueKey(value.favourite_items.length), itemCount: value.favourite_items.length, itemBuilder: (context, index)=>
-                      ListAllWidget(index: index,items: value.favourite_items.values.toList(growable: false))),
+                  child: ListView.builder(key: ValueKey(value.favouriteItems.length), itemCount: value.favouriteItems.length, itemBuilder: (context, index)=>
+                      ListAllWidget(index: index,items: value.favouriteItems.values.toList(growable: false))),
                 ),
               ],
             )

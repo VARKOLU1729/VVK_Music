@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:runo_music/Helper/Responsive.dart';
-import 'package:runo_music/Widgets/see_all.dart';
-import 'package:runo_music/Widgets/track_album_widget.dart';
+
+import '../Helper/Responsive.dart';
 import '../Data/searchResults.dart';
 import '../Widgets/list_all.dart';
 import '../Widgets/search_bar.dart';
 
 class Search extends StatefulWidget {
-  String? queryHomePage;
-  Search({super.key, this.queryHomePage});
+  final String? queryHomePage;
+  const Search({super.key, this.queryHomePage});
 
   @override
   State<Search> createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
-  final PagingController<int, dynamic> _searchPagingController =
-      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
+
+  final PagingController<int, dynamic> _searchPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
 
   String _currentQuery = '';
   bool _isSearched = false;
@@ -33,14 +32,12 @@ class _SearchState extends State<Search> {
 
   void _loadTrackData(int pageKey, String query) async {
     try {
-      // Fetch your track data
       List<dynamic> trackData = await FetchSearchTracks(
         path: 'search',
         Query: query,
         controller: _searchPagingController,
         pageKey: pageKey,
       );
-      print(trackData);
       final isLastPage = trackData.isEmpty;
       if (isLastPage) {
         _searchPagingController.appendLastPage(trackData);
@@ -81,24 +78,14 @@ class _SearchState extends State<Search> {
                 if(Responsive.isLargeScreen(context))
                 Expanded(
                   flex: 1,
-                    child: TextButton(onPressed: (){Navigator.pop(context);}, child: Text("CANCEL", style: TextStyle(color: Colors.white),)))
+                    child: TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("CANCEL", style: TextStyle(color: Colors.white),)))
               ],
             ),
 
           if (_isSearched)
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: PagedListView<int, dynamic>(
-                    pagingController: _searchPagingController,
-                    scrollDirection: Axis.vertical,
-                    builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                        noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
-                        itemBuilder: (context, item, index) {
-                      return ListAllWidget(
-                          items: _searchPagingController.itemList,
-                          index: index);
-                    })),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                         end: Alignment.topCenter,
@@ -109,6 +96,16 @@ class _SearchState extends State<Search> {
                       Colors.black.withOpacity(0.9),
                       Colors.black.withOpacity(0.88)
                     ])),
+                child: PagedListView<int, dynamic>(
+                    pagingController: _searchPagingController,
+                    scrollDirection: Axis.vertical,
+                    builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                        noItemsFoundIndicatorBuilder: (context)=>const Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
+                        itemBuilder: (context, item, index) {
+                          return ListAllWidget(
+                              items: _searchPagingController.itemList,
+                              index: index);
+                        })),
               ),
             ),
         ],

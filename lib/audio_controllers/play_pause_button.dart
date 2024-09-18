@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Widgets/favourite_items_provider.dart';
+import 'package:runo_music/Widgets/provider.dart';
 
 class PlayPauseButton extends StatelessWidget {
-  double iconSize = 10;
-  bool isDecoration = true;
-  PlayPauseButton({super.key, required this.iconSize,required this.isDecoration});
+  final double iconSize;
+  final bool isDecoration;
+  const PlayPauseButton({super.key, required this.iconSize,required this.isDecoration});
 
   @override
   Widget build(BuildContext context) {

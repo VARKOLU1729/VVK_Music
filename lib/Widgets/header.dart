@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../Helper/Responsive.dart';
 
 class Header extends StatelessWidget {
-  void Function() onTap;
-  String title;
-  Header({super.key, required this.onTap, required this.title});
+  final void Function() onTap;
+  final String title;
+  const Header({super.key, required this.onTap, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,12 @@ class Header extends StatelessWidget {
             Padding(
             padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ?15 :(Responsive.isMediumScreen(context)?40:60)),
             child: Text(
-              title,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
+                title,
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
             ),
             InkWell(
               onTap: onTap,
@@ -32,7 +32,7 @@ class Header extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(50)),
-                  child: Center(
+                  child: const Center(
                       child: Text("SEE MORE",
                           style: TextStyle(color: Colors.white)))),
             ),

@@ -53,18 +53,22 @@ class _AlbumViewState extends State<AlbumView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(200, 9, 3, 3),
+        backgroundColor: const Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
+
           Image.network(
             widget.albumImageUrl,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
           ),
-          BackGroundBlur(),
-          popOut(),
+
+          const BackGroundBlur(),
+
+          const PopOut(),
+
           Container(
-            margin: EdgeInsets.only(top: 300),
+            margin: const EdgeInsets.only(top: 300),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -79,15 +83,13 @@ class _AlbumViewState extends State<AlbumView> {
                 flex: 1,
                 child:
                 Center(
-                  child: Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child:
-                      Image.network(
-                        widget.albumImageUrl,
-                        fit: BoxFit.cover,
-                        // scale: 2,
-                      ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child:
+                    Image.network(
+                      widget.albumImageUrl,
+                      fit: BoxFit.cover,
+                      // scale: 2,
                     ),
                   ),
                 ),

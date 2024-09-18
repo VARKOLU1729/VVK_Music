@@ -2,20 +2,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:runo_music/Data/fetch_data.dart';
-import 'package:runo_music/Helper/Responsive.dart';
-import 'package:runo_music/Helper/deviceParams.dart';
-import 'package:runo_music/Widgets/display_with_pagination.dart';
-import 'package:runo_music/Widgets/see_all.dart';
-import 'package:runo_music/Widgets/track_album_widget.dart';
-import 'package:runo_music/Widgets/header.dart';
-import 'package:runo_music/Data/top_tracks.dart';
-import 'package:runo_music/Data/top_albums.dart';
 
-import 'Data/top_artists.dart';
+import '../Helper/Responsive.dart';
+import '../Helper/deviceParams.dart';
+
+import '../Widgets/display_with_pagination.dart';
+import '../Widgets/see_all.dart';
+import '../Widgets/track_album_widget.dart';
+import '../Widgets/header.dart';
+
+import '../Data/top_tracks.dart';
+import '../Data/top_albums.dart';
+import '../Data/fetch_data.dart';
+import '../Data/top_artists.dart';
 
 class Home extends StatefulWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -27,12 +29,9 @@ class _HomeState extends State<Home> {
   String stationImageUrl =
       "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
 
-  PagingController<int, dynamic> _trackPagingController =
-      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
-  PagingController<int, dynamic> _albumPagingController =
-      PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
-  PagingController<int, dynamic> _artistPagingController =
-      PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
+  final PagingController<int, dynamic> _trackPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
+  final PagingController<int, dynamic> _albumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
+  final PagingController<int, dynamic> _artistPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
 
   void _loadTrackData(pageKey) async {
     List<dynamic> trackData = await FetchTopTracks(
@@ -40,9 +39,13 @@ class _HomeState extends State<Home> {
         controller: _trackPagingController,
         pageKey: pageKey);
     if (trackData.isEmpty)
-      _trackPagingController.appendLastPage(trackData);
+      {
+        _trackPagingController.appendLastPage(trackData);
+      }
     else
-      _trackPagingController.appendPage(trackData, pageKey + 1);
+      {
+        _trackPagingController.appendPage(trackData, pageKey + 1);
+      }
   }
 
   void _loadAlbumData(pageKey) async {
@@ -50,10 +53,11 @@ class _HomeState extends State<Home> {
         path: 'albums/top',
         controller: _albumPagingController,
         pageKey: pageKey);
-    if (albumData.isEmpty)
+    if (albumData.isEmpty) {
       _albumPagingController.appendLastPage(albumData);
-    else
+    } else {
       _albumPagingController.appendPage(albumData, pageKey + 1);
+    }
   }
 
   void _loadArtistData(pageKey) async {
@@ -61,10 +65,11 @@ class _HomeState extends State<Home> {
         path: 'artists/top',
         controller: _artistPagingController,
         pageKey: pageKey);
-    if (artistData.isEmpty)
+    if (artistData.isEmpty) {
       _artistPagingController.appendLastPage(artistData);
-    else
+    } else {
       _artistPagingController.appendPage(artistData, pageKey + 1);
+    }
   }
 
   void _loadStationData() async {
@@ -109,7 +114,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:Responsive.isSmallScreen(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
-      backgroundColor: Color.fromARGB(255, 18, 20, 25),
+      backgroundColor: const Color.fromARGB(255, 18, 20, 25),
       body: Stack(children: [
         BackdropFilter(
           blendMode: BlendMode.src,
@@ -154,8 +159,8 @@ class _HomeState extends State<Home> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15),
                                     child: Text(
                                       "STATION",
                                       style: TextStyle(
@@ -166,7 +171,7 @@ class _HomeState extends State<Home> {
                                     ),
                                   ),
                                   ListTile(
-                                    title: Text("My Soundtrack",
+                                    title: const Text("My Soundtrack",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -174,15 +179,15 @@ class _HomeState extends State<Home> {
                                     subtitle: Text("Based on $stationArtistName",
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.white, fontSize: 15)),
                                     trailing: ClipRRect(
                                       borderRadius: BorderRadius.circular(60),
                                       child: Container(
-                                        color: Color.fromARGB(255, 12, 189, 189),
+                                        color: const Color.fromARGB(255, 12, 189, 189),
                                         child: IconButton(
                                             onPressed: () {},
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.play_arrow,
                                               size: 30,
                                             )),
@@ -207,7 +212,7 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //   second child
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   // Third box
@@ -216,17 +221,16 @@ class _HomeState extends State<Home> {
                         Widget widget = SeeAll(
                             type: Type.track,
                             pagingController: _trackPagingController);
-                        if (Responsive.isSmallScreen(context))
-                          showBottomSheet(
-                              context: context, builder: (context) => widget);
-                        else {
+                        if (Responsive.isSmallScreen(context)) {
+                          showBottomSheet(context: context, builder: (context) => widget);
+                        } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
                       title: "Top Tracks"),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
@@ -239,17 +243,16 @@ class _HomeState extends State<Home> {
                         Widget widget = SeeAll(
                             type: Type.album,
                             pagingController: _albumPagingController);
-                        if (Responsive.isSmallScreen(context))
-                          showBottomSheet(
-                              context: context, builder: (context) => widget);
-                        else {
+                        if (Responsive.isSmallScreen(context)) {
+                          showBottomSheet(context: context, builder: (context) => widget);
+                        } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
                       title: "Top Albums"),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
@@ -261,17 +264,16 @@ class _HomeState extends State<Home> {
                         Widget widget = SeeAll(
                             type: Type.artist,
                             pagingController: _artistPagingController);
-                        if (Responsive.isSmallScreen(context))
-                          showBottomSheet(
-                              context: context, builder: (context) => widget);
-                        else {
+                        if (Responsive.isSmallScreen(context)) {
+                          showBottomSheet(context: context, builder: (context) => widget);
+                        } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
                       title: "Top Artists"),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
@@ -285,14 +287,14 @@ class _HomeState extends State<Home> {
         if (Responsive.isSmallScreen(context))
           Positioned(
             child: Container(
+              height: 40,
               color: Colors.black.withOpacity(0.5),
-              child: Center(
+              child: const Center(
                 child: Text(
                   "Explore Music",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-              height: 40,
             ),
             //
           ),

@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Helper/deviceParams.dart';
-import 'package:runo_music/Widgets/search_bar.dart';
-import 'package:runo_music/home.dart';
-import 'package:runo_music/Views/favourites.dart';
-import 'Widgets/favourite_items_provider.dart';
-import 'Widgets/mini_player_view.dart';
-import 'Views/search.dart';
-import 'Helper/Responsive.dart';
+
+import '../Views/music_player_view.dart';
+import '../Views/favourites.dart';
+import '../Views/search.dart';
+import '../Views/mini_player_view.dart';
+
+import '../Helper/deviceParams.dart';
+import '../Helper/Responsive.dart';
+
+import '../Widgets/search_bar.dart';
+import '../Widgets/provider.dart';
+
+import '../home.dart';
+
+
+
 
 class TabScreen extends StatefulWidget {
-  const TabScreen({Key? key}) : super(key: key);
+  const TabScreen({super.key});
 
   @override
   State<TabScreen> createState() => _TabScreenState();
 }
 
 class _TabScreenState extends State<TabScreen> {
+
   int selectedIndex = 0;
 
   String title = "RUNO MUSIC";
+
   void _selectIndex(index) {
     setState(() {
       selectedIndex = index;
@@ -29,19 +38,19 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var audioProvider = Provider.of<AudioProvider>(context);
-    Widget activePage = Home();
+    AudioProvider audioProvider = Provider.of<AudioProvider>(context);
+    Widget activePage = const Home();
     if (selectedIndex == 0) {
       setState(() {
-        activePage = Home();
+        activePage = const Home();
         title = "Explore Music";
       });
     }
-    if (selectedIndex == 1) {
+    else if (selectedIndex == 1) {
       setState(() {
         if(Responsive.isLargeScreen(context))
         {
-          activePage = Favourites();
+          activePage = const Favourites();
         }
         else
         {
@@ -49,38 +58,40 @@ class _TabScreenState extends State<TabScreen> {
         }
       });
     }
-    if (selectedIndex == 2) {
+    else if (selectedIndex == 2) {
       setState(() {
-          activePage = Favourites();
+          activePage = const Favourites();
       });
     }
 
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 18, 20, 25),
+
+        backgroundColor: const Color.fromARGB(255, 18, 20, 25),
     
         body: (Responsive.isSmallScreen(context))
             ? activePage
             : Stack(
-                // mainAxisSize: MainAxisSize.min,
                 children: [
+
                   Column(
                     children: [
-                      SizedBox(height: 72,), //To match with the tab bar height
+                      const SizedBox(height: 72,), //To match with the tab bar height
                       Expanded(child: activePage)
                     ],
                   ),
+
+                  // top nav bar for medium and large screens
                   Container(
                       color: Colors.black87,
                       width: double.infinity,
                       height: 72,
                       child: Responsive.isMediumScreen(context)
                           ?
-                          // Text("HI", style: TextStyle(color: Colors.white)
                           Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
+                                const Expanded(
                                   flex: 3,
                                   child: Padding(
                                     padding: EdgeInsets.only(left:40),
@@ -101,10 +112,8 @@ class _TabScreenState extends State<TabScreen> {
                                         showSelectedLabels: false,
                                         backgroundColor: Colors.black87,
                                         onTap: _selectIndex,
-                                        // elevation: 100,
                                         unselectedItemColor: Colors.white70,
-                                        selectedItemColor:
-                                            Color.fromARGB(255, 12, 189, 189),
+                                        selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
                                         currentIndex: selectedIndex,
                                         items: bottomNavItems(iconSize: 25)),
                                   ),
@@ -113,15 +122,13 @@ class _TabScreenState extends State<TabScreen> {
                             )
                           : //Large screen
                           Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
+                                 SizedBox(
                                   width: 550,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       children: [
-                                        Expanded(
+                                      const Expanded(
                                             flex: 2,
                                             child: Padding(
                                               padding: EdgeInsets.only(left: 60),
@@ -140,11 +147,10 @@ class _TabScreenState extends State<TabScreen> {
                                             onTap: _selectIndex,
                                             unselectedFontSize: 15,
                                             selectedFontSize: 15,
-                                            selectedLabelStyle:TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                                            unselectedLabelStyle:TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                            selectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                            unselectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                                             unselectedItemColor: Colors.white,
-                                            selectedItemColor:
-                                                Color.fromARGB(255, 12, 189, 189),
+                                            selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
                                             currentIndex: selectedIndex,
                                             items: [
                                               bottomNavItems(iconSize: 30)[0],
@@ -155,6 +161,7 @@ class _TabScreenState extends State<TabScreen> {
                                     ]
                                   ),
                                 ),
+                                const Spacer(),
                                 Padding(
                                     padding: const EdgeInsets.only(right: 10),
                                     child: searchBar(
@@ -164,25 +171,27 @@ class _TabScreenState extends State<TabScreen> {
                                       width: getWidth(context) / 4,
                                     )),
                               ],
-                            )),
+                            )
+                  ),
                 ],
               ),
-        bottomNavigationBar: (Responsive.isSmallScreen(context) || (audioProvider.openMiniPlayer)) ? Container(
+        bottomNavigationBar: (Responsive.isSmallScreen(context) || (audioProvider.openMiniPlayer)) ?
+        Container(
           alignment: Alignment.bottomCenter,
           height: (Responsive.isSmallScreen(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isSmallScreen(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)?60:80)) ,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
-                    Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
+                  colors:  [
+                const Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
+                const  Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
                 Colors.black87.withOpacity(0.5)
               ])),
           child: Container(
-            margin: Responsive.isSmallScreen(context)? EdgeInsets.symmetric(horizontal: 10):null,
+            margin: Responsive.isSmallScreen(context)? const EdgeInsets.symmetric(horizontal: 10):null,
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 44, 54, 62),
+              color: const Color.fromARGB(255, 44, 54, 62),
                 borderRadius: BorderRadius.circular(10)
             ),
             child: ClipRRect(
@@ -196,9 +205,9 @@ class _TabScreenState extends State<TabScreen> {
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MusicPlayerView()));
+                              builder: (context) => const MusicPlayerView()));
                         },
-                        child: MiniPlayerView(),
+                        child: const MiniPlayerView(),
                       ),
                     ),
                   if (Responsive.isSmallScreen(context))
@@ -206,14 +215,11 @@ class _TabScreenState extends State<TabScreen> {
                       flex: 1,
                       child: BottomNavigationBar(
                           onTap: _selectIndex,
-                          selectedLabelStyle:
-                          TextStyle(color: Colors.white, fontSize: 10),
-                          unselectedLabelStyle:
-                          TextStyle(color: Colors.white, fontSize: 10),
-                          // elevation: 100,
-                          backgroundColor: Color.fromARGB(255, 44, 54, 62),
+                          selectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+                          unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+                          backgroundColor: const Color.fromARGB(255, 44, 54, 62),
                           unselectedItemColor: Colors.white70,
-                          selectedItemColor: Color.fromARGB(255, 12, 189, 189),
+                          selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
                           currentIndex: selectedIndex,
                           items: bottomNavItems(iconSize: 20.0)),
                     ),

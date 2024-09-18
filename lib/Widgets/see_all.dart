@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 
@@ -18,8 +19,14 @@ class _SeeAllState extends State<SeeAll> {
   @override
   Widget build(BuildContext context) {
     String title = "Tracks for You";
-    if(widget.type==Type.album) title = "Albums for You";
-    else if(widget.type==Type.artist) title = "Artists for You";
+    if(widget.type==Type.album)
+    {
+      title = "Albums for You";
+    }
+    else if(widget.type==Type.artist)
+    {
+      title = "Artists for You";
+    }
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -38,7 +45,7 @@ class _SeeAllState extends State<SeeAll> {
         ),
       ),
       body:Container(
-        padding:  EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 end: Alignment.topCenter,
@@ -54,9 +61,8 @@ class _SeeAllState extends State<SeeAll> {
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 80,
                 maxCrossAxisExtent: Responsive.isSmallScreen(context) ? 600 :(Responsive.isMediumScreen(context)? 800 : 1000)
             ),
-            // scrollDirection: Axis.vertical,
             builderDelegate: PagedChildBuilderDelegate<dynamic>(
-              noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
+              noItemsFoundIndicatorBuilder: (context)=>const Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
                 itemBuilder: (context, item, index) {
               return
               ListAllWidget(

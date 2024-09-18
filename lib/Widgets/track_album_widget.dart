@@ -5,7 +5,7 @@ import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 
 import '../Views/artist_view.dart';
-import 'favourite_items_provider.dart';
+import 'provider.dart';
 
 enum Type { album, track, artist }
 
@@ -28,26 +28,29 @@ class TrackAlbumWidget extends StatelessWidget {
     return InkWell(
       onTap: () async {
         // print(trackName);
-        if (type == Type.track) {
+        if (type == Type.track)
+        {
           final audioProvider = Provider.of<AudioProvider>(context, listen: false);
           await audioProvider.loadAudio(trackList: items, index: index);
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => MusicPlayerView()),
-          );
-        } else if (type == Type.album)
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return AlbumView(
-                albumId: id,
-                albumName: name,
-                albumImageUrl: imageUrl,
-                artistId: items[index].artistId,
-                artistName: items[index].artistName);
-          }));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+        }
+        else if (type == Type.album)
+          {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return AlbumView(
+                  albumId: id,
+                  albumName: name,
+                  albumImageUrl: imageUrl,
+                  artistId: items[index].artistId,
+                  artistName: items[index].artistName);
+            }));
+          }
+
         else if (type == Type.artist)
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ArtistView(
-                    artistId: id,
-                  )));
+          {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArtistView(artistId: id,)));
+          }
+
       },
       borderRadius: type == Type.artist
           ? BorderRadius.circular(100)

@@ -1,6 +1,5 @@
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Data/fetch_data.dart';
-import 'package:runo_music/models/album_model.dart';
 import 'package:runo_music/models/artist_model.dart';
 
 
@@ -14,15 +13,12 @@ Future<List<dynamic>> FetchTopArtists({required String path,required PagingContr
     for(int i=0; i<5; i++)
     {
       var artist = await ArtistModel.fromJson(artistDetailsJson['artists'][i]);
-      // print(artist.name);
-      // print(artist.imageUrl);
       artists.add(artist);
     }
   }
   catch(error)
   {
     controller.error = error;
-    print(error);
   }
   finally
   {

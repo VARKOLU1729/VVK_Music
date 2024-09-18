@@ -6,7 +6,7 @@ Future<dynamic> fetchData(
   var url = Uri(
       scheme: 'https',
       host: 'api.napster.com',
-      path: 'v2.2/${path}',
+      path: 'v2.2/$path',
       queryParameters: {
           if (limit != null) 'limit': limit,
         if (offset != null) 'offset': offset,

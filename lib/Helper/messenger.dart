@@ -6,7 +6,7 @@ Widget addedSnackbarContent()
     height: 40,
     color: Colors.green,
     child:
-    Center(child: Text("Added to favourites")),
+    const Center(child: Text("Added to favourites")),
   );
 }
 
@@ -18,6 +18,6 @@ Widget removedSnackbarContent()
     height: 40,
     color: Colors.red,
     child:
-    Center(child: Text("Removed from favourites")),
+    const Center(child: Text("Removed from favourites")),
   );
 }

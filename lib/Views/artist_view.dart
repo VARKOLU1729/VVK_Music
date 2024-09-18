@@ -1,27 +1,29 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Data/fetch_data.dart';
-import 'package:runo_music/Data/top_tracks.dart';
-import 'package:runo_music/Data/top_albums.dart';
-import 'package:runo_music/Helper/deviceParams.dart';
-import 'package:runo_music/Widgets/back_ground_blur.dart';
-import 'package:runo_music/Widgets/track_album_widget.dart';
-import 'package:runo_music/Widgets/header.dart';
-import 'package:runo_music/Widgets/pop_out.dart';
-import 'package:runo_music/Widgets/display_with_pagination.dart';
-import 'package:runo_music/Widgets/see_all.dart';
 
+import '../Data/fetch_data.dart';
+import '../Data/top_tracks.dart';
+import '../Data/top_albums.dart';
+
+import '../Helper/deviceParams.dart';
 import '../Helper/Responsive.dart';
-import '../Widgets/favourite_items_provider.dart';
-import 'music_player_view.dart';
+
+import '../Widgets/track_album_widget.dart';
+import '../Widgets/header.dart';
+import '../Widgets/pop_out.dart';
+import '../Widgets/display_with_pagination.dart';
+import '../Widgets/see_all.dart';
+import '../Widgets/provider.dart';
+
+import '../Views/music_player_view.dart';
 
 class ArtistView extends StatefulWidget {
+
   final String artistId;
-  ArtistView({super.key, required this.artistId});
+  const ArtistView({super.key, required this.artistId});
 
   @override
   State<ArtistView> createState() => _ArtistViewState();
@@ -31,10 +33,8 @@ class _ArtistViewState extends State<ArtistView> {
   String? artistImageUrl;
   String? artistName;
   String? artistBio;
-  PagingController<int, dynamic> _artistTrackPagingController =
-      PagingController(firstPageKey: 0);
-  PagingController<int, dynamic> _artistAlbumPagingController =
-      PagingController(firstPageKey: 0);
+  final PagingController<int, dynamic> _artistTrackPagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, dynamic> _artistAlbumPagingController = PagingController(firstPageKey: 0);
 
   void _loadTrackData(pageKey) async {
     List<dynamic> trackData = await FetchTopTracks(
@@ -57,7 +57,6 @@ class _ArtistViewState extends State<ArtistView> {
     setState(() {
       artistBio = artistData['artists'][0]['bios'][0]['bio'];
       artistName = artistData['artists'][0]['name'];
-      print(artistBio);
     });
   }
 
@@ -101,7 +100,8 @@ class _ArtistViewState extends State<ArtistView> {
                     flex: 3,
                     child: Stack(
                       children: [
-                        Container(
+
+                        SizedBox(
                           width: double.infinity,
                           child:ClipRRect(
                             borderRadius: BorderRadius.circular(10),
@@ -110,6 +110,7 @@ class _ArtistViewState extends State<ArtistView> {
                                 : Image.network(artistImageUrl!, fit: BoxFit.cover,),
                           ),
                         ),
+
                         BackdropFilter(
                           blendMode: BlendMode.src,
                           filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
@@ -117,6 +118,7 @@ class _ArtistViewState extends State<ArtistView> {
                             color: Colors.black87.withOpacity(0.001),
                           ),
                         ),
+
                         Row(
                           children: [
                             Padding(
@@ -125,7 +127,7 @@ class _ArtistViewState extends State<ArtistView> {
                                 width: 400,
                                 height: 600,
                                 child: Container(
-                                  margin: EdgeInsets.only(left: 20, top: 20),
+                                  margin: const EdgeInsets.only(left: 20, top: 20),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: artistImageUrl == null
@@ -145,7 +147,7 @@ class _ArtistViewState extends State<ArtistView> {
                                   children: [
                                     ListTile(
                                       title: artistName == null
-                                          ? CircularProgressIndicator()
+                                          ? const CircularProgressIndicator()
                                           : Text(
                                               artistName!,
                                               style: TextStyle(
@@ -174,18 +176,10 @@ class _ArtistViewState extends State<ArtistView> {
                                                 ])),
                                         child: IconButton(
                                             onPressed: () async {
-                                              final audioProvider =
-                                              Provider.of<AudioProvider>(context,
-                                                  listen: false);
-                                              await audioProvider.loadAudio(
-                                                  trackList:
-                                                  _artistTrackPagingController
-                                                      .itemList!,
-                                                  index: 0);
+                                              final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+                                              await audioProvider.loadAudio(trackList: _artistTrackPagingController.itemList!, index: 0);
                                               Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MusicPlayerView()),
+                                                MaterialPageRoute(builder: (context) => const MusicPlayerView()),
                                               );
                                             },
                                             icon: Icon(
@@ -237,16 +231,16 @@ class _ArtistViewState extends State<ArtistView> {
                             ),
                             child: ListTile(
                               title: artistName == null
-                                  ? CircularProgressIndicator()
+                                  ? const CircularProgressIndicator()
                                   : Text(
                                 artistName!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30,
                                 ),
                               ),
-                              subtitle: Text(
+                              subtitle: const Text(
                                 "6L Monthly Listeners",
                                 style: TextStyle(color: Colors.white70),
                               ),
@@ -274,11 +268,11 @@ class _ArtistViewState extends State<ArtistView> {
                                     );
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => MusicPlayerView(),
+                                        builder: (context) => const MusicPlayerView(),
                                       ),
                                     );
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.play_arrow,
                                     size: 30,
                                     color: Colors.white,
@@ -293,67 +287,8 @@ class _ArtistViewState extends State<ArtistView> {
                   ),
 
                 ),
-              //
-              // Container(
-              //   height: getHeight(context)/3.25,
-              //   child: artistImageUrl == null
-              //       ? CircularProgressIndicator()
-              //       : Image.network(
-              //           artistImageUrl!,
-              //           width: getWidth(context),
-              //           height: getHeight(context),
-              //           fit: BoxFit.fitWidth,
-              //         ),
-              // ),
-              // Container(
-              //   padding: EdgeInsets.only(top: 50),
-              //   child: ListTile(
-              //     title: artistName == null
-              //         ? CircularProgressIndicator()
-              //         : Text(
-              //       artistName!,
-              //       style: TextStyle(
-              //           color: Colors.white,
-              //           fontWeight: FontWeight.bold,
-              //           fontSize: 30),
-              //     ),
-              //     subtitle: Text("6L Monthly Listeners", style: TextStyle(color: Colors.white70),),
-              //     trailing: Container(
-              //       decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.circular(50),
-              //           gradient: LinearGradient(
-              //             begin: Alignment.topCenter,
-              //             end: Alignment.bottomCenter,
-              //             colors: [
-              //               Colors.red.withOpacity(0.66),
-              //               Colors.red.withOpacity(0.99)
-              //             ]
-              //           )
-              //       ),
-              //       child: IconButton(onPressed: () async{
-              //         final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-              //         await audioProvider.loadAudio(trackList:  _artistTrackPagingController.itemList!,index:  0);
-              //         Navigator.of(context).push(MaterialPageRoute(builder: (context) => MusicPlayerView()),);
-              //
-              //
-              //       }, icon: Icon(Icons.play_arrow, size: 30,color: Colors.white,)),
-              //     ),
-              //   ),
-              //   margin: EdgeInsets.only(top: getHeight(context) / 4),
-              //   height: getHeight(context) / 7,
-              //   width: getWidth(context),
-              //   decoration: BoxDecoration(
-              //       gradient: LinearGradient(
-              //           begin: Alignment.topCenter,
-              //           end: Alignment.bottomCenter,
-              //           colors: [
-              //         Colors.black.withOpacity(0.05),
-              //         Colors.black.withOpacity(0.1),
-              //         Colors.black.withOpacity(0.2)
-              //       ])),
-              // ),
-              // popOut(),
-              SizedBox(
+
+              const SizedBox(
                 height: 40,
               ),
               Expanded(
@@ -362,7 +297,7 @@ class _ArtistViewState extends State<ArtistView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Header(
@@ -371,18 +306,20 @@ class _ArtistViewState extends State<ArtistView> {
                                 type: Type.track,
                                 pagingController: _artistTrackPagingController);
                             if (Responsive.isSmallScreen(context))
-                              showModalBottomSheet(
-                                  constraints: BoxConstraints(
-                                      minHeight: getHeight(context)),
-                                  context: context,
-                                  builder: (context) => widget);
+                              {
+                                showModalBottomSheet(
+                                    constraints: BoxConstraints(
+                                        minHeight: getHeight(context)),
+                                    context: context,
+                                    builder: (context) => widget);
+                              }
                             else {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => widget));
                             }
                           },
                           title: "Top Tracks"),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       DisplayWithPagination(
@@ -394,16 +331,19 @@ class _ArtistViewState extends State<ArtistView> {
                                 type: Type.album,
                                 pagingController: _artistAlbumPagingController);
                             if (Responsive.isSmallScreen(context))
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => widget);
+                              {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => widget);
+                              }
+
                             else {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => widget));
                             }
                           },
                           title: "Top Albums"),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       DisplayWithPagination(
@@ -412,13 +352,12 @@ class _ArtistViewState extends State<ArtistView> {
                       (artistName == null ||
                               artistBio == null ||
                               artistImageUrl == null)
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : Padding(
                             padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ?10:(Responsive.isMediumScreen(context)?40:60)),
                             child: ListTile(
                                 title: Text(artistName!,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20)),
+                                    style: const TextStyle(color: Colors.white, fontSize: 20)),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -426,7 +365,7 @@ class _ArtistViewState extends State<ArtistView> {
                                       artistBio!,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: Colors.grey),
+                                      style: const TextStyle(color: Colors.grey),
                                     ),
                                     TextButton(
                                         onPressed: () {
@@ -444,53 +383,34 @@ class _ArtistViewState extends State<ArtistView> {
                                                             Colors.black.withOpacity(0.55)
                                                           ])),
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                left: 30,
-                                                                right: 30,
-                                                                bottom: 100),
+                                                        padding: const EdgeInsets.only(left: 30, right: 30, bottom: 100),
                                                         child: Column(
                                                           children: [
+                                                            const SizedBox(height: 40,),
                                                             SizedBox(
-                                                              height: 40,
-                                                            ),
-                                                            Container(
                                                               height: 150,
                                                               width: 150,
                                                               child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
+                                                                borderRadius: BorderRadius.circular(5),
                                                                 child:
                                                                     Image.network(
-                                                                  artistImageUrl!,
-                                                                  fit: BoxFit
-                                                                      .cover,
+                                                                      artistImageUrl!,
+                                                                      fit: BoxFit.cover,
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                              height: 30,
-                                                            ),
+                                                            const SizedBox(height: 30,),
                                                             Text(
                                                               artistName!,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
+                                                              style: const TextStyle(
+                                                                  color: Colors.white,
                                                                   fontSize: 20,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                                  fontWeight: FontWeight.bold),
                                                             ),
-                                                            SizedBox(
-                                                              height: 30,
-                                                            ),
+                                                            const SizedBox(height: 30,),
                                                             Text(
                                                               artistBio!,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
+                                                              style: const TextStyle(color: Colors.white),
                                                             )
                                                           ],
                                                         ),
@@ -498,18 +418,14 @@ class _ArtistViewState extends State<ArtistView> {
                                                     ),
                                                   ));
                                         },
-                                        child: Text("Read More",
-                                            style: TextStyle(
-                                                color: Colors.blueAccent)))
+                                        child:const Text("Read More",style: TextStyle(color: Colors.blueAccent)))
                                   ],
                                 ),
-                                trailing: Container(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: Image.network(
-                                      artistImageUrl!,
-                                      fit: BoxFit.cover,
-                                    ),
+                                trailing: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Image.network(
+                                    artistImageUrl!,
+                                    fit: BoxFit.cover,
                                   ),
                                 )),
                           ),
@@ -518,7 +434,7 @@ class _ArtistViewState extends State<ArtistView> {
                 ),
               ),
             ]),
-            popOut()
+            const PopOut()
           ],
         ));
   }

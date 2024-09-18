@@ -1,5 +1,4 @@
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:runo_music/Data/fetch_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,7 +12,7 @@ Future<List<dynamic>> FetchSearchTracks({required String path,required String Qu
     var url = Uri(
         scheme: 'https',
         host: 'api.napster.com',
-        path: 'v2.2/${path}',
+        path: 'v2.2/$path',
         queryParameters: {
           'query' : Query,
           'per_type_limit': '5',

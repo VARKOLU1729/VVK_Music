@@ -1,26 +1,25 @@
 import "package:flutter/material.dart";
-import 'package:runo_music/Helper/messenger.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import '../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
 import '../models/track_model.dart';
 
-class favouriteItemsProvider extends ChangeNotifier {
-  Map<String, TrackModel> favourite_items = {};
+class FavouriteItemsProvider extends ChangeNotifier {
+  Map<String, TrackModel> favouriteItems = {};
 
   void addToFavourite({required String id, required TrackModel details}) {
-    favourite_items[id] = details;
+    favouriteItems[id] = details;
     notifyListeners();
   }
 
   void removeFromFavourite({required String id}) {
-    favourite_items.remove(id);
-    print(favourite_items);
+    favouriteItems.remove(id);
     notifyListeners();
   }
 
   bool checkInFav({required String id}) {
-    if (favourite_items.containsKey(id)) return true;
+    if (favouriteItems.containsKey(id)) return true;
     return false;
   }
 
@@ -28,12 +27,12 @@ class favouriteItemsProvider extends ChangeNotifier {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration:Duration(milliseconds: 30),content: removedSnackbarContent()),
+        SnackBar(duration: const Duration(milliseconds: 30),content: removedSnackbarContent()),
       );
     } else {
       addToFavourite(id: id, details: details);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration:Duration(milliseconds: 30),content: addedSnackbarContent()),
+        SnackBar(duration: const Duration(milliseconds: 30),content: addedSnackbarContent()),
       );
     }
   }
@@ -53,7 +52,7 @@ class AudioProvider extends ChangeNotifier {
   Duration _duration = Duration.zero;
   bool openMiniPlayer = false;
 
-  void setminiplayer()
+  void setMiniPlayer()
   {
     openMiniPlayer = true;
     notifyListeners();

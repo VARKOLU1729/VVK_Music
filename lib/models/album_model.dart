@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../Data/fetch_data.dart';
 
 class AlbumModel
