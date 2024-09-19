@@ -46,7 +46,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
         final String artistName = track.artistName;
 
 
-        return Responsive.isSmallScreen(context) ? ListTile(
+        return Responsive.isSmallScreen(context) || Responsive.isMobile(context) ? ListTile(
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.network(

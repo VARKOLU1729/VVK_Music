@@ -90,114 +90,12 @@ class _ArtistViewState extends State<ArtistView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:Responsive.isSmallScreen(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
+        appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
         backgroundColor: Colors.black87,
         body: Stack(
           children: [
             Column(children: [
-              if (!Responsive.isSmallScreen(context))
-                Expanded(
-                    flex: 3,
-                    child: Stack(
-                      children: [
-
-                        SizedBox(
-                          width: double.infinity,
-                          child:ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: artistImageUrl == null
-                                ? null
-                                : Image.network(artistImageUrl!, fit: BoxFit.cover,),
-                          ),
-                        ),
-
-                        BackdropFilter(
-                          blendMode: BlendMode.src,
-                          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-                          child: Container(
-                            color: Colors.black87.withOpacity(0.001),
-                          ),
-                        ),
-
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 60),
-                              child: SizedBox(
-                                width: 400,
-                                height: 600,
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 20, top: 20),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: artistImageUrl == null
-                                        ? null
-                                        : Image.network(artistImageUrl!, fit: BoxFit.cover,),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 40),
-                                child: Column(
-                                  crossAxisAlignment : CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  // mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      title: artistName == null
-                                          ? const CircularProgressIndicator()
-                                          : Text(
-                                              artistName!,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: Responsive.isSmallScreen(context) ? 30 : (Responsive.isMediumScreen(context) ? 40 : 50)),
-                                            ),
-                                      subtitle: Text(
-                                        "6L Monthly Listeners",
-                                        style: TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: Responsive.isSmallScreen(context) ? 10 : (Responsive.isMediumScreen(context) ? 15 : 20)),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(50),
-                                            gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                                  Colors.red.withOpacity(0.66),
-                                                  Colors.red.withOpacity(0.99)
-                                                ])),
-                                        child: IconButton(
-                                            onPressed: () async {
-                                              final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-                                              await audioProvider.loadAudio(trackList: _artistTrackPagingController.itemList!, index: 0);
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(builder: (context) => const MusicPlayerView()),
-                                              );
-                                            },
-                                            icon: Icon(
-                                              Icons.play_arrow,
-                                              size: Responsive.isSmallScreen(context) ? 30 : (Responsive.isMediumScreen(context) ? 40 : 60),
-                                              color: Colors.white,
-                                            )),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    )),
-              if (Responsive.isSmallScreen(context))
+              (Responsive.isMobile(context) || Responsive.isSmallScreen(context))?
                 Expanded(
                   flex: 2,
                   child:Container(
@@ -286,7 +184,109 @@ class _ArtistViewState extends State<ArtistView> {
                     ),
                   ),
 
-                ),
+                ):
+                Expanded(
+                    flex: 3,
+                    child: Stack(
+                      children: [
+
+                        SizedBox(
+                          width: double.infinity,
+                          child:ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: artistImageUrl == null
+                                ? null
+                                : Image.network(artistImageUrl!, fit: BoxFit.cover,),
+                          ),
+                        ),
+
+                        BackdropFilter(
+                          blendMode: BlendMode.src,
+                          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+                          child: Container(
+                            color: Colors.black87.withOpacity(0.001),
+                          ),
+                        ),
+
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60),
+                              child: SizedBox(
+                                width: getWidth(context)<700 ? 300 : 400,
+                                height: getWidth(context)<700 ? 500 : 600,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 20, top: 20),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: artistImageUrl == null
+                                        ? null
+                                        : Image.network(artistImageUrl!, fit: BoxFit.cover,),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Column(
+                                  crossAxisAlignment : CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  // mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      title: artistName == null
+                                          ? const CircularProgressIndicator()
+                                          : Text(
+                                              artistName!,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: Responsive.isSmallScreen(context) ? 30 : (Responsive.isMediumScreen(context) ? 40 : 50)),
+                                            ),
+                                      subtitle: Text(
+                                        "6L Monthly Listeners",
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: Responsive.isSmallScreen(context) ? 10 : (Responsive.isMediumScreen(context) ? 15 : 20)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50),
+                                            gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Colors.red.withOpacity(0.66),
+                                                  Colors.red.withOpacity(0.99)
+                                                ])),
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+                                              await audioProvider.loadAudio(trackList: _artistTrackPagingController.itemList!, index: 0);
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(builder: (context) => const MusicPlayerView()),
+                                              );
+                                            },
+                                            icon: Icon(
+                                              Icons.play_arrow,
+                                              size: Responsive.isSmallScreen(context) ? 30 : (Responsive.isMediumScreen(context) ? 40 : 60),
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    )),
+
 
               const SizedBox(
                 height: 40,

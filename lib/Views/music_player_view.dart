@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/audio_controllers/favourite_button.dart';
 import 'package:vertical_slider/vertical_slider.dart';
 import 'dart:math' as math;
 
@@ -128,8 +129,8 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           borderRadius: BorderRadius.circular(10),
                           child:  Image.network(
                                 trackImageUrl,
-                                height: Responsive.isSmallScreen(context)?  math.min(getHeight(context)*0.4, 200) : math.min(getHeight(context)*0.5, 300),
-                                width: Responsive.isSmallScreen(context)
+                                height: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?  math.min(getHeight(context)*0.4, 200) : math.min(getHeight(context)*0.5, 300),
+                                width: Responsive.isSmallScreen(context) || Responsive.isMobile(context)
                                     ? 200
                                     : (Responsive.isMediumScreen(context)
                                     ? math.max(300, getWidth(context) / 3.5)
@@ -175,7 +176,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: Responsive.isSmallScreen(context) ? 18 : 30,
+                                        fontSize: Responsive.isSmallScreen(context) || Responsive.isMobile(context)  ? 18 : 30,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                       ),
@@ -183,18 +184,17 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                   ),
 
                                   //fav icon - on tap add/remove from fav
-                                  InkWell(
-                                    onTap: () {
-                                      favProvider.toggleFavourite(
-                                          id: trackId,
-                                          details: track,
-                                          context: context);
-                                    },
-                                    child: Icon(
-                                      Icons.favorite,
-                                      color: addedToFav ? Colors.red : Colors.white,
-                                    ),
-                                  ),
+                                  favButton(
+                                      onTap: () {
+                                        favProvider.toggleFavourite(
+                                            id: trackId,
+                                            details: track,
+                                            context: context);
+                                        setState(() {
+                                          addedToFav = !addedToFav;
+                                        });
+                                      },
+                                      addedToFav: addedToFav)
 
                                 ],
                               ),
@@ -219,7 +219,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize:  Responsive.isSmallScreen(context) ? 14 : 20,
+                                    fontSize:  Responsive.isSmallScreen(context) || Responsive.isMobile(context) ? 14 : 20,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -289,7 +289,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
 
-                                  if(!Responsive.isSmallScreen(context))
+                                  if(!(Responsive.isSmallScreen(context) || Responsive.isMobile(context)))
                                   VolumeButton(
                                     audioProvider:audioProvider,
                                     onPress: () {
@@ -308,7 +308,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
                                   NextButton(audioProvider: audioProvider, iconSize: 40),
 
-                                  if(!Responsive.isSmallScreen(context))
+                                  if(!(Responsive.isSmallScreen(context) || Responsive.isMobile(context)))
                                   LoopButton(
                                       audioProvider: audioProvider,
                                       onPress: () {
@@ -319,7 +319,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                               ),
                             ),
 
-                            if(Responsive.isSmallScreen(context))
+                            if(Responsive.isSmallScreen(context) || Responsive.isMobile(context))
                             Expanded(
                               flex: 2,
                               child: Row(

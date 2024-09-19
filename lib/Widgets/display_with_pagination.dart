@@ -13,8 +13,11 @@ class DisplayWithPagination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height:  Responsive.isSmallScreen(context) ? 220 :(Responsive.isMediumScreen(context)?230:260),
-      padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ?15 :(Responsive.isMediumScreen(context)?40:60)),
+      height:  Responsive.isSmallScreen(context) || Responsive.isMobile(context) ? 220 :(Responsive.isMediumScreen(context)?230:260),
+      padding: EdgeInsets.only(
+          left: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?15 :(Responsive.isMediumScreen(context)?40:60),
+        right: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?0:(Responsive.isMediumScreen(context)?20:40)
+      ),
       child: PagedListView<int, dynamic>(
           pagingController: pagingController,
           scrollDirection: Axis.horizontal,

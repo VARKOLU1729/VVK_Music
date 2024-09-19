@@ -66,7 +66,7 @@ class _TabScreenState extends State<TabScreen> {
 
         backgroundColor: const Color.fromARGB(255, 18, 20, 25),
     
-        body: (Responsive.isSmallScreen(context))
+        body: (Responsive.isMobile(context))
             ? activePage
             : Stack(
                 children: [
@@ -83,26 +83,27 @@ class _TabScreenState extends State<TabScreen> {
                       color: Colors.black87,
                       width: double.infinity,
                       height: 72,
-                      child: Responsive.isMediumScreen(context)
+                      child: (Responsive.isSmallScreen(context))
                           ?
                           Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Expanded(
-                                  flex: 3,
+                                SizedBox(
+                                  width: 100,
                                   child: Padding(
-                                    padding: EdgeInsets.only(left:40),
-                                    child: Text("runo music",
+                                    padding: EdgeInsets.only(left:20),
+                                    child: Text("Runo Music",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w200,
-                                            fontSize: 25)),
+                                            fontSize: 15)),
                                   ),
                                 ),
                                 // SizedBox(width: getWidth(context)/5,),
-                                Expanded(
-                                  flex: 2,
+                                Spacer(),
+                                SizedBox(
+                                  width: 200,
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 10),
                                     child: BottomNavigationBar(
@@ -115,68 +116,65 @@ class _TabScreenState extends State<TabScreen> {
                                         currentIndex: selectedIndex,
                                         items: bottomNavItems(iconSize: 25)),
                                   ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: IconButton(
+                                    tooltip: "Profile",
+                                    onPressed: (){},
+                                    icon: Icon(Icons.person_rounded),
+                                    color: Colors.white,
+                                    hoverColor: Colors.grey.withOpacity(0.4),
+                                    style: ButtonStyle(
+                                        backgroundColor: WidgetStateProperty.all(Colors.grey.withOpacity(0.4))
+                                    ),
+                                  ),
                                 )
                               ],
                             )
-                          : //Large screen
-                          Row(
-                              children: [
-                                 SizedBox(
-                                  width: 550,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                      const Expanded(
-                                            flex: 2,
-                                            child: Padding(
-                                              padding: EdgeInsets.only(left: 60),
-                                              child: Text("runo music",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.w200,
-                                                      fontSize: 25)),
-                                            )
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: BottomNavigationBar(
-                                            backgroundColor: Colors.black87,
-                                            landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
-                                            onTap: _selectIndex,
-                                            unselectedFontSize: 15,
-                                            selectedFontSize: 15,
-                                            selectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                                            unselectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                                            unselectedItemColor: Colors.white,
-                                            selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
-                                            currentIndex: selectedIndex,
-                                            items: [
-                                              bottomNavItems(iconSize: 30)[0],
-                                              bottomNavItems(iconSize: 30)[2]
-                                            ],
-                                          ),
-                                        ),
-                                    ]
-                                  ),
-                                ),
-                                const Spacer(),
-                                Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: searchBar(
-                                      onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
-                                      height: 35,
-                                      isMarginReq: false,
-                                      width: getWidth(context) / 4,
-                                    )),
-                              ],
-                            )
-                  ),
+                          :
+                         (Responsive.isMediumScreen(context)?
+                          topNavBar(width: getWidth(context)<850 ? 300 : 400, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: getWidth(context)<850 ? 20 : 25,
+                            navItems: BottomNavigationBar(
+                              backgroundColor: Colors.black87,
+                              onTap: _selectIndex,
+                              showSelectedLabels: false,
+                              showUnselectedLabels: false,
+                              unselectedItemColor: Colors.white,
+                              selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+                              currentIndex: selectedIndex,
+                              items: [
+                                bottomNavItems(iconSize: 30)[0],
+                                bottomNavItems(iconSize: 30)[2]
+                                ],
+                              ),
+                          )://largeScreen
+                         topNavBar(width: 450, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: 25,
+                           navItems: BottomNavigationBar(
+                             backgroundColor: Colors.black87,
+                             landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
+                             onTap: _selectIndex,
+                             unselectedFontSize: 15,
+                             selectedFontSize: 15,
+                             selectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                             unselectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                             unselectedItemColor: Colors.white,
+                             selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+                             currentIndex: selectedIndex,
+                             items: [
+                               bottomNavItems(iconSize: 30)[0],
+                               bottomNavItems(iconSize: 30)[2]
+                             ],
+                           ),
+                         )
+                  )
+                  )
                 ],
               ),
-        bottomNavigationBar: (Responsive.isSmallScreen(context) || (audioProvider.openMiniPlayer)) ?
+        bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
         Container(
           alignment: Alignment.bottomCenter,
-          height: (Responsive.isSmallScreen(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isSmallScreen(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)?60:80)) ,
+          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?60:80)) ,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -187,7 +185,7 @@ class _TabScreenState extends State<TabScreen> {
                 Colors.black87.withOpacity(0.5)
               ])),
           child: Container(
-            margin: Responsive.isSmallScreen(context)? const EdgeInsets.symmetric(horizontal: 10):null,
+            margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 44, 54, 62),
                 borderRadius: BorderRadius.circular(10)
@@ -208,7 +206,7 @@ class _TabScreenState extends State<TabScreen> {
                         child: const MiniPlayerView(),
                       ),
                     ),
-                  if (Responsive.isSmallScreen(context))
+                  if (Responsive.isMobile(context))
                     Expanded(
                       flex: 1,
                       child: BottomNavigationBar(
@@ -230,6 +228,74 @@ class _TabScreenState extends State<TabScreen> {
   }
 }
 
+class topNavBar extends StatelessWidget {
+  final void Function(int) selectIndex;
+  final int selectedIndex;
+  final double titleTextSize;
+  final Widget navItems;
+  final double width;
+  const topNavBar({super.key,required this.width, required this.selectedIndex, required this.selectIndex, required this.titleTextSize, required this.navItems});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: width,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text("Runo Music",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w200,
+                              fontSize: titleTextSize)),
+                    )
+                ),
+                Expanded(
+                  flex: 3,
+                  child: navItems
+                ),
+              ]
+          ),
+        ),
+        const Spacer(),
+        SizedBox(
+          width: 250,
+          child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: searchBar(
+                onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
+                height: 35,
+                isMarginReq: false,
+                width: 300,
+              )),
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: Responsive.isMediumScreen(context)?20:(Responsive.isLargeScreen(context)?40:10)),
+          child: IconButton(
+            tooltip: "Profile",
+              onPressed: (){},
+              icon: Icon(Icons.person),
+              color: Colors.white,
+            hoverColor: Colors.grey.withOpacity(0.4),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.grey.withOpacity(0.4))
+              ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+
+
+
 List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
   return [
     BottomNavigationBarItem(
@@ -250,13 +316,44 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
         label: "SEARCH"),
     BottomNavigationBarItem(
         icon: Icon(
-          Icons.person_2_outlined,
+          Icons.favorite_outline,
           size: iconSize,
         ),
         activeIcon: Icon(
-          Icons.person,
+          Icons.favorite,
           size: iconSize,
         ),
-        label: "LIBRARY"),
+        label: "FAVOURITES"),
   ];
 }
+//
+// List<NavigationDestination> navItems({required iconSize}) {
+//   return [
+//     NavigationDestination(
+//         icon: Icon(
+//           Icons.home_outlined,
+//           size: iconSize,
+//         ),
+//         selectedIcon: Icon(
+//           Icons.home_filled,
+//           size: iconSize,
+//         ),
+//         label: "HOME"),
+//     NavigationDestination(
+//         icon: Icon(
+//           Icons.search,
+//           size: iconSize,
+//         ),
+//         label: "SEARCH"),
+//     NavigationDestination(
+//         icon: Icon(
+//           Icons.person_2_outlined,
+//           size: iconSize,
+//         ),
+//         selectedIcon: Icon(
+//           Icons.person,
+//           size: iconSize,
+//         ),
+//         label: "LIBRARY"),
+//   ];
+// }

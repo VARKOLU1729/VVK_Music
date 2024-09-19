@@ -10,12 +10,14 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20),
+      padding: EdgeInsets.only(right:  Responsive.isSmallScreen(context) || Responsive.isMobile(context) ? 20 :(Responsive.isMediumScreen(context)?40:60)),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-            padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ?15 :(Responsive.isMediumScreen(context)?40:60)),
+            padding: EdgeInsets.only(
+                left: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?15 :(Responsive.isMediumScreen(context)?40:60),
+            ),
             child: Text(
                 title,
                 style: const TextStyle(
@@ -27,14 +29,19 @@ class Header extends StatelessWidget {
             InkWell(
               onTap: onTap,
               child: Container(
-                  width: 100,
-                  height: 25,
+                  width: 80,
+                  height: 35,
+                  padding: EdgeInsets.only(
+                      top: 5,
+                    bottom: 5,
+                  ),
                   decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(50)),
-                  child: const Center(
-                      child: Text("SEE MORE",
-                          style: TextStyle(color: Colors.white)))),
+                  child: Center(
+                      child:Text(Responsive.isMobile(context) ? "SEE MORE" : "SEE ALL",
+                          style: const TextStyle(color: Colors.white, fontSize: 12))),
+              )
             ),
           ]
       ),

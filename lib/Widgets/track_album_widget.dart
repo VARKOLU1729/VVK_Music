@@ -30,8 +30,9 @@ class TrackAlbumWidget extends StatelessWidget {
         if (type == Type.track)
         {
           final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-          await audioProvider.loadAudio(trackList: items, index: index);
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          await audioProvider.loadAudio(trackList: items, index: index);
+
         }
         else if (type == Type.album)
           {

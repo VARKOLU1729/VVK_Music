@@ -5,7 +5,7 @@ import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/models/track_model.dart';
 
-List<TrackModel> albumTrackData = [];
+// List<TrackModel> albumTrackData = [];
 
 class AlbumView extends StatefulWidget {
   final String albumId;
@@ -28,6 +28,8 @@ class AlbumView extends StatefulWidget {
 }
 
 class _AlbumViewState extends State<AlbumView> {
+
+  List<TrackModel> albumTrackData = [];
 
   //paging option is not there , so directly fetched all the results
   void _loadData() async {
@@ -67,16 +69,6 @@ class _AlbumViewState extends State<AlbumView> {
 
           const PopOut(),
 
-          Container(
-            margin: const EdgeInsets.only(top: 300),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
-                )
-            ),
-          ),
           Column(
             children: [
               Expanded(
@@ -84,7 +76,7 @@ class _AlbumViewState extends State<AlbumView> {
                 child:
                 Center(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(10),
                     child:
                     Image.network(
                       widget.albumImageUrl,
@@ -96,12 +88,23 @@ class _AlbumViewState extends State<AlbumView> {
               ),
               Expanded(
                 flex: 2,
-                  child: ListView.builder(
-                      itemCount: albumTrackData.length,
-                      itemBuilder: (context, index) {
-                        return ListAllWidget(index: index,items: albumTrackData);
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
+                        )
+                    ),
+                    child:  ListView.builder(
+                        itemCount: albumTrackData.length,
+                        itemBuilder: (context, index) {
+                          return ListAllWidget(index: index,items: albumTrackData);
 
-                      }))
+                        }),
+                  ),
+
+              )
             ],
           ),
         ]));

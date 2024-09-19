@@ -113,21 +113,21 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:Responsive.isSmallScreen(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
+      appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
       backgroundColor: const Color.fromARGB(255, 18, 20, 25),
       body: Stack(children: [
-        BackdropFilter(
-          blendMode: BlendMode.src,
-          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-          child: Container(
-            color: Colors.black87.withOpacity(0.001),
-          ),
-        ),
+        // BackdropFilter(
+        //   blendMode: BlendMode.src,
+        //   filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+        //   child: Container(
+        //     color: Colors.black87.withOpacity(0.001),
+        //   ),
+        // ),
         SingleChildScrollView(
           child: Column(
             children: [
               // first child
-              if (Responsive.isSmallScreen(context))
+              if (Responsive.isMobile(context))
                 //   show the station image in the background and station details
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,9 +205,9 @@ class _HomeState extends State<Home> {
                     )
                   ],
                 ),
-
+          
               // second child
-
+          
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -221,7 +221,7 @@ class _HomeState extends State<Home> {
                         Widget widget = SeeAll(
                             type: Type.track,
                             pagingController: _trackPagingController);
-                        if (Responsive.isSmallScreen(context)) {
+                        if (Responsive.isMobile(context)) {
                           showBottomSheet(context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
@@ -229,7 +229,7 @@ class _HomeState extends State<Home> {
                         }
                       },
                       title: "Top Tracks"),
-
+          
                   const SizedBox(
                     height: 10,
                   ),
@@ -237,13 +237,13 @@ class _HomeState extends State<Home> {
                     pagingController: _trackPagingController,
                     type: Type.track,
                   ),
-
+          
                   Header(
                       onTap: () {
                         Widget widget = SeeAll(
                             type: Type.album,
                             pagingController: _albumPagingController);
-                        if (Responsive.isSmallScreen(context)) {
+                        if (Responsive.isMobile(context)) {
                           showBottomSheet(context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
@@ -251,20 +251,20 @@ class _HomeState extends State<Home> {
                         }
                       },
                       title: "Top Albums"),
-
+          
                   const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
                       pagingController: _albumPagingController,
                       type: Type.album),
-
+          
                   Header(
                       onTap: () {
                         Widget widget = SeeAll(
                             type: Type.artist,
                             pagingController: _artistPagingController);
-                        if (Responsive.isSmallScreen(context)) {
+                        if (Responsive.isMobile(context)) {
                           showBottomSheet(context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
@@ -272,7 +272,7 @@ class _HomeState extends State<Home> {
                         }
                       },
                       title: "Top Artists"),
-
+          
                   const SizedBox(
                     height: 10,
                   ),
@@ -284,7 +284,7 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        if (Responsive.isSmallScreen(context))
+        if (Responsive.isMobile(context))
           Positioned(
             child: Container(
               height: 40,

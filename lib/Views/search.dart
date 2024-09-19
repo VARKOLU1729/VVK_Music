@@ -67,7 +67,7 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:Responsive.isSmallScreen(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
+      appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
       backgroundColor: Colors.black,
       body: Column(
         children: [
@@ -103,7 +103,7 @@ class _SearchState extends State<Search> {
                         noItemsFoundIndicatorBuilder: (context)=>const Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
                         itemBuilder: (context, item, index) {
                           return ListAllWidget(
-                              items: _searchPagingController.itemList,
+                              items: _searchPagingController.itemList!,
                               index: index);
                         })),
               ),
