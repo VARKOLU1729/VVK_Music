@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Helper/Responsive.dart';
+
 class PopOut extends StatelessWidget {
   final void  Function()? onPress;
   final IconData? icon;
@@ -9,13 +11,13 @@ class PopOut extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       left: 15,
-      top: 40,
+      top: Responsive.isMobile(context) ?40:20,
       child: Container(
         width: 40,
         height: 40,
-        decoration: BoxDecoration(
+        decoration: Responsive.isMobile(context) ?  BoxDecoration(
             color: Colors.grey.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(40)),
+            borderRadius: BorderRadius.circular(40)):null,
         child: IconButton(
             onPressed: onPress ?? () {
               Navigator.pop(context);

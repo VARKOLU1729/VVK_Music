@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/list_all.dart';
+import 'package:runo_music/Widgets/provider.dart';
 import 'package:runo_music/models/track_model.dart';
+
+import 'music_player_view.dart';
 
 // List<TrackModel> albumTrackData = [];
 
@@ -54,6 +59,7 @@ class _AlbumViewState extends State<AlbumView> {
 
   @override
   Widget build(BuildContext context) {
+    var audioProvider = Provider.of<AudioProvider>(context);
     return Scaffold(
         backgroundColor: const Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
@@ -67,46 +73,190 @@ class _AlbumViewState extends State<AlbumView> {
 
           const BackGroundBlur(),
 
-          const PopOut(),
+          NestedScrollView(
+              headerSliverBuilder: (context, isScrolled)
+              {
+                return [SliverToBoxAdapter(
+                  child: Responsive.isMobile(context)||Responsive.isSmallScreen(context) ? Column(
+                    children: [
+                      SizedBox(
+                        height: 100,
+                      ),
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child:
+                          Image.network(
+                            widget.albumImageUrl,
+                            fit: BoxFit.cover,
+                            scale: 0.75,
+                          ),
+                        ),
+                      ),
 
-          Column(
-            children: [
-              Expanded(
-                flex: 1,
-                child:
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child:
-                    Image.network(
-                      widget.albumImageUrl,
-                      fit: BoxFit.cover,
-                      // scale: 2,
-                    ),
-                  ),
+                      SizedBox(height: 20,),
+
+                      Responsive.isMobile(context) ?
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: ListTile(
+                          title: Text(
+                            widget.albumName,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontSize: 10
+                            ),
+                          ),
+                          trailing:Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: const Color.fromARGB(255, 11, 228, 228)
+                            ),
+                            child: IconButton(onPressed: () async{
+
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                              await audioProvider.loadAudio(trackList:albumTrackData,index:0);
+
+                            }, icon: const Icon(Icons.play_arrow, size: 30,)),
+                          ),
+                        ),
+                      ):
+
+                      SizedBox(
+                        height: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.albumName,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              widget.artistName,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.5),
+                                  fontSize: 15
+                              ),
+                            ),
+                            Container(
+                              width: 90,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: const Color.fromARGB(255, 11, 228, 228)
+                              ),
+                              child: TextButton(onPressed: () async{
+
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                await audioProvider.loadAudio(trackList:albumTrackData,index:0);
+
+                              }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
+                            ),
+                          ],
+                        ),
+                      ),
+
+
+                    ],
+                  ):
+                      Padding(
+                        padding: EdgeInsets.only(top: 100),
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child:
+                              Image.network(
+                                widget.albumImageUrl,
+                                fit: BoxFit.cover,
+                                scale: 0.6,
+                              ),
+                            ),
+                            SizedBox(width: 40,),
+                            SizedBox(
+                              height: 200,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    widget.albumName,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 50,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    widget.artistName,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
+                                    style: TextStyle(
+                                        color: Colors.white.withOpacity(0.5),
+                                        fontSize: 15
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 90,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        color: const Color.fromARGB(255, 11, 228, 228)
+                                    ),
+                                    child: TextButton(onPressed: () async{
+
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                      await audioProvider.loadAudio(trackList:albumTrackData,index:0);
+
+                                    }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Spacer()
+                          ],
+                        ),
+                      )
+                )];
+              },
+              body: Container(
+                padding: EdgeInsets.only(top: 40),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
+                    )
                 ),
+                child:  ListView.builder(
+                    itemCount: albumTrackData.length,
+                    itemBuilder: (context, index) {
+                      return ListAllWidget(index: index,items: albumTrackData);
+
+                    }),
               ),
-              Expanded(
-                flex: 2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
-                        )
-                    ),
-                    child:  ListView.builder(
-                        itemCount: albumTrackData.length,
-                        itemBuilder: (context, index) {
-                          return ListAllWidget(index: index,items: albumTrackData);
-
-                        }),
-                  ),
-
-              )
-            ],
           ),
-        ]));
+          const PopOut(),
+        ]
+        )
+    );
   }
 }

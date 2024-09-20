@@ -23,7 +23,7 @@ class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
 
-    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, value,audioProvider, child)=>Scaffold(
+    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
         leading:
@@ -99,7 +99,7 @@ class _FavouritesState extends State<Favourites> {
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text('PRIVATE . ${value.favouriteItems.length} SONGS . ${value.favouriteItems.length*30} SECS',
+                  subtitle: Text('PRIVATE . ${favProvider.favouriteItems.length} SONGS . ${favProvider.favouriteItems.length*30} SECS',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.5),
                       fontWeight: FontWeight.bold
@@ -112,13 +112,13 @@ class _FavouritesState extends State<Favourites> {
                     ),
                     child: IconButton(onPressed: () async{
 
-                      if(value.favouriteItems.isEmpty)
+                      if(favProvider.favouriteItems.isEmpty)
                         {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
                         }
                       else
                         {
-                          await audioProvider.loadAudio(trackList: value.favouriteItems.values.toList(), index: 0);
+                          await audioProvider.loadAudio(trackList: favProvider.favouriteItems.values.toList(), index: 0);
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                         }
 
@@ -127,8 +127,8 @@ class _FavouritesState extends State<Favourites> {
                 ),
                 Expanded(
                   flex: 4,
-                  child: ListView.builder(key: ValueKey(value.favouriteItems.length), itemCount: value.favouriteItems.length, itemBuilder: (context, index)=>
-                      ListAllWidget(index: index,items: value.favouriteItems.values.toList(growable: false))),
+                  child: ListView.builder(key: ValueKey(favProvider.favouriteItems.length), itemCount: favProvider.favouriteItems.length, itemBuilder: (context, index)=>
+                      ListAllWidget(index: index,items: favProvider.favouriteItems.values.toList(growable: false))),
                 ),
               ],
             )

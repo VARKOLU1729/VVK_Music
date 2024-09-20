@@ -268,11 +268,16 @@ class topNavBar extends StatelessWidget {
           width: 250,
           child: Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: searchBar(
-                onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
-                height: 35,
-                isMarginReq: false,
-                width: 300,
+              child: InkWell(
+                mouseCursor: MouseCursor.defer,
+                onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search()));},
+                child: searchBar(
+                  enabled: false,
+                  // onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
+                  height: 35,
+                  isMarginReq: false,
+                  width: 300,
+                ),
               )),
         ),
         Padding(

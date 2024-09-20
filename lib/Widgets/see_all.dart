@@ -58,7 +58,7 @@ class _SeeAllState extends State<SeeAll> {
                 ])),
         child: widget.type==Type.track ? PagedGridView<int, dynamic>(
             pagingController: widget.pagingController,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 80,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(mainAxisExtent: 90,
                 maxCrossAxisExtent: Responsive.isSmallScreen(context) ? 600 :(Responsive.isMediumScreen(context)? 800 : 1000)
             ),
             builderDelegate: PagedChildBuilderDelegate<dynamic>(

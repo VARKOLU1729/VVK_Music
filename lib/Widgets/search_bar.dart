@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class searchBar extends StatelessWidget {
-  void Function(String value) onSubmit;
-  double height = 40;
-  bool isMarginReq = false;
-  double width = 200;
-  searchBar({super.key,required this.onSubmit, required this.height, required this.isMarginReq, required this.width});
+  final void Function(String value)? onSubmit;
+  final double height ;
+  final bool isMarginReq ;
+  final double width ;
+  final TextEditingController? textController;
+  final bool? enabled;
+  const searchBar({super.key,this.onSubmit, required this.height, required this.isMarginReq, required this.width,this.textController, this.enabled});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,8 @@ class searchBar extends StatelessWidget {
       margin: isMarginReq? EdgeInsets.only(left: 20, right: 20, top: 10):null,
       height: height,
       child: TextField(
+        enabled: enabled??true,
+        controller: textController,
         style: TextStyle(color: Colors.black),
         decoration: InputDecoration(
             fillColor: Colors.white,

@@ -116,13 +116,13 @@ class _HomeState extends State<Home> {
       appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
       backgroundColor: const Color.fromARGB(255, 18, 20, 25),
       body: Stack(children: [
-        // BackdropFilter(
-        //   blendMode: BlendMode.src,
-        //   filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-        //   child: Container(
-        //     color: Colors.black87.withOpacity(0.001),
-        //   ),
-        // ),
+        BackdropFilter(
+          blendMode: BlendMode.src,
+          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+          child: Container(
+            color: Colors.black87.withOpacity(0.001),
+          ),
+        ),
         SingleChildScrollView(
           child: Column(
             children: [
@@ -222,7 +222,7 @@ class _HomeState extends State<Home> {
                             type: Type.track,
                             pagingController: _trackPagingController);
                         if (Responsive.isMobile(context)) {
-                          showBottomSheet(context: context, builder: (context) => widget);
+                          showBottomSheet( context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));
@@ -244,7 +244,7 @@ class _HomeState extends State<Home> {
                             type: Type.album,
                             pagingController: _albumPagingController);
                         if (Responsive.isMobile(context)) {
-                          showBottomSheet(context: context, builder: (context) => widget);
+                          showBottomSheet( context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));
@@ -265,7 +265,7 @@ class _HomeState extends State<Home> {
                             type: Type.artist,
                             pagingController: _artistPagingController);
                         if (Responsive.isMobile(context)) {
-                          showBottomSheet(context: context, builder: (context) => widget);
+                          showBottomSheet( context: context, builder: (context) => widget);
                         } else {
                           Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) => widget));

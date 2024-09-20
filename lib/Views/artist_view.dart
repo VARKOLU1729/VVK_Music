@@ -308,6 +308,7 @@ class _ArtistViewState extends State<ArtistView> {
                             if (Responsive.isSmallScreen(context))
                               {
                                 showModalBottomSheet(
+                                  useSafeArea: true,
                                     constraints: BoxConstraints(
                                         minHeight: getHeight(context)),
                                     context: context,
@@ -333,6 +334,7 @@ class _ArtistViewState extends State<ArtistView> {
                             if (Responsive.isSmallScreen(context))
                               {
                                 showModalBottomSheet(
+                                  useSafeArea: true,
                                     context: context,
                                     builder: (context) => widget);
                               }
@@ -346,15 +348,17 @@ class _ArtistViewState extends State<ArtistView> {
                       const SizedBox(
                         height: 10,
                       ),
+
                       DisplayWithPagination(
                           pagingController: _artistAlbumPagingController,
                           type: Type.album),
+
                       (artistName == null ||
                               artistBio == null ||
                               artistImageUrl == null)
                           ? const CircularProgressIndicator()
                           : Padding(
-                            padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ?10:(Responsive.isMediumScreen(context)?40:60)),
+                            padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ||  Responsive.isMobile(context) ?10:(Responsive.isMediumScreen(context)?40:60)),
                             child: ListTile(
                                 title: Text(artistName!,
                                     style: const TextStyle(color: Colors.white, fontSize: 20)),
@@ -370,6 +374,7 @@ class _ArtistViewState extends State<ArtistView> {
                                     TextButton(
                                         onPressed: () {
                                           showModalBottomSheet(
+                                            useSafeArea: true,
                                               context: context,
                                               builder: (context) =>
                                                   SingleChildScrollView(

@@ -20,10 +20,23 @@ class _SearchState extends State<Search> {
 
   String _currentQuery = '';
   bool _isSearched = false;
+  final _searchController = TextEditingController();
+
+
+  void noText()
+  {
+    if(_searchController.text=='') {
+      setState(() {
+        _isSearched = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    if(widget.queryHomePage!=null) _searchController.text = widget.queryHomePage!;
+    _searchController.addListener(noText);
     _searchPagingController.addPageRequestListener((pageKey) {
       _loadTrackData(pageKey, _currentQuery);
     });
@@ -61,6 +74,7 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     _searchPagingController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -74,8 +88,33 @@ class _SearchState extends State<Search> {
             Row(
               children: [
                 Expanded(flex: 6,
-                    child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,)),
-                if(Responsive.isLargeScreen(context))
+                    // child:
+                    // Container(
+                    //   width: double.infinity,
+                    //   margin:  EdgeInsets.only(left: 20, right: 20, top: 10),
+                    //   height: 45,
+                    //   child: TextField(
+                    //     controller: _searchController,
+                    //     style: TextStyle(color: Colors.black),
+                    //     decoration: InputDecoration(
+                    //         fillColor: Colors.white,
+                    //         filled: true,
+                    //         prefixIcon: Icon(Icons.search, color: Colors.grey,),
+                    //         hintText: "Search music",
+                    //         hintStyle: TextStyle(color: Colors.grey),
+                    //         contentPadding: EdgeInsets.only(top: 10),
+                    //         border: OutlineInputBorder(
+                    //             borderRadius: BorderRadius.circular(50),
+                    //             borderSide: BorderSide.none
+                    //         )
+                    //     ),
+                    //     onSubmitted: (val){search(val);},
+                    //
+                    //   ),
+                    // ),
+                    child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,textController: _searchController)
+          ),
+                if(Responsive.isLargeScreen(context) ||  Responsive.isMediumScreen(context))
                 Expanded(
                   flex: 1,
                     child: TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("CANCEL", style: TextStyle(color: Colors.white),)))

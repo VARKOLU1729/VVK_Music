@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Widgets/provider.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
@@ -49,47 +50,58 @@ class _ListAllWidgetState extends State<ListAllWidget> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: InkWell(
-            hoverColor: Colors.orangeAccent,
             onTap: () async{
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
               await audioProvider.loadAudio(trackList:widget.items,index: widget.index);
             },
-            child: ListTile(
-              mouseCursor: MouseCursor.defer,
-              key: ValueKey(id),
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('${widget.index+1}', style: TextStyle(color: Colors.white, fontSize: 15),),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
-                        imageUrl!,
-                        fit: BoxFit.cover,
+            child: Column(
+              children: [
+                ListTile(
+                  hoverColor: Colors.transparent,
+                  mouseCursor: MouseCursor.defer,
+                  key: ValueKey(id),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      if(!Responsive.isMobile(context))
+                      Text('${widget.index+1}', style: TextStyle(color: Colors.white, fontSize: 15),),
+                      Padding(
+                        padding:EdgeInsets.only(left: Responsive.isMobile(context)? 10:20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image.network(
+                            imageUrl!,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-              title: Text(
-                name!,
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-              subtitle: Text(artistName!,
-                  style: const TextStyle(color: Colors.grey, fontSize: 13)),
-              trailing: favButton(onTap: () {
-                favProvider.toggleFavourite(
-                    id: id!,
-                    details: TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!),
-                    context: context);
-                setState(() {
-                  addedToFav = !addedToFav;
-                });
-                  },
-                  addedToFav: addedToFav),
+                  title: Text(
+                    name!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  subtitle: Text(artistName!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                  trailing: favButton(onTap: () {
+                    favProvider.toggleFavourite(
+                        id: id!,
+                        details: TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!),
+                        context: context);
+                    setState(() {
+                      addedToFav = !addedToFav;
+                    });
+                      },
+                      addedToFav: addedToFav),
+                ),
+                if(!Responsive.isMobile(context))
+                Divider(indent: 20,endIndent: 20,),
+              ],
             ),
           ),
         );}
