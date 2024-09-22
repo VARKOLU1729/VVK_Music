@@ -36,6 +36,10 @@ class _ArtistViewState extends State<ArtistView> {
   final PagingController<int, dynamic> _artistTrackPagingController = PagingController(firstPageKey: 0);
   final PagingController<int, dynamic> _artistAlbumPagingController = PagingController(firstPageKey: 0);
 
+  final ScrollController trackScrollController = ScrollController();
+  final ScrollController albumScrollController = ScrollController();
+  final ScrollController artistScrollController = ScrollController();
+
   void _loadTrackData(pageKey) async {
     List<dynamic> trackData = await FetchTopTracks(
         path: 'artists/${widget.artistId}/tracks/top',
@@ -319,13 +323,17 @@ class _ArtistViewState extends State<ArtistView> {
                                   builder: (context) => widget));
                             }
                           },
-                          title: "Top Tracks"),
+                          title: "Top Tracks",
+                        scrollController: trackScrollController,
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
                       DisplayWithPagination(
                           pagingController: _artistTrackPagingController,
-                          type: Type.track),
+                          type: Type.track,
+                          scrollController: trackScrollController
+                      ),
                       Header(
                           onTap: () {
                             Widget widget = SeeAll(
@@ -344,14 +352,18 @@ class _ArtistViewState extends State<ArtistView> {
                                   builder: (context) => widget));
                             }
                           },
-                          title: "Top Albums"),
+                          title: "Top Albums",
+                          scrollController: albumScrollController
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
 
                       DisplayWithPagination(
                           pagingController: _artistAlbumPagingController,
-                          type: Type.album),
+                          type: Type.album,
+                          scrollController: albumScrollController
+                      ),
 
                       (artistName == null ||
                               artistBio == null ||

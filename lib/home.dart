@@ -33,6 +33,11 @@ class _HomeState extends State<Home> {
   final PagingController<int, dynamic> _albumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   final PagingController<int, dynamic> _artistPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
 
+  final ScrollController trackScrollController = ScrollController();
+  final ScrollController albumScrollController = ScrollController();
+  final ScrollController artistScrollController = ScrollController();
+
+  
   void _loadTrackData(pageKey) async {
     List<dynamic> trackData = await FetchTopTracks(
         path: 'tracks/top',
@@ -228,6 +233,7 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
+                      scrollController: trackScrollController,
                       title: "Top Tracks"),
           
                   const SizedBox(
@@ -236,6 +242,7 @@ class _HomeState extends State<Home> {
                   DisplayWithPagination(
                     pagingController: _trackPagingController,
                     type: Type.track,
+                    scrollController : trackScrollController
                   ),
           
                   Header(
@@ -250,14 +257,18 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
-                      title: "Top Albums"),
+                      title: "Top Albums",
+                      scrollController: albumScrollController
+                  ),
           
                   const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
                       pagingController: _albumPagingController,
-                      type: Type.album),
+                      type: Type.album,
+                      scrollController : albumScrollController
+                  ),
           
                   Header(
                       onTap: () {
@@ -271,14 +282,18 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(builder: (context) => widget));
                         }
                       },
-                      title: "Top Artists"),
+                      title: "Top Artists",
+                      scrollController: artistScrollController
+                  ),
           
                   const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
                       pagingController: _artistPagingController,
-                      type: Type.artist)
+                      type: Type.artist,
+                      scrollController : artistScrollController
+                  )
                 ],
               ),
             ],

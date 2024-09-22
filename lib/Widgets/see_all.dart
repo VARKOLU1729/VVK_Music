@@ -29,7 +29,7 @@ class _SeeAllState extends State<SeeAll> {
     }
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 100,
         leading:
         IconButton(
             onPressed: (){

@@ -6,9 +6,10 @@ import '../Helper/Responsive.dart';
 
 class DisplayWithPagination extends StatelessWidget {
   final PagingController<int, dynamic> pagingController;
+  final ScrollController? scrollController;
   final Type type;
 
-  const DisplayWithPagination({super.key, required this.pagingController, required this.type });
+  const DisplayWithPagination({super.key, required this.pagingController, required this.type, this.scrollController });
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class DisplayWithPagination extends StatelessWidget {
       child: PagedListView<int, dynamic>(
           pagingController: pagingController,
           scrollDirection: Axis.horizontal,
+          scrollController: scrollController,
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
               itemBuilder: (context, item, index) {
             return TrackAlbumWidget(
