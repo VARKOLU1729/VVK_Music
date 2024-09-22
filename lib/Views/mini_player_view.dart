@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
-
+import 'dart:math' as math;
 import '../Helper/Responsive.dart';
 
 import '../Widgets/provider.dart';
 
+import '../audio_controllers/favourite_button.dart';
 import '../audio_controllers/next_button.dart';
 import '../audio_controllers/play_pause_button.dart';
 import '../audio_controllers/loop_button.dart';
@@ -129,18 +130,17 @@ class _MiniControlsState extends State<MiniControls> {
                   NextButton(audioProvider: widget.audioProvider, iconSize: 30),
 
                   if(Responsive.isLargeScreen(context))
-                    InkWell(
-                      onTap: () {
-                        widget.favProvider.toggleFavourite(
-                            id: track[0],
-                            details: track,
-                            context: context);
-                      },
-                      child: Icon(
-                        Icons.favorite,
-                        color: addedToFav ? Colors.red : Colors.white,
-                      ),
-                    ),
+                    favButton(
+                        onTap: () {
+                          widget.favProvider.toggleFavourite(
+                              id: trackId,
+                              details: track,
+                              context: context);
+                          setState(() {
+                            addedToFav = !addedToFav;
+                          });
+                        },
+                        addedToFav: addedToFav)
               ],
             ),
           ),

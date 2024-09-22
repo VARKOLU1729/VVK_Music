@@ -143,7 +143,9 @@ class _SearchState extends State<Search> {
                         itemBuilder: (context, item, index) {
                           return ListAllWidget(
                               items: _searchPagingController.itemList!,
-                              index: index);
+                              index: index,
+                            decorationReq: true,
+                          );
                         })),
               ),
             ),

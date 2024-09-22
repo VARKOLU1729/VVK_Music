@@ -249,7 +249,7 @@ class _AlbumViewState extends State<AlbumView> {
                 child:  ListView.builder(
                     itemCount: albumTrackData.length,
                     itemBuilder: (context, index) {
-                      return ListAllWidget(index: index,items: albumTrackData);
+                      return ListAllWidget(index: index,items: albumTrackData, decorationReq: true,);
 
                     }),
               ),

@@ -67,7 +67,9 @@ class _SeeAllState extends State<SeeAll> {
               return
               ListAllWidget(
                   items : widget.pagingController.itemList!,
-                  index:index) ;
+                  index:index,
+                decorationReq: false,
+              ) ;
             })) :
          PagedGridView<int, dynamic>(
              pagingController: widget.pagingController,

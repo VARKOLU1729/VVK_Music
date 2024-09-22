@@ -12,7 +12,8 @@ import '../Helper/messenger.dart';
 class ListAllWidget extends StatefulWidget {
   final List<dynamic> items;
   final int index;
-  const ListAllWidget({super.key, required this.items, required this.index,});
+  final bool decorationReq;
+  const ListAllWidget({super.key, required this.items, required this.index,required this.decorationReq});
 
   @override
   State<ListAllWidget> createState() => _ListAllWidgetState();
@@ -64,7 +65,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      if(!Responsive.isMobile(context))
+                      if(!Responsive.isMobile(context) && widget.decorationReq)
                       Text('${widget.index+1}', style: TextStyle(color: Colors.white, fontSize: 15),),
                       Padding(
                         padding:EdgeInsets.only(left: Responsive.isMobile(context)? 10:20),
@@ -99,8 +100,8 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                       },
                       addedToFav: addedToFav),
                 ),
-                if(!Responsive.isMobile(context))
-                Divider(indent: 20,endIndent: 20,),
+                if(!Responsive.isMobile(context) && widget.decorationReq)
+                Divider(indent: 20,endIndent: 20,height: 0,thickness: 0,),
               ],
             ),
           ),

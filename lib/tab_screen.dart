@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/nav_bar.dart';
 
 import '../Views/music_player_view.dart';
 import '../Views/favourites.dart';
@@ -14,6 +15,7 @@ import '../Widgets/provider.dart';
 
 import '../home.dart';
 
+import 'dart:math' as math;
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -34,196 +36,279 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     AudioProvider audioProvider = Provider.of<AudioProvider>(context);
-    Widget activePage = const Home();
-    if (selectedIndex == 0) {
-      setState(() {
-        activePage = const Home();
-        title = "Explore Music";
-      });
-    }
-    else if (selectedIndex == 1) {
-      setState(() {
-        if(Responsive.isLargeScreen(context))
-        {
-          activePage = const Favourites();
-        }
-        else
-        {
-          activePage = const Search();
-        }
-      });
-    }
-    else if (selectedIndex == 2) {
-      setState(() {
-          activePage = const Favourites();
-      });
-    }
+
+    List<Widget> tabs = [
+      Home(),
+      Responsive.isLargeScreen(context) || Responsive.isMediumScreen(context) ? Favourites() : Search(),
+      Favourites()
+    ];
+
+    Widget activePage = tabs[selectedIndex];
+
 
     return Scaffold(
 
         backgroundColor: const Color.fromARGB(255, 18, 20, 25),
     
-        body: (Responsive.isMobile(context))
-            ? activePage
-            : Stack(
+        body:  Stack(
                 children: [
-
-                  Column(
-                    children: [
-                      const SizedBox(height: 72,), //To match with the tab bar height
-                      Expanded(child: activePage)
-                    ],
+                  NestedScrollView(
+                      headerSliverBuilder: (context, val){
+                        return [SliverToBoxAdapter(
+                          child:SizedBox(height:Responsive.isMobile(context)?1: 72,),
+                        )];
+                      },
+                      body: activePage
                   ),
 
-                  // top nav bar for medium and large screens
-                  Container(
-                      color: Colors.black87,
-                      width: double.infinity,
-                      height: 72,
-                      child: (Responsive.isSmallScreen(context))
-                          ?
-                          Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  width: 100,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left:20),
-                                    child: Text("Runo Music",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w200,
-                                            fontSize: 15)),
-                                  ),
-                                ),
-                                // SizedBox(width: getWidth(context)/5,),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: BottomNavigationBar(
-                                        showUnselectedLabels: false,
-                                        showSelectedLabels: false,
-                                        backgroundColor: Colors.black87,
-                                        onTap: _selectIndex,
-                                        unselectedItemColor: Colors.white70,
-                                        selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
-                                        currentIndex: selectedIndex,
-                                        items: bottomNavItems(iconSize: 25)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: IconButton(
-                                    tooltip: "Profile",
-                                    onPressed: (){},
-                                    icon: Icon(Icons.person_rounded),
-                                    color: Colors.white,
-                                    hoverColor: Colors.grey.withOpacity(0.4),
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStateProperty.all(Colors.grey.withOpacity(0.4))
+                  // top nav bar for web
+                  if(!Responsive.isMobile(context))
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                          color: Colors.black87,
+                          width: double.infinity,
+                          height: 72,
+                          child: (Responsive.isSmallScreen(context))
+                              ?
+                              Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 100,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left:20),
+                                        child: Text("Runo Music",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w200,
+                                                fontSize: 15)),
+                                      ),
                                     ),
-                                  ),
+                                    // SizedBox(width: getWidth(context)/5,),
+                                    Spacer(),
+                                    SizedBox(
+                                      width: 200,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 10),
+                                        child: BottomNavigationBar(
+                                            showUnselectedLabels: false,
+                                            showSelectedLabels: false,
+                                            backgroundColor: Colors.black87,
+                                            onTap: _selectIndex,
+                                            unselectedItemColor: Colors.white70,
+                                            selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+                                            currentIndex: selectedIndex,
+                                            items: bottomNavItems(iconSize: 25)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: IconButton(
+                                        tooltip: "Profile",
+                                        onPressed: (){},
+                                        icon: Icon(Icons.person_rounded),
+                                        color: Colors.white,
+                                        hoverColor: Colors.grey.withOpacity(0.4),
+                                        style: ButtonStyle(
+                                            backgroundColor: WidgetStateProperty.all(Colors.grey.withOpacity(0.4))
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 )
-                              ],
-                            )
-                          :
-                         (Responsive.isMediumScreen(context)?
-                          topNavBar(width: getWidth(context)<850 ? 300 : 400, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: getWidth(context)<850 ? 20 : 25,
-                            navItems: BottomNavigationBar(
-                              backgroundColor: Colors.black87,
-                              onTap: _selectIndex,
-                              showSelectedLabels: false,
-                              showUnselectedLabels: false,
-                              unselectedItemColor: Colors.white,
-                              selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
-                              currentIndex: selectedIndex,
-                              items: [
-                                bottomNavItems(iconSize: 30)[0],
-                                bottomNavItems(iconSize: 30)[2]
-                                ],
+                              :
+                             (Responsive.isMediumScreen(context)?
+                              topNavBar(width: getWidth(context)<850 ? 300 : 400, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: getWidth(context)<850 ? 20 : 25,
+                                navItems: CustomNavBar(
+                                    selectedIndex: selectedIndex,
+                                    onTap: _selectIndex,
+                                    showLabel: false,
+                                    selectedItemColor: Colors.tealAccent,
+                                    unselectedItemColor: Colors.white,
+                                    selectedFontSize: 14,
+                                    unselectedFontSize: 12,
+                                    items: [
+                                      CustomNavItems()[0],
+                                      CustomNavItems()[2]
+                                    ],
+                                ),
+                              )://largeScreen
+                             topNavBar(width: 450, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: 25,
+                              navItems: CustomNavBar(
+                                  selectedIndex: selectedIndex,
+                                  onTap: _selectIndex,
+                                  showLabel: true,
+                                  labelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                  selectedItemColor: Colors.tealAccent,
+                                  unselectedItemColor: Colors.white,
+                                  selectedFontSize: 15,
+                                  unselectedFontSize: 15,
+                                  items: [
+                                    CustomNavItems()[0],
+                                    CustomNavItems()[2]
+                                 ],
                               ),
-                          )://largeScreen
-                         topNavBar(width: 450, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: 25,
-                           navItems: BottomNavigationBar(
-                             backgroundColor: Colors.black87,
-                             landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
-                             onTap: _selectIndex,
-                             unselectedFontSize: 15,
-                             selectedFontSize: 15,
-                             selectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                             unselectedLabelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                             unselectedItemColor: Colors.white,
-                             selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
-                             currentIndex: selectedIndex,
-                             items: [
-                               bottomNavItems(iconSize: 30)[0],
-                               bottomNavItems(iconSize: 30)[2]
-                             ],
-                           ),
-                         )
-                  )
-                  )
-                ],
-              ),
-        bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
-        Container(
-          alignment: Alignment.bottomCenter,
-          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?60:80)) ,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors:  [
-                const Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
-                const  Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
-                Colors.black87.withOpacity(0.5)
-              ])),
-          child: Container(
-            margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 44, 54, 62),
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (audioProvider.openMiniPlayer == true)
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const MusicPlayerView()));
-                        },
-                        child: const MiniPlayerView(),
+                             )
+                      )
+                      ),
+                      Divider(height: 0, thickness: 0,)
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isSmallScreen(context)?65:85)) ,
+                      decoration: Responsive.isMobile(context)? BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors:  [
+                                const Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
+                                const  Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
+                                Colors.black87.withOpacity(0.5)
+                              ])):null,
+                      child: Container(
+                        margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
+                        decoration: BoxDecoration(
+                            color: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.black.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (audioProvider.openMiniPlayer == true)
+                                Expanded(
+                                  flex: 1,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) => const MusicPlayerView()));
+                                    },
+                                    child: const MiniPlayerView(),
+                                  ),
+                                ),
+                              if (Responsive.isMobile(context))
+                                Expanded(
+                                  flex: 1,
+                                  child: BottomNavigationBar(
+                                      onTap: _selectIndex,
+                                      selectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+                                      unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+                                      backgroundColor: const Color.fromARGB(255, 44, 54, 62),
+                                      unselectedItemColor: Colors.white70,
+                                      selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+                                      currentIndex: selectedIndex,
+                                      items: bottomNavItems(iconSize: 20.0)),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ):Text("Hi", style: TextStyle(color: Colors.red),)
+                  ),
+                  if(audioProvider.openMiniPlayer)
+                  Positioned(
+                    bottom: Responsive.isMobile(context)  ? 112 : (Responsive.isSmallScreen(context)?57:77),
+                    left: 0,
+                    right: 0,
+                    child: SliderTheme(
+                      data: SliderThemeData(
+                        trackHeight: 3,
+                        trackShape: RectangularSliderTrackShape(),
+                        overlayShape:
+                        RoundSliderOverlayShape(overlayRadius: 6),
+                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: Responsive.isMobile(context)?3:5),
+                      ),
+                      child: Padding(
+                        padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.all(0),
+                        child: Slider(
+                          allowedInteraction:
+                          SliderInteraction.tapAndSlide,
+                          thumbColor: Responsive.isMobile(context) ? Color.fromARGB(255, 44, 54, 62) : Colors.white,
+                          activeColor: Responsive.isMobile(context) ? Colors.grey : Colors.white,
+                          inactiveColor: Responsive.isMobile(context) ? Color.fromARGB(255, 44, 54, 62) : Colors.grey,
+                          value: audioProvider.duration.inMilliseconds > 0
+                              ? math.min(audioProvider.currentPosition.inMilliseconds /
+                              audioProvider.duration.inMilliseconds,1)
+                              : 0.0,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (value) {
+                            audioProvider.seekTo(value);
+                          },
+                        ),
                       ),
                     ),
-                  if (Responsive.isMobile(context))
-                    Expanded(
-                      flex: 1,
-                      child: BottomNavigationBar(
-                          onTap: _selectIndex,
-                          selectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
-                          unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
-                          backgroundColor: const Color.fromARGB(255, 44, 54, 62),
-                          unselectedItemColor: Colors.white70,
-                          selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
-                          currentIndex: selectedIndex,
-                          items: bottomNavItems(iconSize: 20.0)),
-                    ),
+                  )
                 ],
               ),
-            ),
-          ),
-        ):null
+        // bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
+        // Container(
+        //   alignment: Alignment.bottomCenter,
+        //   height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?60:80)) ,
+        //   decoration: BoxDecoration(
+        //       gradient: LinearGradient(
+        //           begin: Alignment.topCenter,
+        //           end: Alignment.bottomCenter,
+        //           colors:  [
+        //         const Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
+        //         const  Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
+        //         Colors.black87.withOpacity(0.5)
+        //       ])),
+        //   child: Container(
+        //     margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
+        //     decoration: BoxDecoration(
+        //       color: const Color.fromARGB(255, 44, 54, 62),
+        //         borderRadius: BorderRadius.circular(10)
+        //     ),
+        //     child: ClipRRect(
+        //       borderRadius: BorderRadius.circular(10),
+        //       child: Column(
+        //         mainAxisSize: MainAxisSize.min,
+        //         children: [
+        //           if (audioProvider.openMiniPlayer == true)
+        //             Expanded(
+        //               flex: 1,
+        //               child: InkWell(
+        //                 onTap: () {
+        //                   Navigator.of(context).push(MaterialPageRoute(
+        //                       builder: (context) => const MusicPlayerView()));
+        //                 },
+        //                 child: const MiniPlayerView(),
+        //               ),
+        //             ),
+        //           if (Responsive.isMobile(context))
+        //             Expanded(
+        //               flex: 1,
+        //               child: BottomNavigationBar(
+        //                   onTap: _selectIndex,
+        //                   selectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+        //                   unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
+        //                   backgroundColor: const Color.fromARGB(255, 44, 54, 62),
+        //                   unselectedItemColor: Colors.white70,
+        //                   selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+        //                   currentIndex: selectedIndex,
+        //                   items: bottomNavItems(iconSize: 20.0)),
+        //             ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ):null
     );
   }
 }
@@ -321,7 +406,7 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
         label: "SEARCH"),
     BottomNavigationBarItem(
         icon: Icon(
-          Icons.favorite_outline,
+          Icons.favorite_border,
           size: iconSize,
         ),
         activeIcon: Icon(
@@ -331,34 +416,20 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
         label: "FAVOURITES"),
   ];
 }
-//
-// List<NavigationDestination> navItems({required iconSize}) {
-//   return [
-//     NavigationDestination(
-//         icon: Icon(
-//           Icons.home_outlined,
-//           size: iconSize,
-//         ),
-//         selectedIcon: Icon(
-//           Icons.home_filled,
-//           size: iconSize,
-//         ),
-//         label: "HOME"),
-//     NavigationDestination(
-//         icon: Icon(
-//           Icons.search,
-//           size: iconSize,
-//         ),
-//         label: "SEARCH"),
-//     NavigationDestination(
-//         icon: Icon(
-//           Icons.person_2_outlined,
-//           size: iconSize,
-//         ),
-//         selectedIcon: Icon(
-//           Icons.person,
-//           size: iconSize,
-//         ),
-//         label: "LIBRARY"),
-//   ];
-// }
+
+List<CustomNavBarItem> CustomNavItems() {
+  return [
+    CustomNavBarItem(
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_filled,
+        label: "HOME"),
+    CustomNavBarItem(
+      icon:Icons.search,
+        activeIcon: Icons.search,
+        label: "SEARCH"),
+    CustomNavBarItem(
+        icon: Icons.favorite_border,
+        activeIcon: Icons.favorite,
+        label: "LIBRARY"),
+  ];
+}
