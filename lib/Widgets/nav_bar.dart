@@ -25,7 +25,7 @@ class CustomNavBar extends StatelessWidget {
   final bool showLabel;
   final TextStyle? labelStyle;
 
-  CustomNavBar({
+  const CustomNavBar({
     super.key,
     required this.selectedIndex,
     required this.items,
@@ -84,8 +84,7 @@ class CustomNavBar extends StatelessWidget {
                       ? Icon(navItem.activeIcon, color: selectedItemColor)
                       : Icon(navItem.icon, color: unselectedItemColor),
                   if (showLabel)
-                    SizedBox(
-                        width: 4.0), // Spacing between icon and label
+                    const SizedBox(width: 4.0), // Spacing between icon and label
                   if (showLabel)
                     Text(
                       navItem.label,

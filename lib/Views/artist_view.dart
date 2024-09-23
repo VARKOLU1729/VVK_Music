@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Views/search.dart';
 
 import '../Data/fetch_data.dart';
 import '../Data/top_tracks.dart';
@@ -451,7 +452,22 @@ class _ArtistViewState extends State<ArtistView> {
                 ),
               ),
             ]),
-            const PopOut()
+            const PopOut(),
+            Positioned(
+              top: Responsive.isMobile(context) ? 40 : 20,
+              right: 20,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: Responsive.isMobile(context) ?  BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: Colors.grey.withOpacity(0.7)
+                ):null,
+                  child: IconButton(onPressed: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Search(backButton: true,)));
+                  },
+                      icon: Icon(Icons.search, size: 20,color: Colors.white,))),
+            )
           ],
         ));
   }

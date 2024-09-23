@@ -8,7 +8,8 @@ import '../Widgets/search_bar.dart';
 
 class Search extends StatefulWidget {
   final String? queryHomePage;
-  const Search({super.key, this.queryHomePage});
+  final bool? backButton;
+  const Search({super.key, this.queryHomePage, this.backButton});
 
   @override
   State<Search> createState() => _SearchState();
@@ -88,35 +89,11 @@ class _SearchState extends State<Search> {
             Row(
               children: [
                 Expanded(flex: 6,
-                    // child:
-                    // Container(
-                    //   width: double.infinity,
-                    //   margin:  EdgeInsets.only(left: 20, right: 20, top: 10),
-                    //   height: 45,
-                    //   child: TextField(
-                    //     controller: _searchController,
-                    //     style: TextStyle(color: Colors.black),
-                    //     decoration: InputDecoration(
-                    //         fillColor: Colors.white,
-                    //         filled: true,
-                    //         prefixIcon: Icon(Icons.search, color: Colors.grey,),
-                    //         hintText: "Search music",
-                    //         hintStyle: TextStyle(color: Colors.grey),
-                    //         contentPadding: EdgeInsets.only(top: 10),
-                    //         border: OutlineInputBorder(
-                    //             borderRadius: BorderRadius.circular(50),
-                    //             borderSide: BorderSide.none
-                    //         )
-                    //     ),
-                    //     onSubmitted: (val){search(val);},
-                    //
-                    //   ),
-                    // ),
                     child: searchBar(onSubmit: (val){search(val);},height: 45,isMarginReq: true,width: double.infinity,textController: _searchController)
           ),
-                if(Responsive.isLargeScreen(context) ||  Responsive.isMediumScreen(context))
+                if(Responsive.isLargeScreen(context) ||  Responsive.isMediumScreen(context) || widget.backButton==true)
                 Expanded(
-                  flex: 1,
+                  flex: widget.backButton==true ? 2 :1,
                     child: TextButton(onPressed: (){Navigator.pop(context);}, child: const Text("CANCEL", style: TextStyle(color: Colors.white),)))
               ],
             ),

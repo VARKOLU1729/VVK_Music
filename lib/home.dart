@@ -16,6 +16,7 @@ import '../Data/top_albums.dart';
 import '../Data/fetch_data.dart';
 import '../Data/top_artists.dart';
 
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -119,13 +120,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
-      backgroundColor: const Color.fromARGB(255, 18, 20, 25),
+      // backgroundColor: const Color.fromARGB(255, 18, 20, 25),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(children: [
         BackdropFilter(
-          blendMode: BlendMode.src,
+          blendMode: BlendMode.srcOver,
           filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
           child: Container(
-            color: Colors.black87.withOpacity(0.001),
+            color: Colors.black87.withOpacity(0.1),
           ),
         ),
         SingleChildScrollView(

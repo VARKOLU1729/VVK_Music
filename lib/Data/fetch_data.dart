@@ -13,5 +13,6 @@ Future<dynamic> fetchData(
         'apikey': "OTYxNDY3NTItZmM1Zi00MTMzLTllN2UtMDk2ZTBlMzIyYTZm"
       });
   var res = await http.get(url);
+  if(res.statusCode==200)
   return json.decode(res.body);
 }

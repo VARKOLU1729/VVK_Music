@@ -1,20 +1,55 @@
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
+import 'package:http/http.dart';
 
 import '../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
 import '../models/track_model.dart';
+
+import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/sqflite.dart' as sql;
+import 'package:path/path.dart' as path;
+
+Future<Database> initDataBase() async
+{
+  final dbPath = path.join(await sql.getDatabasesPath(), 'fav.db');
+  final db = await sql.openDatabase(dbPath, version: 1, onCreate: (db, version)=>db.execute('CREATE TABLE favourites (id TEXT PRIMARY KEY, name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT )'));
+  return db;
+}
+
+void insertData({required String id,required String name,required  String artistId,required  String artistName,required  String albumId,required  String albumName,required  String imageUrl}) async
+{
+  final db = await initDataBase();
+  int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('$id', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
+  print(numberOfInsertions);
+}
+
+void deleteData({required id}) async
+{
+  final db = await initDataBase();
+  int numberOfDeletions = await db.rawDelete("DELETE FROM favourites WHERE id='$id'");
+  print(numberOfDeletions);
+}
+
+dynamic getData() async
+{
+  final db = await initDataBase();
+  var res = await db.rawQuery("SELECT * FROM favourites");
+  return res;
+}
 
 class FavouriteItemsProvider extends ChangeNotifier {
   Map<String, TrackModel> favouriteItems = {};
 
   void addToFavourite({required String id, required TrackModel details}) {
     favouriteItems[id] = details;
+    insertData(id: details.id,name: details.name, artistId: details.artistId, artistName: details.artistName, albumId: details.albumId, albumName: details.albumName, imageUrl: details.imageUrl);
     notifyListeners();
   }
 
   void removeFromFavourite({required String id}) {
     favouriteItems.remove(id);
+    deleteData(id: id);
     notifyListeners();
   }
 

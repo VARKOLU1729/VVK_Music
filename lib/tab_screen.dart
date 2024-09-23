@@ -43,9 +43,9 @@ class _TabScreenState extends State<TabScreen> {
     AudioProvider audioProvider = Provider.of<AudioProvider>(context);
 
     List<Widget> tabs = [
-      Home(),
-      Responsive.isLargeScreen(context) || Responsive.isMediumScreen(context) ? Favourites() : Search(),
-      Favourites()
+      const Home(),
+      Responsive.isLargeScreen(context) || Responsive.isMediumScreen(context) ? const Favourites() : const Search(),
+      const Favourites()
     ];
 
     Widget activePage = tabs[selectedIndex];
@@ -81,7 +81,7 @@ class _TabScreenState extends State<TabScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 100,
                                       child: Padding(
                                         padding: EdgeInsets.only(left:20),
@@ -93,7 +93,7 @@ class _TabScreenState extends State<TabScreen> {
                                       ),
                                     ),
                                     // SizedBox(width: getWidth(context)/5,),
-                                    Spacer(),
+                                    const Spacer(),
                                     SizedBox(
                                       width: 200,
                                       child: Padding(
@@ -114,7 +114,7 @@ class _TabScreenState extends State<TabScreen> {
                                       child: IconButton(
                                         tooltip: "Profile",
                                         onPressed: (){},
-                                        icon: Icon(Icons.person_rounded),
+                                        icon: const Icon(Icons.person_rounded),
                                         color: Colors.white,
                                         hoverColor: Colors.grey.withOpacity(0.4),
                                         style: ButtonStyle(
@@ -126,7 +126,7 @@ class _TabScreenState extends State<TabScreen> {
                                 )
                               :
                              (Responsive.isMediumScreen(context)?
-                              topNavBar(width: getWidth(context)<850 ? 300 : 400, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: getWidth(context)<850 ? 20 : 25,
+                              TopNavBar(width: getWidth(context)<850 ? 300 : 400, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: getWidth(context)<850 ? 20 : 25,
                                 navItems: CustomNavBar(
                                     selectedIndex: selectedIndex,
                                     onTap: _selectIndex,
@@ -136,12 +136,12 @@ class _TabScreenState extends State<TabScreen> {
                                     selectedFontSize: 14,
                                     unselectedFontSize: 12,
                                     items: [
-                                      CustomNavItems()[0],
-                                      CustomNavItems()[2]
+                                      customNavItems()[0],
+                                      customNavItems()[2]
                                     ],
                                 ),
                               )://largeScreen
-                             topNavBar(width: 450, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: 25,
+                             TopNavBar(width: 450, selectedIndex: selectedIndex, selectIndex: _selectIndex, titleTextSize: 25,
                               navItems: CustomNavBar(
                                   selectedIndex: selectedIndex,
                                   onTap: _selectIndex,
@@ -152,14 +152,14 @@ class _TabScreenState extends State<TabScreen> {
                                   selectedFontSize: 15,
                                   unselectedFontSize: 15,
                                   items: [
-                                    CustomNavItems()[0],
-                                    CustomNavItems()[2]
+                                    customNavItems()[0],
+                                    customNavItems()[2]
                                  ],
                               ),
                              )
                       )
                       ),
-                      Divider(height: 0, thickness: 0,)
+                      const Divider(height: 0, thickness: 0,)
                     ],
                   ),
                   Positioned(
@@ -183,10 +183,10 @@ class _TabScreenState extends State<TabScreen> {
                         margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
                         decoration: BoxDecoration(
                             color: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.black.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(10)
+                            borderRadius:  Responsive.isMobile(context) ?  BorderRadius.circular(10) : BorderRadius.zero
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius:  Responsive.isMobile(context) ?  BorderRadius.circular(10) : BorderRadius.zero,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -218,7 +218,7 @@ class _TabScreenState extends State<TabScreen> {
                           ),
                         ),
                       ),
-                    ):Text("Hi", style: TextStyle(color: Colors.red),)
+                    ):const Text("Hi", style: TextStyle(color: Colors.black),)
                   ),
                   if(audioProvider.openMiniPlayer)
                   Positioned(
@@ -228,19 +228,19 @@ class _TabScreenState extends State<TabScreen> {
                     child: SliderTheme(
                       data: SliderThemeData(
                         trackHeight: 3,
-                        trackShape: RectangularSliderTrackShape(),
+                        trackShape:const RectangularSliderTrackShape(),
                         overlayShape:
-                        RoundSliderOverlayShape(overlayRadius: 6),
+                        const RoundSliderOverlayShape(overlayRadius: 6),
                         thumbShape: RoundSliderThumbShape(enabledThumbRadius: Responsive.isMobile(context)?3:5),
                       ),
                       child: Padding(
-                        padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.all(0),
+                        padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 10) : const EdgeInsets.all(0),
                         child: Slider(
                           allowedInteraction:
                           SliderInteraction.tapAndSlide,
-                          thumbColor: Responsive.isMobile(context) ? Color.fromARGB(255, 44, 54, 62) : Colors.white,
+                          thumbColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.white,
                           activeColor: Responsive.isMobile(context) ? Colors.grey : Colors.white,
-                          inactiveColor: Responsive.isMobile(context) ? Color.fromARGB(255, 44, 54, 62) : Colors.grey,
+                          inactiveColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.grey,
                           value: audioProvider.duration.inMilliseconds > 0
                               ? math.min(audioProvider.currentPosition.inMilliseconds /
                               audioProvider.duration.inMilliseconds,1)
@@ -313,13 +313,13 @@ class _TabScreenState extends State<TabScreen> {
   }
 }
 
-class topNavBar extends StatelessWidget {
+class TopNavBar extends StatelessWidget {
   final void Function(int) selectIndex;
   final int selectedIndex;
   final double titleTextSize;
   final Widget navItems;
   final double width;
-  const topNavBar({super.key,required this.width, required this.selectedIndex, required this.selectIndex, required this.titleTextSize, required this.navItems});
+  const TopNavBar({super.key,required this.width, required this.selectedIndex, required this.selectIndex, required this.titleTextSize, required this.navItems});
 
   @override
   Widget build(BuildContext context) {
@@ -355,8 +355,8 @@ class topNavBar extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10),
               child: InkWell(
                 mouseCursor: MouseCursor.defer,
-                onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search()));},
-                child: searchBar(
+                onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Search()));},
+                child: const searchBar(
                   enabled: false,
                   // onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
                   height: 35,
@@ -370,7 +370,7 @@ class topNavBar extends StatelessWidget {
           child: IconButton(
             tooltip: "Profile",
               onPressed: (){},
-              icon: Icon(Icons.person),
+              icon: const Icon(Icons.person),
               color: Colors.white,
             hoverColor: Colors.grey.withOpacity(0.4),
               style: ButtonStyle(
@@ -417,7 +417,7 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
   ];
 }
 
-List<CustomNavBarItem> CustomNavItems() {
+List<CustomNavBarItem> customNavItems() {
   return [
     CustomNavBarItem(
         icon: Icons.home_outlined,

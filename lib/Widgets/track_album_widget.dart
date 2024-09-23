@@ -62,12 +62,12 @@ class TrackAlbumWidget extends StatelessWidget {
           Expanded(
             flex: 8,
             child: Container(
-              height:  Responsive.isSmallScreen(context) ? 220 :(Responsive.isMediumScreen(context)?230:260),
-              padding: Responsive.isSmallScreen(context)
+              height:  Responsive.isSmallScreen(context) || Responsive.isMobile(context)? 220 :(Responsive.isMediumScreen(context)?230:260),
+              padding: Responsive.isSmallScreen(context) || Responsive.isMobile(context)
                   ? const EdgeInsets.all(5)
                   : const EdgeInsets.all(10),
               child:type==Type.artist? Container(
-                width: Responsive.isSmallScreen(context) ? 170 :(Responsive.isMediumScreen(context)?170:190),
+                width: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ? 170 :(Responsive.isMediumScreen(context)?170:190),
                 decoration:BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover)),
