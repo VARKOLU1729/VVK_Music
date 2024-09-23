@@ -7,7 +7,7 @@ class Responsive{
   static int mediumScreenSize = 1200;
 
 
-  static bool isMobile(context)
+  static bool isMobile([context])
   {
     return !kIsWeb;
   }

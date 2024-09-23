@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 
+import '../Helper/Responsive.dart';
 import '../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
 import '../models/track_model.dart';
@@ -20,14 +21,26 @@ Future<Database> initDataBase() async
 void insertData({required String id,required String name,required  String artistId,required  String artistName,required  String albumId,required  String albumName,required  String imageUrl}) async
 {
   final db = await initDataBase();
-  int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('$id', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
+  // int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('${id}', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
+  int numberOfInsertions = await db.insert(
+    'favourites',
+    {
+      'id':id,
+      'name':name,
+      'artistId':artistId,
+      'artistName':artistName,
+      'albumId':albumId,
+      'albumName':albumName,
+      'imageUrl':imageUrl
+    }
+  );
   print(numberOfInsertions);
 }
 
 void deleteData({required id}) async
 {
   final db = await initDataBase();
-  int numberOfDeletions = await db.rawDelete("DELETE FROM favourites WHERE id='$id'");
+  int numberOfDeletions = await db.rawDelete("DELETE  FROM favourites WHERE id='$id'");
   print(numberOfDeletions);
 }
 
@@ -38,17 +51,51 @@ dynamic getData() async
   return res;
 }
 
+Future<bool> checkData({required String id}) async
+{
+  final db = await initDataBase();
+  var res = await db.rawQuery("SELECT id FROM favourites WHERE id = '$id'");
+  return res.isNotEmpty;
+}
+
 class FavouriteItemsProvider extends ChangeNotifier {
   Map<String, TrackModel> favouriteItems = {};
 
+  FavouriteItemsProvider() {
+    if(Responsive.isMobile())
+    _loadFavouriteItems();
+  }
+
+  Future<void> _loadFavouriteItems() async {
+    final db = await initDataBase();
+    final data = await db.rawQuery("SELECT * FROM favourites");
+
+    for (var item in data) {
+      final track = TrackModel(
+        id: item['id']!.toString(),
+        name: item['name']!.toString(),
+        artistId: item['artistId']!.toString(),
+        artistName: item['artistName']!.toString(),
+        albumId: item['albumId']!.toString(),
+        albumName: item['albumName']!.toString(),
+        imageUrl: item['imageUrl']!.toString(),
+      );
+      favouriteItems[item['id']!.toString()] = track;
+    }
+
+    notifyListeners();
+  }
+
   void addToFavourite({required String id, required TrackModel details}) {
     favouriteItems[id] = details;
+    if(Responsive.isMobile())
     insertData(id: details.id,name: details.name, artistId: details.artistId, artistName: details.artistName, albumId: details.albumId, albumName: details.albumName, imageUrl: details.imageUrl);
     notifyListeners();
   }
 
   void removeFromFavourite({required String id}) {
     favouriteItems.remove(id);
+    if(Responsive.isMobile())
     deleteData(id: id);
     notifyListeners();
   }

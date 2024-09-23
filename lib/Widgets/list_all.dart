@@ -47,7 +47,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider,  child){
-      if(favProvider.favouriteItems.containsKey(id)) addedToFav=true;
+      bool addedToFav = favProvider.checkInFav(id: id!);
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: InkWell(
