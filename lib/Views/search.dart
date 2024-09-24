@@ -21,9 +21,6 @@ class _SearchState extends State<Search> {
 
   final PagingController<int, dynamic> _searchPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
 
-  // final PagingController<int, dynamic> _genreTrackPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
-  // final PagingController<int, dynamic> _genreAlbumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
-  // final PagingController<int, dynamic> _genreArtistPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
 
   String _currentQuery = '';
   bool _isSearched = false;

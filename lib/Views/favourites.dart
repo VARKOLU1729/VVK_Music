@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../Helper/Responsive.dart';
@@ -25,24 +26,46 @@ class _FavouritesState extends State<Favourites> {
   Widget build(BuildContext context) {
 
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
-      appBar: Responsive.isMobile()? AppBar(
-        toolbarHeight: 50,
-        leading:
-        IconButton(
-            onPressed: (){
-              // Navigator.pop(context);
-            },
-            icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
-        ),
-        backgroundColor: Colors.white.withOpacity(0.0001),
-        actions: [IconButton(
-            onPressed: (){
-              // Navigator.pop(context);
-            },
-            icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
-        ),],
-      ):null,
+      appBar:PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child:
+              AppBar(
+                leading:
+                IconButton(
+                    onPressed: (){
+                      // Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+                ),
+                backgroundColor: Colors.white.withOpacity(0.0001),
+                actions: [IconButton(
+                    onPressed: (){
+                      // Navigator.pop(context);
+                    },
+                    icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
+                ),],
+              ),
+          ),
+      //   Responsive.isMobile()? AppBar(
+      //   toolbarHeight: 50,
+      //   leading:
+      //   IconButton(
+      //       onPressed: (){
+      //         // Navigator.pop(context);
+      //       },
+      //       icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+      //   ),
+      //   backgroundColor: Colors.white.withOpacity(0.0001),
+      //   actions: [IconButton(
+      //       onPressed: (){
+      //         // Navigator.pop(context);
+      //       },
+      //       icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
+      //   ),],
+      // ):null,
         backgroundColor: const Color.fromARGB(200, 88, 86, 86),
+        extendBodyBehindAppBar: true,
+        extendBody: true,
         body: Stack(
           children: [
             Image.network(
@@ -71,7 +94,7 @@ class _FavouritesState extends State<Favourites> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 20,
+                  height: 100,
                 ),
                 Expanded(
                   flex: 2,

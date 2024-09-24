@@ -24,6 +24,7 @@ class CustomNavBar extends StatelessWidget {
   final Layout layout;
   final bool showLabel;
   final TextStyle? labelStyle;
+  final double? width;
 
   const CustomNavBar({
     super.key,
@@ -37,6 +38,7 @@ class CustomNavBar extends StatelessWidget {
     this.selectedItemColor = Colors.teal,
     this.unselectedItemColor = Colors.white70,
     this.iconSize = 24.0,
+    this.width,
     this.selectedFontSize = 14.0,
     this.unselectedFontSize = 12.0,
   }):assert(showLabel==false || labelStyle!=null, 'If showLabel is true , then labelStyle must not be null');
@@ -44,6 +46,7 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
       color: backgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       height: 72,

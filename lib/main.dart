@@ -27,11 +27,7 @@ void main() {
           home: const TabScreen(),
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData().copyWith(
-            colorScheme: kDarkTheme,
-              appBarTheme: const AppBarTheme().copyWith(
-                  backgroundColor: kDarkTheme.primary,
-                  centerTitle: true,
-                  titleTextStyle: TextStyle(color: kDarkTheme.onPrimary))),
+            colorScheme: kDarkTheme)
         )) ,
       ) ;
 }

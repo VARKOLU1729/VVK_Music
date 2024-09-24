@@ -101,7 +101,7 @@ flutter_native_splash:
     ios : true
     web : true
     image : assets/images/music.jpg
-    color : "#FFFFFF"
+    color : "#000000"
     android_12 :
       image : assets/images/music.jpg
-      color : "#FFFFFF"
+      color : "#000000"
