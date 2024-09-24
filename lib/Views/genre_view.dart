@@ -1,12 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/play_text_button.dart';
 
 import '../Helper/Responsive.dart';
 import '../Helper/deviceParams.dart';
 
 import '../Widgets/display_with_pagination.dart';
+import '../Widgets/provider.dart';
 import '../Widgets/see_all.dart';
 import '../Widgets/track_album_widget.dart';
 import '../Widgets/header.dart';
@@ -15,20 +19,19 @@ import '../Data/top_tracks.dart';
 import '../Data/top_albums.dart';
 import '../Data/fetch_data.dart';
 import '../Data/top_artists.dart';
+import 'music_player_view.dart';
 
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class GenreView extends StatefulWidget {
+  final List<dynamic> genreData;
+  final List<Color> gradientColors;
+  const GenreView({super.key, required this.genreData, required this.gradientColors});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<GenreView> createState() => _GenreViewState();
 }
 
-class _HomeState extends State<Home> {
-  String stationId = "ps.10388500";
-  String stationArtistName = "The Smiths, Elliott Smith, Aimee Mann";
-  String stationImageUrl =
-      "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
+class _GenreViewState extends State<GenreView> {
 
   final PagingController<int, dynamic> _trackPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   final PagingController<int, dynamic> _albumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
@@ -38,25 +41,25 @@ class _HomeState extends State<Home> {
   final ScrollController albumScrollController = ScrollController();
   final ScrollController artistScrollController = ScrollController();
 
-  
+
   void _loadTrackData(pageKey) async {
     List<dynamic> trackData = await FetchTopTracks(
-        path: 'tracks/top',
+        path: 'genres/${widget.genreData[0]}/tracks/top',
         controller: _trackPagingController,
         pageKey: pageKey);
     if (trackData.isEmpty)
-      {
-        _trackPagingController.appendLastPage(trackData);
-      }
+    {
+      _trackPagingController.appendLastPage(trackData);
+    }
     else
-      {
-        _trackPagingController.appendPage(trackData, pageKey + 1);
-      }
+    {
+      _trackPagingController.appendPage(trackData, pageKey + 1);
+    }
   }
 
   void _loadAlbumData(pageKey) async {
     List<dynamic> albumData = await FetchTopAlbums(
-        path: 'albums/top',
+        path: 'genres/${widget.genreData[0]}/albums/top',
         controller: _albumPagingController,
         pageKey: pageKey);
     if (albumData.isEmpty) {
@@ -68,7 +71,7 @@ class _HomeState extends State<Home> {
 
   void _loadArtistData(pageKey) async {
     List<dynamic> artistData = await FetchTopArtists(
-        path: 'artists/top',
+        path: 'genres/${widget.genreData[0]}/artists/top',
         controller: _artistPagingController,
         pageKey: pageKey);
     if (artistData.isEmpty) {
@@ -78,25 +81,10 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void _loadStationData() async {
-    try{
-      var stationData = await fetchData(path: 'stations/$stationId');
-      setState(() {
-        stationArtistName = stationData['stations'][0]['artists'];
-        stationImageUrl =
-        stationData['stations'][0]['links']['largeImage']['href'];
-      });
-    }
-    catch(error)
-    {
-      print("$error");
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _loadStationData();
     _trackPagingController.addPageRequestListener((pageKey) {
       _loadTrackData(pageKey);
     });
@@ -118,103 +106,43 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var audioProvider = Provider.of<AudioProvider>(context, listen: false);
     return Scaffold(
-      appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
+      // appBar:AppBar(backgroundColor: Colors.white.withOpacity(0.001),toolbarHeight: 60,leading: IconButton(onPressed: (){Navigator.pop(context);}, icon:Icon(Icons.keyboard_arrow_left, size: 40, color: Colors.white),) ),
       // backgroundColor: const Color.fromARGB(255, 18, 20, 25),
       backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(children: [
-        BackdropFilter(
-          blendMode: BlendMode.srcOver,
-          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-          child: Container(
-            color: Colors.black87.withOpacity(0.1),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: widget.gradientColors)
           ),
         ),
         SingleChildScrollView(
           child: Column(
             children: [
-              // first child
-              if (Responsive.isMobile(context))
-                //   show the station image in the background and station details
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: getHeight(context) / 2.25,
-                      width: getWidth(context),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(stationImageUrl, scale: 20),
-                              fit: BoxFit.cover)),
-                      child: Stack(
-                        children:[
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.3),
-                                  Colors.black.withOpacity(0.5)
-                                ])),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(
-                                      "STATION",
-                                      style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 12, 189, 189),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: const Text("My Soundtrack",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 30)),
-                                    subtitle: Text("Based on $stationArtistName",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                                    trailing: ClipRRect(
-                                      borderRadius: BorderRadius.circular(60),
-                                      child: Container(
-                                        color: const Color.fromARGB(255, 12, 189, 189),
-                                        child: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.play_arrow,
-                                              size: 30,
-                                            )),
-                                      ),
-                                    ),
-                                  ),
-                                ]),
-                                                    ),
-                          ),
-                        ]
-                      ),
-                    ),
-                    Container(
-                      color: Colors.black,
-                    )
-                  ],
+
+              const SizedBox(height: 60,),
+
+              Text('${widget.genreData[1]}', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60, color: Colors.white),),
+
+              const SizedBox(height: 20,),
+
+              if(_trackPagingController.itemList!=null)
+              PlayTextButton(trackList: _trackPagingController.itemList!),
+
+              Container(
+                width: 90,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: const Color.fromARGB(255, 11, 228, 228)
                 ),
-          
-              // second child
-          
+                child: TextButton(onPressed: () async{
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                  await audioProvider.loadAudio(trackList:_trackPagingController.itemList!,index:0);
+
+                }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
+              ),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -237,16 +165,16 @@ class _HomeState extends State<Home> {
                       },
                       scrollController: trackScrollController,
                       title: "Top Tracks"),
-          
+
                   const SizedBox(
                     height: 10,
                   ),
                   DisplayWithPagination(
-                    pagingController: _trackPagingController,
-                    type: Type.track,
-                    scrollController : trackScrollController
+                      pagingController: _trackPagingController,
+                      type: Type.track,
+                      scrollController : trackScrollController
                   ),
-          
+
                   Header(
                       onTap: () {
                         Widget widget = SeeAll(
@@ -262,7 +190,7 @@ class _HomeState extends State<Home> {
                       title: "Top Albums",
                       scrollController: albumScrollController
                   ),
-          
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -271,7 +199,7 @@ class _HomeState extends State<Home> {
                       type: Type.album,
                       scrollController : albumScrollController
                   ),
-          
+
                   Header(
                       onTap: () {
                         Widget widget = SeeAll(
@@ -287,7 +215,7 @@ class _HomeState extends State<Home> {
                       title: "Top Artists",
                       scrollController: artistScrollController
                   ),
-          
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -301,20 +229,16 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        if (Responsive.isMobile(context))
-          Positioned(
-            child: Container(
-              height: 40,
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: Text(
-                  "Explore Music",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ),
-            //
+        Positioned(
+          child: Container(
+            height: 60,
+            color: Colors.black.withOpacity(0.01),
+            child: IconButton(onPressed: (){
+              Navigator.pop(context);
+            }, icon: Icon(Icons.keyboard_arrow_left,color: Colors.white,size: 40,))
           ),
+          //
+        ),
       ]),
     );
   }

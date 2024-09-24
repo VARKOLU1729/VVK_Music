@@ -18,7 +18,9 @@ import '../home.dart';
 import 'dart:math' as math;
 
 class TabScreen extends StatefulWidget {
-  const TabScreen({super.key});
+
+  final Widget? activePage;
+  const TabScreen({super.key, this.activePage});
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -53,6 +55,7 @@ class _TabScreenState extends State<TabScreen> {
 
     return Scaffold(
 
+
         backgroundColor: const Color.fromARGB(255, 18, 20, 25),
     
         body:  Stack(
@@ -63,7 +66,7 @@ class _TabScreenState extends State<TabScreen> {
                           child:SizedBox(height:Responsive.isMobile(context)?1: 72,),
                         )];
                       },
-                      body: activePage
+                      body: widget.activePage!=null ? widget.activePage! : activePage
                   ),
 
                   // top nav bar for web

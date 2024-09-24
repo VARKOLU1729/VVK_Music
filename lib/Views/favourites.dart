@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Helper/Responsive.dart';
 import '../Views/music_player_view.dart';
 
 import '../Helper/deviceParams.dart';
@@ -24,7 +25,7 @@ class _FavouritesState extends State<Favourites> {
   Widget build(BuildContext context) {
 
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
-      appBar: AppBar(
+      appBar: Responsive.isMobile()? AppBar(
         toolbarHeight: 50,
         leading:
         IconButton(
@@ -40,7 +41,7 @@ class _FavouritesState extends State<Favourites> {
             },
             icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
         ),],
-      ),
+      ):null,
         backgroundColor: const Color.fromARGB(200, 88, 86, 86),
         body: Stack(
           children: [

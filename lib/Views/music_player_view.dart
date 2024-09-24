@@ -156,29 +156,32 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                 children: [
 
                                   //Track Name - on tap album View
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => AlbumView(
-                                            albumId: albumId,
-                                            albumName: albumName,
-                                            albumImageUrl: trackImageUrl,
-                                            artistId: artistId,
-                                            artistName: artistName,
+                                  SizedBox(
+                                    width: getWidth(context)/1.5,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => AlbumView(
+                                              albumId: albumId,
+                                              albumName: albumName,
+                                              albumImageUrl: trackImageUrl,
+                                              artistId: artistId,
+                                              artistName: artistName,
+                                            ),
                                           ),
+                                        );
+                                      },
+                                      child: Text(
+                                        trackName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: Responsive.isSmallScreen(context) || Responsive.isMobile(context)  ? 18 : 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
                                         ),
-                                      );
-                                    },
-                                    child: Text(
-                                      trackName,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: Responsive.isSmallScreen(context) || Responsive.isMobile(context)  ? 18 : 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
