@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Views/login_view.dart';
 
 import '../tab_screen.dart';
 import '../Widgets/provider.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
 
 var kDarkTheme = ColorScheme(
     brightness: Brightness.dark,
@@ -16,7 +21,11 @@ var kDarkTheme = ColorScheme(
     surface: Color.fromARGB(255, 44, 54, 62),
     onSurface: Colors.white);
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   return runApp(
       MultiProvider(
           providers: [
@@ -25,7 +34,7 @@ void main() {
           ],
         child:MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: TabScreen(),
+          home: LoginView(),
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData().copyWith(
             colorScheme: kDarkTheme)
