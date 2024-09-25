@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:runo_music/Widgets/see_all.dart';
+import 'package:runo_music/tab_screen.dart';
+import 'package:runo_music/Widgets/track_album_widget.dart';
 import '../Helper/Responsive.dart';
 
 class Header extends StatelessWidget {
-  final void Function() onTap;
   final String title;
   final ScrollController? scrollController;
-  const Header({super.key, required this.onTap, required this.title,this.scrollController});
+  final PagingController<int, dynamic> pagingController;
+  final Type type;
+  const Header({super.key,required this.type, required this.title,required this.pagingController, this.scrollController});
 
   void leftScroll(ScrollController scrollController)
   {
@@ -52,7 +56,9 @@ class Header extends StatelessWidget {
                   if(!Responsive.isMobile(context))
                   IconButton(onPressed: ()=>rightScroll(scrollController!), icon:Icon(Icons.keyboard_arrow_right, color: Colors.white,)),
                   InkWell(
-                      onTap: onTap,
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: SeeAll(type:type , pagingController: pagingController!),)));
+                        } ,
                       child: Container(
                         width: 80,
                         height: 35,
@@ -61,7 +67,7 @@ class Header extends StatelessWidget {
                           bottom: 5,
                         ),
                         decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.1),
+                            color: Theme.of(context).colorScheme.secondary,
                             borderRadius: BorderRadius.circular(50)),
                         child: Center(
                             child:Text(Responsive.isMobile(context) ? "SEE MORE" : "SEE ALL",

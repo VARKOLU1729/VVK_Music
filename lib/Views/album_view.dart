@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Widgets/mobile_app_bar.dart';
+import 'package:runo_music/Widgets/play_round_button.dart';
+import 'package:runo_music/Widgets/play_text_button.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Widgets/provider.dart';
 import 'package:runo_music/models/track_model.dart';
 
 import 'music_player_view.dart';
-
-// List<TrackModel> albumTrackData = [];
 
 class AlbumView extends StatefulWidget {
   final String albumId;
@@ -59,8 +61,11 @@ class _AlbumViewState extends State<AlbumView> {
 
   @override
   Widget build(BuildContext context) {
-    var audioProvider = Provider.of<AudioProvider>(context);
+    var audioProvider = Provider.of<AudioProvider>(context, listen: false);
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false):null,
         backgroundColor: const Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
 
@@ -71,16 +76,24 @@ class _AlbumViewState extends State<AlbumView> {
             fit: BoxFit.cover,
           ),
 
+          Container(
+            margin: EdgeInsets.only(top: getHeight(context)/2),
+            color: Colors.black,
+          ),
+
           const BackGroundBlur(),
+
+
 
           NestedScrollView(
               headerSliverBuilder: (context, isScrolled)
               {
-                return [SliverToBoxAdapter(
+                return [
+                  SliverToBoxAdapter(
                   child: Responsive.isMobile(context)||Responsive.isSmallScreen(context) ? Column(
                     children: [
                       SizedBox(
-                        height: 100,
+                        height: 120,
                       ),
                       Center(
                         child: ClipRRect(
@@ -89,7 +102,7 @@ class _AlbumViewState extends State<AlbumView> {
                           Image.network(
                             widget.albumImageUrl,
                             fit: BoxFit.cover,
-                            scale: 0.75,
+                            scale: 0.7,
                           ),
                         ),
                       ),
@@ -98,33 +111,44 @@ class _AlbumViewState extends State<AlbumView> {
 
                       Responsive.isMobile(context) ?
                       Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: ListTile(
-                          title: Text(
-                            widget.albumName,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
-                                fontSize: 10
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.albumName,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          trailing:Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: const Color.fromARGB(255, 11, 228, 228)
+                            Text('${widget.artistName}', style: TextStyle(color: Colors.white, fontSize: 15),),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                    fontSize: 10
+                                ),
+                              ),
                             ),
-                            child: IconButton(onPressed: () async{
-
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-                              await audioProvider.loadAudio(trackList:albumTrackData,index:0);
-
-                            }, icon: const Icon(Icons.play_arrow, size: 30,)),
-                          ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 20),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                                title:Row(
+                                  children: [
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.shuffle, color: Colors.white,)),
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.favorite_outline, color: Colors.white,)),
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.file_download, color: Colors.white,)),
+                                    IconButton(onPressed: (){}, icon: Icon(Icons.share, color: Colors.white,))
+                                  ],
+                                ),
+                                trailing:PlayRoundButton(items: albumTrackData)
+                              ),
+                            ),
+                          ],
                         ),
                       ):
 
@@ -154,19 +178,7 @@ class _AlbumViewState extends State<AlbumView> {
                                   fontSize: 15
                               ),
                             ),
-                            Container(
-                              width: 90,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: const Color.fromARGB(255, 11, 228, 228)
-                              ),
-                              child: TextButton(onPressed: () async{
-
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-                                await audioProvider.loadAudio(trackList:albumTrackData,index:0);
-
-                              }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
-                            ),
+                            PlayTextButton(trackList: albumTrackData)
                           ],
                         ),
                       ),
@@ -237,24 +249,13 @@ class _AlbumViewState extends State<AlbumView> {
                       )
                 )];
               },
-              body: Container(
-                padding: EdgeInsets.only(top: 40),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black.withOpacity(0.005), Colors.black.withOpacity(0.05), Colors.black.withOpacity(0.2),  Colors.black.withOpacity(0.3), Colors.black.withOpacity(0.4),Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.9)]
-                    )
-                ),
-                child:  ListView.builder(
-                    itemCount: albumTrackData.length,
-                    itemBuilder: (context, index) {
-                      return ListAllWidget(index: index,items: albumTrackData, decorationReq: true,);
+              body: ListView.builder(
+                  itemCount: albumTrackData.length,
+                  itemBuilder: (context, index) {
+                    return ListAllWidget(index: index,items: albumTrackData, decorationReq: true,);
 
-                    }),
-              ),
+                  }),
           ),
-          const PopOut(),
         ]
         )
     );

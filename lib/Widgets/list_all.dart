@@ -50,60 +50,57 @@ class _ListAllWidgetState extends State<ListAllWidget> {
       bool addedToFav = favProvider.checkInFav(id: id!);
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: InkWell(
-            onTap: () async{
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-              await audioProvider.loadAudio(trackList:widget.items,index: widget.index);
-            },
-            child: Column(
-              children: [
-                ListTile(
-                  hoverColor: Colors.transparent,
-                  mouseCursor: MouseCursor.defer,
-                  key: ValueKey(id),
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      if(!Responsive.isMobile(context) && widget.decorationReq)
-                      Text('${widget.index+1}', style: TextStyle(color: Colors.white, fontSize: 15),),
-                      Padding(
-                        padding:EdgeInsets.only(left: Responsive.isMobile(context)? 10:20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                            imageUrl!,
-                            fit: BoxFit.cover,
-                          ),
+          child: Column(
+            children: [
+              ListTile(
+                onTap: () async{
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                  await audioProvider.loadAudio(trackList:widget.items,index: widget.index);
+                },
+                hoverColor: Colors.red,
+                key: ValueKey(id),
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    if(!Responsive.isMobile(context) && widget.decorationReq)
+                    Text('${widget.index+1}', style: TextStyle(color: Colors.white, fontSize: 15),),
+                    Padding(
+                      padding:EdgeInsets.only(left: Responsive.isMobile(context)? 10:20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                          imageUrl!,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ],
-                  ),
-                  title: Text(
-                    name!,
+                    ),
+                  ],
+                ),
+                title: Text(
+                  name!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                ),
+                subtitle: Text(artistName!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                  subtitle: Text(artistName!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                  trailing: favButton(onTap: () {
-                    favProvider.toggleFavourite(
-                        id: id!,
-                        details: TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!),
-                        context: context);
-                    setState(() {
-                      addedToFav = !addedToFav;
-                    });
-                      },
-                      addedToFav: addedToFav),
-                ),
-                if(!Responsive.isMobile(context) && widget.decorationReq)
-                Divider(indent: 20,endIndent: 20,height: 0,thickness: 0,),
-              ],
-            ),
+                    style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                trailing: favButton(onTap: () {
+                  favProvider.toggleFavourite(
+                      id: id!,
+                      details: TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!),
+                      context: context);
+                  setState(() {
+                    addedToFav = !addedToFav;
+                  });
+                    },
+                    addedToFav: addedToFav),
+              ),
+              if(!Responsive.isMobile(context) && widget.decorationReq)
+              Divider(indent: 20,endIndent: 20,height: 0,thickness: 0,color: Colors.grey,),
+            ],
           ),
         );}
     );

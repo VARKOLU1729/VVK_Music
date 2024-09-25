@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/mobile_app_bar.dart';
+import 'package:runo_music/Widgets/play_round_button.dart';
 
 import '../Helper/Responsive.dart';
 import '../Views/music_player_view.dart';
@@ -26,26 +28,7 @@ class _FavouritesState extends State<Favourites> {
   Widget build(BuildContext context) {
 
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
-      appBar:PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child:
-              AppBar(
-                leading:
-                IconButton(
-                    onPressed: (){
-                      // Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
-                ),
-                backgroundColor: Colors.white.withOpacity(0.0001),
-                actions: [IconButton(
-                    onPressed: (){
-                      // Navigator.pop(context);
-                    },
-                    icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
-                ),],
-              ),
-          ),
+      appBar: Responsive.isMobile() ?  MobileAppBar(context, disablePop: true) : null,
       //   Responsive.isMobile()? AppBar(
       //   toolbarHeight: 50,
       //   leading:
@@ -63,7 +46,6 @@ class _FavouritesState extends State<Favourites> {
       //       icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
       //   ),],
       // ):null,
-        backgroundColor: const Color.fromARGB(200, 88, 86, 86),
         extendBodyBehindAppBar: true,
         extendBody: true,
         body: Stack(
@@ -74,22 +56,14 @@ class _FavouritesState extends State<Favourites> {
               height: double.infinity,
               fit: BoxFit.cover,
             ),
-            const BackGroundBlur(),
+
             Container(
-              margin: EdgeInsets.only(top: getHeight(context)/3),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                    Colors.black.withOpacity(0.01),
-                        Colors.black.withOpacity(0.3),
-                    Colors.black.withOpacity(0.5),
-                    Colors.black.withOpacity(0.6),
-                    Colors.black.withOpacity(0.7),
-                    Colors.black.withOpacity(0.9)
-                  ])),
+              margin: EdgeInsets.only(top: getHeight(context)/2),
+              color: Colors.black,
             ),
+
+            const BackGroundBlur(),
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,25 +103,27 @@ class _FavouritesState extends State<Favourites> {
                       fontWeight: FontWeight.bold
                     ),
                   ),
-                  trailing:Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: const Color.fromARGB(255, 12, 189, 189)
-                    ),
-                    child: IconButton(onPressed: () async{
-
-                      if(favProvider.favouriteItems.isEmpty)
-                        {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
-                        }
-                      else
-                        {
-                          await audioProvider.loadAudio(trackList: favProvider.favouriteItems.values.toList(), index: 0);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-                        }
-
-                    }, icon: const Icon(Icons.play_arrow, size: 30,)),
-                  ),
+                  
+                  trailing: PlayRoundButton(items: favProvider.favouriteItems.values.toList()),
+                  // trailing:Container(
+                  //   decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(50),
+                  //       color: Theme.of(context).colorScheme.tertiary
+                  //   ),
+                  //   child: IconButton(onPressed: () async{
+                  //
+                  //     if(favProvider.favouriteItems.isEmpty)
+                  //       {
+                  //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor:Colors.orangeAccent, content: Text("Please Add Some Songs To Play", style: TextStyle(color: Colors.white),)));
+                  //       }
+                  //     else
+                  //       {
+                  //         await audioProvider.loadAudio(trackList: favProvider.favouriteItems.values.toList(), index: 0);
+                  //         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                  //       }
+                  //
+                  //   }, icon: const Icon(Icons.play_arrow, size: 30,color: Colors.black,)),
+                  // ),
                 ),
                 Expanded(
                   flex: 4,

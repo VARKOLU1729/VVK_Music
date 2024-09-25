@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import 'package:runo_music/Widgets/list_all.dart';
+import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 
 import '../Helper/Responsive.dart';
@@ -28,22 +29,25 @@ class _SeeAllState extends State<SeeAll> {
       title = "Artists for You";
     }
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        leading:
-        IconButton(
-            onPressed: (){
-              Navigator.pop(context);
-            },
-            icon:const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
-        ),
-        backgroundColor: Colors.black.withOpacity(0.88),
-        title:
-        Padding(
-          padding: const EdgeInsets.only(top:5.0),
-          child: Text(title, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
-        ),
-      ),
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false,title:title):null,
+      // appBar: AppBar(
+      //   toolbarHeight: 100,
+      //   leading:
+      //   IconButton(
+      //       onPressed: (){
+      //         Navigator.pop(context);
+      //       },
+      //       icon:const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
+      //   ),
+      //   backgroundColor: Colors.black.withOpacity(0.88),
+      //   title:
+      //   Padding(
+      //     padding: const EdgeInsets.only(top:5.0),
+      //     child: Text(title, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+      //   ),
+      // ),
       body:Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(

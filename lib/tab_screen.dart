@@ -20,8 +20,9 @@ import 'dart:math' as math;
 
 class TabScreen extends StatefulWidget {
 
-  final Widget? activePage;
-  const TabScreen({super.key, this.activePage});
+  Widget? activePage;
+  bool showAppBar;
+  TabScreen({super.key, this.activePage, this.showAppBar=true});
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -36,6 +37,7 @@ class _TabScreenState extends State<TabScreen> {
   void _selectIndex(index) {
     setState(() {
       selectedIndex = index;
+      widget.activePage = null;
     });
   }
 
@@ -58,15 +60,16 @@ class _TabScreenState extends State<TabScreen> {
         extendBody: true,
         extendBodyBehindAppBar: true,
         backgroundColor: const Color.fromARGB(255, 18, 20, 25),
-        appBar: !Responsive.isMobile() ? AppBar(
+        //appBar for desktop
+        appBar: !Responsive.isMobile() ? (widget.showAppBar==true ? AppBar(
           toolbarHeight: 72,
-          bottom: PreferredSize(preferredSize: Size.fromHeight(1), child: Divider(height: 0,thickness: 0,)),
+          bottom: PreferredSize(preferredSize: Size.fromHeight(1), child: Divider(height: 0,thickness: 0,color: Colors.grey,)),
           backgroundColor: Colors.black.withOpacity(0.5),
           actions: [
             if(Responsive.isSmallScreen(context))
             CustomNavBar(
               width: 250,
-              backgroundColor: Colors.black.withOpacity(0.5),
+              backgroundColor: Colors.transparent,
               selectedIndex: selectedIndex,
               onTap: _selectIndex,
               showLabel: false,
@@ -104,7 +107,7 @@ class _TabScreenState extends State<TabScreen> {
                   flex: 3,
                   child: CustomNavBar(
                     width: 300,
-                    backgroundColor: Colors.black.withOpacity(0.5),
+                    backgroundColor: Colors.transparent,
                     selectedIndex: selectedIndex,
                     onTap: _selectIndex,
                     showLabel: Responsive.isMediumScreen(context) ? false :true,
@@ -121,35 +124,29 @@ class _TabScreenState extends State<TabScreen> {
                 ),
             ],
           )
+          ):null):null,
 
-          ):null,
-
-        body: NestedScrollView(
-            headerSliverBuilder: (context, val){
-              return [SliverToBoxAdapter(
-                child:SizedBox(height:Responsive.isMobile(context)?1: 72,),
-              )];
-            },
-            body: widget.activePage!=null ? widget.activePage! : activePage
-        ),
+        body: widget.activePage!=null ? widget.activePage! : activePage,
       
       bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
         Container(
           alignment: Alignment.bottomCenter,
-          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
+          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 70 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 125 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
           decoration: Responsive.isMobile()? BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors:  [
-                const Color.fromARGB(255, 51, 62, 71).withOpacity(0.01),
-                const  Color.fromARGB(255, 51, 62, 71).withOpacity(0.1),
-                Colors.black87.withOpacity(0.5)
+                    Color.fromARGB(255, 29, 33, 33).withOpacity(0.5) ,
+                    Color.fromARGB(255, 29, 33, 33).withOpacity(0.5) ,
+                    Color.fromARGB(255, 29, 33, 33) ,
+                    Color.fromARGB(255, 29, 33, 33) ,
+                Colors.black87
               ])):null,
           child: Container(
             margin: Responsive.isMobile(context)? const EdgeInsets.symmetric(horizontal: 10):null,
             decoration: BoxDecoration(
-              color:Responsive.isMobile() ? const Color.fromARGB(255, 44, 54, 62) : Colors.black.withOpacity(0.9),
+              color:Responsive.isMobile() ? const Color.fromARGB(255, 29, 33, 33) : Colors.black.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(10)
             ),
             child: ClipRRect(
@@ -160,18 +157,18 @@ class _TabScreenState extends State<TabScreen> {
                   if(audioProvider.openMiniPlayer == true)
                   SliderTheme(
                     data: SliderThemeData(
-                      trackHeight: 3,
+                      trackHeight: 2,
                       trackShape:const RectangularSliderTrackShape(),
                       overlayShape: RoundSliderOverlayShape(overlayRadius: Responsive.isMobile(context)?1:3),
                       thumbShape: RoundSliderThumbShape(enabledThumbRadius: Responsive.isMobile(context)?1:3),
                     ),
                     child: Padding(
-                      padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 10) : const EdgeInsets.all(0),
+                      padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 5) : const EdgeInsets.all(0),
                       child: Slider(
                         allowedInteraction: SliderInteraction.tapAndSlide,
-                        thumbColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.white,
+                        thumbColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 29, 33, 33) : Colors.white,
                         activeColor: Responsive.isMobile(context) ? Colors.grey : Colors.white,
-                        inactiveColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 44, 54, 62) : Colors.grey,
+                        inactiveColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 29, 33, 33) : Colors.grey,
                         value: audioProvider.duration.inMilliseconds > 0
                             ? math.min(audioProvider.currentPosition.inMilliseconds /
                             audioProvider.duration.inMilliseconds,1)
@@ -201,13 +198,13 @@ class _TabScreenState extends State<TabScreen> {
                       flex: 1,
                       child: BottomNavigationBar(
                           onTap: _selectIndex,
-                          selectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
-                          unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10),
-                          backgroundColor: const Color.fromARGB(255, 44, 54, 62),
+                          selectedLabelStyle: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800),
+                          unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800),
+                          backgroundColor: const Color.fromARGB(255, 29, 33, 33) ,
                           unselectedItemColor: Colors.white70,
-                          selectedItemColor: const Color.fromARGB(255, 12, 189, 189),
+                          selectedItemColor: Theme.of(context).colorScheme.tertiary,
                           currentIndex: selectedIndex,
-                          items: bottomNavItems(iconSize: 20.0)),
+                          items: bottomNavItems(iconSize: 25.0)),
                     ),
                 ],
               ),
@@ -221,7 +218,8 @@ class _TabScreenState extends State<TabScreen> {
 }
 
 class NavSearchBar extends StatelessWidget {
-  const NavSearchBar({super.key});
+  NavSearchBar({super.key});
+  final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -231,10 +229,11 @@ class NavSearchBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 10),
           child: InkWell(
             mouseCursor: MouseCursor.defer,
-            onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Search()));},
-            child: const searchBar(
+            onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(showAppBar:false, activePage: Search(),) ));},
+            child: searchBar(
               enabled: false,
-              // onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Search(queryHomePage: val)));},
+              // textController: _searchController,
+              // onSubmit: (val) {Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(showAppBar:false, activePage: Search(queryHomePage: val,))));},
               height: 35,
               isMarginReq: false,
               width: 300,
@@ -285,7 +284,7 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
           Icons.search,
           size: iconSize,
         ),
-        label: "SEARCH"),
+        label: "FIND"),
     BottomNavigationBarItem(
         icon: Icon(
           Icons.favorite_border,

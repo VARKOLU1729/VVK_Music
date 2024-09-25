@@ -55,9 +55,9 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                title: Text(trackName, style: const TextStyle(color: Colors.white),),
-                subtitle: Text(artistName, style: const TextStyle(color: Colors.grey),),
-                trailing:Row(mainAxisSize: MainAxisSize.min, children: [PlayPauseButton(iconSize: 25,isDecoration: false,), NextButton(audioProvider: audioProvider, iconSize: 25)],) ,
+                title: Text(trackName,maxLines: 1,overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white),),
+                subtitle: Text(artistName,maxLines: 1,overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.grey),),
+                trailing:Row(mainAxisSize: MainAxisSize.min, children: [PlayPauseButton(iconSize: 35,isDecoration: false,), NextButton(audioProvider: audioProvider, iconSize: 35)],) ,
               ): MiniControls(audioProvider: audioProvider, favProvider: favProvider);
       },
     );
@@ -154,6 +154,8 @@ class _MiniControlsState extends State<MiniControls> {
                     width: 150,
                     child: Slider(
                       value: widget.audioProvider.volume,
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.grey,
                       onChangeEnd: (val) {
                         setState(() {
                           setVolume = false;

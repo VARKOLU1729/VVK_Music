@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/album_view.dart';
 import 'package:runo_music/Views/music_player_view.dart';
+import 'package:runo_music/tab_screen.dart';
 
 import '../Views/artist_view.dart';
 import 'provider.dart';
@@ -36,19 +37,29 @@ class TrackAlbumWidget extends StatelessWidget {
         }
         else if (type == Type.album)
           {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return AlbumView(
-                  albumId: id,
-                  albumName: name,
-                  albumImageUrl: imageUrl,
-                  artistId: items[index].artistId,
-                  artistName: items[index].artistName);
-            }));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+            TabScreen(activePage: AlbumView(
+                albumId: id,
+                albumName: name,
+                albumImageUrl: imageUrl,
+                artistId: items[index].artistId,
+                artistName: items[index].artistName),)
+
+              )
+            );
+            // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            //   return AlbumView(
+            //       albumId: id,
+            //       albumName: name,
+            //       albumImageUrl: imageUrl,
+            //       artistId: items[index].artistId,
+            //       artistName: items[index].artistName);
+            // }));
           }
 
         else if (type == Type.artist)
           {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ArtistView(artistId: id,)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(activePage: ArtistView(artistId: id,),) ));
           }
 
       },

@@ -100,6 +100,7 @@ class _ArtistViewState extends State<ArtistView> {
         body: Stack(
           children: [
             Column(children: [
+              if(!Responsive.isMobile()) SizedBox(height: 72,),
               (Responsive.isMobile(context) || Responsive.isSmallScreen(context))?
                 Expanded(
                   flex: 2,
@@ -306,24 +307,26 @@ class _ArtistViewState extends State<ArtistView> {
                         height: 20,
                       ),
                       Header(
-                          onTap: () {
-                            Widget widget = SeeAll(
-                                type: Type.track,
-                                pagingController: _artistTrackPagingController);
-                            if (Responsive.isSmallScreen(context))
-                              {
-                                showModalBottomSheet(
-                                  useSafeArea: true,
-                                    constraints: BoxConstraints(
-                                        minHeight: getHeight(context)),
-                                    context: context,
-                                    builder: (context) => widget);
-                              }
-                            else {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => widget));
-                            }
-                          },
+                          // onTap: () {
+                          //   Widget widget = SeeAll(
+                          //       type: Type.track,
+                          //       pagingController: _artistTrackPagingController);
+                          //   if (Responsive.isSmallScreen(context))
+                          //     {
+                          //       showModalBottomSheet(
+                          //         useSafeArea: true,
+                          //           constraints: BoxConstraints(
+                          //               minHeight: getHeight(context)),
+                          //           context: context,
+                          //           builder: (context) => widget);
+                          //     }
+                          //   else {
+                          //     Navigator.of(context).push(MaterialPageRoute(
+                          //         builder: (context) => widget));
+                          //   }
+                          // },
+                        type: Type.track,
+                          pagingController: _artistTrackPagingController,
                           title: "Top Tracks",
                         scrollController: trackScrollController,
                       ),
@@ -336,23 +339,25 @@ class _ArtistViewState extends State<ArtistView> {
                           scrollController: trackScrollController
                       ),
                       Header(
-                          onTap: () {
-                            Widget widget = SeeAll(
-                                type: Type.album,
-                                pagingController: _artistAlbumPagingController);
-                            if (Responsive.isSmallScreen(context))
-                              {
-                                showModalBottomSheet(
-                                  useSafeArea: true,
-                                    context: context,
-                                    builder: (context) => widget);
-                              }
-
-                            else {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => widget));
-                            }
-                          },
+                          // onTap: () {
+                          //   Widget widget = SeeAll(
+                          //       type: Type.album,
+                          //       pagingController: _artistAlbumPagingController);
+                          //   if (Responsive.isSmallScreen(context))
+                          //     {
+                          //       showModalBottomSheet(
+                          //         useSafeArea: true,
+                          //           context: context,
+                          //           builder: (context) => widget);
+                          //     }
+                          //
+                          //   else {
+                          //     Navigator.of(context).push(MaterialPageRoute(
+                          //         builder: (context) => widget));
+                          //   }
+                          // },
+                        pagingController: _artistAlbumPagingController,
+                          type: Type.album,
                           title: "Top Albums",
                           scrollController: albumScrollController
                       ),
@@ -447,12 +452,17 @@ class _ArtistViewState extends State<ArtistView> {
                                   ),
                                 )),
                           ),
+                      const SizedBox(
+                        height: 100,
+                      ),
                     ],
                   ),
                 ),
               ),
             ]),
+            if(Responsive.isMobile())
             const PopOut(),
+            if(Responsive.isMobile())
             Positioned(
               top: Responsive.isMobile(context) ? 40 : 20,
               right: 20,

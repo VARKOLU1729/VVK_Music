@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Widgets/back_ground_blur.dart';
+import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_text_button.dart';
 
 import '../Helper/Responsive.dart';
@@ -108,8 +110,9 @@ class _GenreViewState extends State<GenreView> {
   Widget build(BuildContext context) {
     var audioProvider = Provider.of<AudioProvider>(context, listen: false);
     return Scaffold(
-      // appBar:AppBar(backgroundColor: Colors.white.withOpacity(0.001),toolbarHeight: 60,leading: IconButton(onPressed: (){Navigator.pop(context);}, icon:Icon(Icons.keyboard_arrow_left, size: 40, color: Colors.white),) ),
-      // backgroundColor: const Color.fromARGB(255, 18, 20, 25),
+      appBar: Responsive.isMobile() ?  MobileAppBar(context, disablePop: false) : null,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(children: [
         Container(
@@ -117,30 +120,39 @@ class _GenreViewState extends State<GenreView> {
             gradient: LinearGradient(colors: widget.gradientColors)
           ),
         ),
+        Container(
+          margin: EdgeInsets.only(top: getHeight(context)/2),
+          color: Colors.black,
+        ),
+        BackGroundBlur(),
         SingleChildScrollView(
           child: Column(
             children: [
 
-              const SizedBox(height: 60,),
+              SizedBox(height: Responsive.isMobile()?60:130,),
 
               Text('${widget.genreData[1]}', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 60, color: Colors.white),),
 
               const SizedBox(height: 20,),
 
-              if(_trackPagingController.itemList!=null)
-              PlayTextButton(trackList: _trackPagingController.itemList!),
+              // if(_trackPagingController.itemList!=null)
+              // PlayTextButton(trackList: _trackPagingController.itemList!),
 
               Container(
                 width: 90,
+                height: 45,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: const Color.fromARGB(255, 11, 228, 228)
+                    color: Responsive.isMobile() ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).colorScheme.tertiary
                 ),
                 child: TextButton(onPressed: () async{
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                   await audioProvider.loadAudio(trackList:_trackPagingController.itemList!,index:0);
 
-                }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
+                }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow,size: 30, color: Responsive.isMobile()? Colors.white : Colors.black87,), Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text('Play', style: TextStyle(color: Responsive.isMobile()? Colors.white : Colors.black87),),
+                )],)),
               ),
 
               Column(
@@ -152,17 +164,19 @@ class _GenreViewState extends State<GenreView> {
                   ),
                   // Third box
                   Header(
-                      onTap: () {
-                        Widget widget = SeeAll(
-                            type: Type.track,
-                            pagingController: _trackPagingController);
-                        if (Responsive.isMobile(context)) {
-                          showBottomSheet( context: context, builder: (context) => widget);
-                        } else {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => widget));
-                        }
-                      },
+                      // onTap: () {
+                      //   Widget widget = SeeAll(
+                      //       type: Type.track,
+                      //       pagingController: _trackPagingController);
+                      //   if (Responsive.isMobile(context)) {
+                      //     showBottomSheet( context: context, builder: (context) => widget);
+                      //   } else {
+                      //     Navigator.of(context).push(
+                      //         MaterialPageRoute(builder: (context) => widget));
+                      //   }
+                      // },
+                    type: Type.track,
+                      pagingController: _trackPagingController,
                       scrollController: trackScrollController,
                       title: "Top Tracks"),
 
@@ -176,17 +190,19 @@ class _GenreViewState extends State<GenreView> {
                   ),
 
                   Header(
-                      onTap: () {
-                        Widget widget = SeeAll(
-                            type: Type.album,
-                            pagingController: _albumPagingController);
-                        if (Responsive.isMobile(context)) {
-                          showBottomSheet( context: context, builder: (context) => widget);
-                        } else {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => widget));
-                        }
-                      },
+                      // onTap: () {
+                      //   Widget widget = SeeAll(
+                      //       type: Type.album,
+                      //       pagingController: _albumPagingController);
+                      //   if (Responsive.isMobile(context)) {
+                      //     showBottomSheet( context: context, builder: (context) => widget);
+                      //   } else {
+                      //     Navigator.of(context).push(
+                      //         MaterialPageRoute(builder: (context) => widget));
+                      //   }
+                      // },
+                      type: Type.album,
+                      pagingController: _albumPagingController,
                       title: "Top Albums",
                       scrollController: albumScrollController
                   ),
@@ -201,17 +217,19 @@ class _GenreViewState extends State<GenreView> {
                   ),
 
                   Header(
-                      onTap: () {
-                        Widget widget = SeeAll(
-                            type: Type.artist,
-                            pagingController: _artistPagingController);
-                        if (Responsive.isMobile(context)) {
-                          showBottomSheet( context: context, builder: (context) => widget);
-                        } else {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => widget));
-                        }
-                      },
+                      // onTap: () {
+                      //   Widget widget = SeeAll(
+                      //       type: Type.artist,
+                      //       pagingController: _artistPagingController);
+                      //   if (Responsive.isMobile(context)) {
+                      //     showBottomSheet( context: context, builder: (context) => widget);
+                      //   } else {
+                      //     Navigator.of(context).push(
+                      //         MaterialPageRoute(builder: (context) => widget));
+                      //   }
+                      // },
+                    type: Type.artist,
+                      pagingController: _artistPagingController,
                       title: "Top Artists",
                       scrollController: artistScrollController
                   ),
@@ -223,22 +241,16 @@ class _GenreViewState extends State<GenreView> {
                       pagingController: _artistPagingController,
                       type: Type.artist,
                       scrollController : artistScrollController
-                  )
+                  ),
+                  const SizedBox(
+                    height: 100,
+                  ),
                 ],
               ),
             ],
           ),
         ),
-        Positioned(
-          child: Container(
-            height: 60,
-            color: Colors.black.withOpacity(0.01),
-            child: IconButton(onPressed: (){
-              Navigator.pop(context);
-            }, icon: Icon(Icons.keyboard_arrow_left,color: Colors.white,size: 40,))
-          ),
-          //
-        ),
+
       ]),
     );
   }
