@@ -87,8 +87,8 @@ class _ArtistViewState extends State<ArtistView> {
 
   @override
   void dispose() {
-    _artistTrackPagingController.dispose();
-    _artistAlbumPagingController.dispose();
+    // _artistTrackPagingController.dispose();
+    // _artistAlbumPagingController.dispose();
     super.dispose();
   }
 

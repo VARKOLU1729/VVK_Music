@@ -254,7 +254,7 @@ class ProfileButton extends StatelessWidget {
       padding: EdgeInsets.only(right: Responsive.isMediumScreen(context)?20:(Responsive.isLargeScreen(context)?40:10)),
       child: IconButton(
         tooltip: "Profile",
-        onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProfileView()));},
+        onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: ProfileView(),)));},
         icon: const Icon(Icons.person),
         color: Colors.white,
         hoverColor: Colors.grey.withOpacity(0.4),

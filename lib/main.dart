@@ -35,18 +35,20 @@ void main() async{
           ],
         child:MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot){
-                print("hi");
-                print(snapshot.data);
-                if(snapshot.hasData)
-                  {
-                    return TabScreen();
-                  }
-                return LoginView();
-              }
-          ),
+          // home: StreamBuilder(
+          //     stream: FirebaseAuth.instance.authStateChanges(),
+          //     builder: (context, snapshot){
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return CircularProgressIndicator();
+          //       }
+          //       else if(snapshot.hasData)
+          //         {
+          //           return TabScreen();
+          //         }
+          //       return LoginView();
+          //     }
+          // ),
+            home: LoginView(),
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData().copyWith(
             colorScheme: kDarkTheme)

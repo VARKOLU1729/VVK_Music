@@ -31,7 +31,7 @@ class _FavouritesState extends State<Favourites> {
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
-        appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false):null,
+        appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: true):null,
         backgroundColor: const Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
 

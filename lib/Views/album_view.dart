@@ -250,6 +250,7 @@ class _AlbumViewState extends State<AlbumView> {
                 )];
               },
               body: ListView.builder(
+                padding: EdgeInsets.all(0),
                   itemCount: albumTrackData.length,
                   itemBuilder: (context, index) {
                     return ListAllWidget(index: index,items: albumTrackData, decorationReq: true,);

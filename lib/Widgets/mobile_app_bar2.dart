@@ -5,7 +5,7 @@ import '../tab_screen.dart';
 
 PreferredSizeWidget MobileAppBar2(BuildContext context, {String title=""}) {
   return PreferredSize(
-      preferredSize: Size.fromHeight(60),
+      preferredSize: Size.fromHeight(50),
       child:
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),

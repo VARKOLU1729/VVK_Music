@@ -2,9 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runo_music/tab_screen.dart';
 
-import '../Helper/deviceParams.dart';
-
-
 final _firebase = FirebaseAuth.instance;
 
 class LoginView extends StatefulWidget {
@@ -15,262 +12,174 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final authKey = GlobalKey<FormState>();
-
-  String? _password;
+  final _authKey = GlobalKey<FormState>();
   String? _email;
+  String? _password;
 
-  bool signIn = false;
-  bool signUp = false;
+  bool _isSignIn = true;
 
-  int _selectedRadioVal = 1;
-
-  void save() async
-  {
-    if(authKey.currentState!.validate())
-      {
-
-        try
-        {
-          if(signIn)
-          {
-            final userDetails = await _firebase.signInWithEmailAndPassword(email:_email!, password: _password!);
-          }
-          if(signUp)
-          {
-            final userDetails = await _firebase.createUserWithEmailAndPassword(email: _email!, password: _password!);
-          }
-          // Navigator.push(context, MaterialPageRoute(builder: (context)=>TabScreen()));
+  Future<void> _save() async {
+    if (_authKey.currentState!.validate()) {
+      try {
+        if (_isSignIn) {
+          await _firebase.signInWithEmailAndPassword(email: _email!, password: _password!);
+        } else {
+          await _firebase.createUserWithEmailAndPassword(email: _email!, password: _password!);
         }
-        on FirebaseAuthException catch(error)
-        {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message!)));
-        }
+        print(_firebase.currentUser!.uid);
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+      } on FirebaseAuthException catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message!)));
       }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(child: const Text("Runo Music", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 25))),
+            const SizedBox(height: 40),
+            const Text("Welcome", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 20)),
+            const SizedBox(height: 40),
+            _buildAuthForm(),
+          ],
+        ),
+      ),
+    );
+  }
 
-          Center(child: const Text("Runo Music", style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400, fontSize: 25),)),
+  Widget _buildAuthForm() {
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+      width: 400,
+      // padding: const EdgeInsets.all(20),
+      child: Form(
+        key: _authKey,
+        child: Column(
+          children: [
+            _buildRadioTile("Create account", false),
+            if (!_isSignIn) _buildEmailField(),
+            if (!_isSignIn) const SizedBox(height: 20),
+            if (!_isSignIn) _buildPasswordField(),
+            if (!_isSignIn) const SizedBox(height: 20),
+            if (!_isSignIn) _buildActionButton("Sign Up"),
+            const SizedBox(height: 20),
+            _buildRadioTile("Sign in", true),
+            if (_isSignIn) _buildEmailField(),
+            if (_isSignIn) const SizedBox(height: 20),
+            if (_isSignIn) _buildPasswordField(),
+            if (_isSignIn) const SizedBox(height: 20),
+            if (_isSignIn) _buildActionButton("Sign In"),
+          ],
+        ),
+      ),
+    );
+  }
 
-          const SizedBox(height: 40,),
-          Padding(
-            padding:  EdgeInsets.only(left: 20),
-            child: const Text("Welcome", style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400, fontSize: 20),),
-          ),
-          Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white)
-              ),
-              width: 400,
-              height: 330,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Form(
-                  key: authKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Card(
-                          margin: EdgeInsets.all(0),
-                          color: _selectedRadioVal==0 ? Colors.black87 : Colors.grey,
-                          child: RadioListTile(
-                              contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                            title: Text("Create account", style: TextStyle(color: Colors.white),),
-                            activeColor: Colors.orange,
-                              value: 0,
-                              groupValue: _selectedRadioVal,
-                              onChanged: (val){setState(() {
-                                _selectedRadioVal = val!;
-                              });}
-                          ),
-                        ),
+  Widget _buildRadioTile(String title, bool isSignIn) {
+    return Container(
+      color: _isSignIn == isSignIn ? Colors.black87 : Colors.grey,
+      child: RadioListTile(
+        title: Text(title, style: const TextStyle(color: Colors.white)),
+        activeColor: Colors.orange,
+        value: isSignIn,
+        groupValue: _isSignIn,
+        onChanged: (val) {
+          setState(() {
+            _isSignIn = val!;
+          });
+        },
+      ),
+    );
+  }
 
-                        if(_selectedRadioVal==0)
-                          InputField(
-                            labelText: "Email",
-                            onChanged: (val){
-                              _email = val;
-                            },
-                            validator: (val) {
-                              if(!(val!.contains('@gmail.com')))
-                              {
-                                return 'Email must contain @gmail.com';
-                              }
-                              return null;
-                            },
-                          ),
+  Widget _buildEmailField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InputField(
+        labelText: "Email",
+        onChanged: (val) => _email = val,
+        validator: (val) {
+          if (!val!.contains('@gmail.com')) {
+            return 'Email must contain @gmail.com';
+          }
+          return null;
+        },
+      ),
+    );
+  }
 
-                        if(_selectedRadioVal==0)
-                          const SizedBox(height: 20,),
+  Widget _buildPasswordField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InputField(
+        labelText: "Password",
+        onChanged: (val) => _password = val,
+        validator: (val) {
+          if (val!.length < 8) {
+            return 'Password should contain at least 8 characters';
+          }
+          return null;
+        },
+        obscureText: true,
+      ),
+    );
+  }
 
-                        if(_selectedRadioVal==0)
-                          InputField(
-                              labelText: "Password",
-                              onChanged: (val){
-                                _password = val;
-                              },
-                              validator: (val)
-                              {
-                                if(val!.length<8)
-                                  return 'Password should contain atleast 8 letters';
-                                return null;
-                              },
-                              obscureText:true
-                          ),
-
-                        if(_selectedRadioVal==0)
-                        const SizedBox(height: 20,),
-
-                        if(_selectedRadioVal==0)
-                        FilledButton(
-                            style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary)),
-                            onPressed: ()
-                            {
-                              setState(() {
-                                signUp = true;
-                                save();
-                              });
-
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 130,),
-                              child: Text("Sign Up",style: TextStyle(color: Colors.black87),),
-                            )
-                        ),
-
-                        const SizedBox(height: 20,),
-                        
-                        Card(
-                          margin: EdgeInsets.all(0),
-                          color: _selectedRadioVal==1 ? Colors.black87 : Colors.grey,
-                          child: RadioListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                              title: Text("Sign in", style: TextStyle(color: Colors.white),),
-                              activeColor: Colors.orange,
-                              value: 1,
-                              groupValue: _selectedRadioVal,
-                              onChanged: (val){setState(() {
-                                _selectedRadioVal = val!;
-                              });}
-                          ),
-                        ),
-
-                        if(_selectedRadioVal==1)
-                        InputField(
-                          labelText: "Email",
-                            onChanged: (val){
-                              _email = val;
-                              },
-                            validator: (val) {
-                              if(!(val!.contains('@gmail.com')))
-                              {
-                                return 'Email must contain @gmail.com';
-                              }
-                              return null;
-                            },
-                        ),
-
-                        if(_selectedRadioVal==1)
-                        SizedBox(height: 20,),
-
-
-                        if(_selectedRadioVal==1)
-                        InputField(
-                          labelText: "Password",
-                          onChanged: (val){
-                            _password = val;
-                          },
-                          validator: (val)
-                          {
-                            if(val!.length<8)
-                              return 'Password should contain atleast 8 letters';
-                            return null;
-                          },
-                          obscureText:true
-                        ),
-
-                        if(_selectedRadioVal==1)
-                        const SizedBox(height: 20,),
-
-                        if(_selectedRadioVal==1)
-                        FilledButton(
-                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary)),
-                            onPressed: ()
-                            {
-                              setState(() {
-                                signIn = true;
-                                save();
-                              });
-
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 130,),
-                              child: Text("Sign In",style: TextStyle(color: Colors.black87),),
-                            )
-                        ),
-                        // SizedBox(height: 20,),
-                        // Row(
-                        //   children: [
-                        //     Text("Don't have an account?"),
-                        //     TextButton(onPressed: (){},
-                        //         child: Text("Sign Up now", style: TextStyle(color: Colors.orange),)
-                        //     )
-                        //   ],
-                        // )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+  Widget _buildActionButton(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: FilledButton(
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
+        ),
+        onPressed: _save,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 125),
+          child: Text(text, style: const TextStyle(color: Colors.black87)),
+        ),
       ),
     );
   }
 }
 
-
-
-
 class InputField extends StatelessWidget {
-
   final void Function(String?) onChanged;
   final String? Function(String?) validator;
-  final bool? obscureText;
   final String labelText;
-  const InputField({super.key, required this.onChanged, required this.validator,required this.labelText, this.obscureText});
+  final bool? obscureText;
+
+  const InputField({
+    super.key,
+    required this.onChanged,
+    required this.validator,
+    required this.labelText,
+    this.obscureText,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return  TextFormField(
+    return TextFormField(
       cursorColor: Colors.white,
       style: const TextStyle(color: Colors.white),
       validator: validator,
       onChanged: onChanged,
-      decoration:InputDecoration(
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.orange, width: 2)
-          ),
-          floatingLabelStyle:TextStyle(color: Colors.orange),
-          filled: true,
-          fillColor: Color.fromARGB(255, 41, 41, 43),
-          label: Text("$labelText"),
-          border: OutlineInputBorder(),
+      obscureText: obscureText ?? false,
+      decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.orange, width: 2)),
+        floatingLabelStyle: const TextStyle(color: Colors.orange),
+        filled: true,
+        fillColor: const Color.fromARGB(255, 41, 41, 43),
+        label: Text(labelText),
+        border: const OutlineInputBorder(),
       ),
-      obscureText: obscureText??false,
     );
   }
 }
-

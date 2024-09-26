@@ -118,7 +118,8 @@ class _SearchState extends State<Search> {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 72,),
+          if(Responsive.isMobile())
+          SizedBox(height: 100,),
           if(!Responsive.isMobile()) Responsive.isSmallScreen(context) ? SizedBox(height: 72,): SizedBox(height: 10,),
             Row(
               children: [
@@ -162,6 +163,9 @@ class _SearchState extends State<Search> {
             ),
 
           if(!_isSearched)
+          SizedBox(height: 40,),
+
+          if(!_isSearched)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Row(
@@ -171,11 +175,13 @@ class _SearchState extends State<Search> {
               ),
             ),
 
+
           if(!_isSearched)
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: GridView.builder(
+                  padding: EdgeInsets.all(0),
                   itemCount: genreData.length,
                     gridDelegate : SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 300, childAspectRatio: 2.5),
                     // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.5),
@@ -207,14 +213,15 @@ class _SearchState extends State<Search> {
                               child: _isLoading ? CircularProgressIndicator() : Text('${genreData[index][1]}', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
                             ),
                           )
-                        
+
                         ),
                       );
                     }
                 ),
               ),
-            )
+            ),
 
+          if(!_isSearched)  const SizedBox(height: 50,)
         ],
       ),
     );

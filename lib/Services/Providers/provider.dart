@@ -16,8 +16,10 @@ final userUid = FirebaseAuth.instance.currentUser!.uid;
 
 Future<Database> initDataBase() async
 {
+  print("database ${userUid}");
   final dbPath = path.join(await sql.getDatabasesPath(), 'favUser1.db');
   final db = await sql.openDatabase(dbPath, version: 1, onCreate: (db, version)=>db.execute('CREATE TABLE favouritesUser1 (id TEXT,name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT, userId TEXT)'));
+  print(dbPath);
   return db;
 }
 
@@ -38,6 +40,7 @@ void insertData(Database db, {required String id,required String name,required  
     }
   );
   print(numberOfInsertions);
+  print(userUid);
 }
 
 void deleteData(Database db, {required id}) async
@@ -49,6 +52,7 @@ void deleteData(Database db, {required id}) async
 dynamic getData(Database db) async
 {
   var res = await db.rawQuery("SELECT * FROM favouritesUser1 WHERE userId='$userUid' ");
+  print(res[0]['userId']);
   return res;
 }
 

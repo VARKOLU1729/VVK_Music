@@ -113,9 +113,9 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _trackPagingController.dispose();
-    _albumPagingController.dispose();
-    _artistPagingController.dispose();
+    // _trackPagingController.dispose();
+    // _albumPagingController.dispose();
+    // _artistPagingController.dispose();
     super.dispose();
   }
 
