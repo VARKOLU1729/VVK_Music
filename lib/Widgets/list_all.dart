@@ -3,7 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/music_player_view.dart';
-import 'package:runo_music/Widgets/provider.dart';
+import 'package:runo_music/Services/Providers/provider.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
 import 'package:runo_music/models/track_model.dart';
 

@@ -14,7 +14,7 @@ import '../audio_controllers/volume_button.dart';
 import '../audio_controllers/play_pause_button.dart';
 
 import '../Widgets/back_ground_blur.dart';
-import '../Widgets/provider.dart';
+import '../Services/Providers/provider.dart';
 import '../Widgets/pop_out.dart';
 import '../Widgets/bottom_icon.dart';
 

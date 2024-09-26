@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/login_view.dart';
 
 import '../tab_screen.dart';
-import '../Widgets/provider.dart';
+import 'Services/Providers/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -34,7 +35,18 @@ void main() async{
           ],
         child:MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: LoginView(),
+          home: StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot){
+                print("hi");
+                print(snapshot.data);
+                if(snapshot.hasData)
+                  {
+                    return TabScreen();
+                  }
+                return LoginView();
+              }
+          ),
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData().copyWith(
             colorScheme: kDarkTheme)

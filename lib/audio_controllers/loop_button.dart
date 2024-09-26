@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:runo_music/Widgets/provider.dart';
+import 'package:runo_music/Services/Providers/provider.dart';
 
 class LoopButton extends StatelessWidget {
   final AudioProvider audioProvider;

@@ -6,7 +6,7 @@ import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/tab_screen.dart';
 
 import '../Views/artist_view.dart';
-import 'provider.dart';
+import '../Services/Providers/provider.dart';
 
 enum Type { album, track, artist }
 

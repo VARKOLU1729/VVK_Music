@@ -12,15 +12,15 @@ import '../Helper/Responsive.dart';
 import '../Helper/deviceParams.dart';
 
 import '../Widgets/display_with_pagination.dart';
-import '../Widgets/provider.dart';
+import '../Services/Providers/provider.dart';
 import '../Widgets/see_all.dart';
 import '../Widgets/track_album_widget.dart';
 import '../Widgets/header.dart';
 
-import '../Data/top_tracks.dart';
-import '../Data/top_albums.dart';
-import '../Data/fetch_data.dart';
-import '../Data/top_artists.dart';
+import 'package:runo_music/Services/Data/top_tracks.dart';
+import 'package:runo_music/Services/Data/top_albums.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/top_artists.dart';
 import 'music_player_view.dart';
 
 
@@ -122,7 +122,7 @@ class _GenreViewState extends State<GenreView> {
         ),
         Container(
           margin: EdgeInsets.only(top: getHeight(context)/2),
-          color: Colors.black,
+          color: Colors.black.withOpacity(0.8),
         ),
         BackGroundBlur(),
         SingleChildScrollView(

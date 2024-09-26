@@ -5,9 +5,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/search.dart';
 
-import '../Data/fetch_data.dart';
-import '../Data/top_tracks.dart';
-import '../Data/top_albums.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/top_tracks.dart';
+import 'package:runo_music/Services/Data/top_albums.dart';
 
 import '../Helper/deviceParams.dart';
 import '../Helper/Responsive.dart';
@@ -17,7 +17,7 @@ import '../Widgets/header.dart';
 import '../Widgets/pop_out.dart';
 import '../Widgets/display_with_pagination.dart';
 import '../Widgets/see_all.dart';
-import '../Widgets/provider.dart';
+import '../Services/Providers/provider.dart';
 
 import '../Views/music_player_view.dart';
 

@@ -1,29 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 
-import '../Helper/Responsive.dart';
-import '../Helper/messenger.dart';
+import '../../Helper/Responsive.dart';
+import '../../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
-import '../models/track_model.dart';
+import '../../models/track_model.dart';
 
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 
+final userUid = FirebaseAuth.instance.currentUser!.uid;
+
 Future<Database> initDataBase() async
 {
-  final dbPath = path.join(await sql.getDatabasesPath(), 'fav.db');
-  final db = await sql.openDatabase(dbPath, version: 1, onCreate: (db, version)=>db.execute('CREATE TABLE favourites (id TEXT PRIMARY KEY, name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT )'));
+  final dbPath = path.join(await sql.getDatabasesPath(), 'favUser1.db');
+  final db = await sql.openDatabase(dbPath, version: 1, onCreate: (db, version)=>db.execute('CREATE TABLE favouritesUser1 (id TEXT,name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT, userId TEXT)'));
   return db;
 }
 
-void insertData({required String id,required String name,required  String artistId,required  String artistName,required  String albumId,required  String albumName,required  String imageUrl}) async
+void insertData(Database db, {required String id,required String name,required  String artistId,required  String artistName,required  String albumId,required  String albumName,required  String imageUrl}) async
 {
-  final db = await initDataBase();
   // int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('${id}', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
   int numberOfInsertions = await db.insert(
-    'favourites',
+    'favouritesUser1',
     {
       'id':id,
       'name':name,
@@ -31,44 +33,51 @@ void insertData({required String id,required String name,required  String artist
       'artistName':artistName,
       'albumId':albumId,
       'albumName':albumName,
-      'imageUrl':imageUrl
+      'imageUrl':imageUrl,
+      'userId' : userUid
     }
   );
   print(numberOfInsertions);
 }
 
-void deleteData({required id}) async
+void deleteData(Database db, {required id}) async
 {
-  final db = await initDataBase();
-  int numberOfDeletions = await db.rawDelete("DELETE  FROM favourites WHERE id='$id'");
+  int numberOfDeletions = await db.rawDelete("DELETE  FROM favouritesUser1 WHERE id='$id' AND userId='$userUid'");
   print(numberOfDeletions);
 }
 
-dynamic getData() async
+dynamic getData(Database db) async
 {
-  final db = await initDataBase();
-  var res = await db.rawQuery("SELECT * FROM favourites");
+  var res = await db.rawQuery("SELECT * FROM favouritesUser1 WHERE userId='$userUid' ");
   return res;
 }
 
-Future<bool> checkData({required String id}) async
+Future<bool> checkData(Database db, {required String id}) async
 {
-  final db = await initDataBase();
-  var res = await db.rawQuery("SELECT id FROM favourites WHERE id = '$id'");
+  var res = await db.rawQuery("SELECT id FROM favouritesUser1 WHERE id = '$id' AND userId='$userUid'");
   return res.isNotEmpty;
 }
 
 class FavouriteItemsProvider extends ChangeNotifier {
   Map<String, TrackModel> favouriteItems = {};
+  Database? db;
 
   FavouriteItemsProvider() {
     if(Responsive.isMobile())
-    _loadFavouriteItems();
+      {
+        _loadDataBase();
+        _loadFavouriteItems();
+      }
   }
 
-  Future<void> _loadFavouriteItems() async {
-    final db = await initDataBase();
-    final data = await db.rawQuery("SELECT * FROM favourites");
+  Future<void> _loadDataBase() async
+  {
+    db = await initDataBase();
+  }
+
+  void _loadFavouriteItems() async {
+
+    final data = await getData(db!);
 
     for (var item in data) {
       final track = TrackModel(
@@ -89,14 +98,14 @@ class FavouriteItemsProvider extends ChangeNotifier {
   void addToFavourite({required String id, required TrackModel details}) {
     favouriteItems[id] = details;
     if(Responsive.isMobile())
-    insertData(id: details.id,name: details.name, artistId: details.artistId, artistName: details.artistName, albumId: details.albumId, albumName: details.albumName, imageUrl: details.imageUrl);
+    insertData(db!, id: details.id,name: details.name, artistId: details.artistId, artistName: details.artistName, albumId: details.albumId, albumName: details.albumName, imageUrl: details.imageUrl);
     notifyListeners();
   }
 
   void removeFromFavourite({required String id}) {
     favouriteItems.remove(id);
     if(Responsive.isMobile())
-    deleteData(id: id);
+    deleteData(db!, id: id);
     notifyListeners();
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:runo_music/Widgets/provider.dart';
+import 'package:runo_music/Services/Providers/provider.dart';
 
 import '../Views/music_player_view.dart';
 

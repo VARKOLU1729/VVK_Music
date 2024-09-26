@@ -2,7 +2,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../models/track_model.dart';
+import 'package:runo_music/models/track_model.dart';
 
 Future<List<dynamic>> FetchSearchTracks({required String path,required String Query,  required PagingController controller, required int pageKey}) async
 {

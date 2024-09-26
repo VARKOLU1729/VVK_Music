@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Views/genre_view.dart';
 import 'package:runo_music/tab_screen.dart';
 
 import '../Helper/Responsive.dart';
-import '../Data/searchResults.dart';
+import 'package:runo_music/Services/Data/searchResults.dart';
 import '../Widgets/list_all.dart';
+import '../Widgets/mobile_app_bar2.dart';
 import '../Widgets/search_bar.dart';
 
 class Search extends StatefulWidget {
@@ -110,11 +111,14 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:Responsive.isMobile(context) ?AppBar(backgroundColor: Colors.black87,toolbarHeight: 5,):null,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      appBar:Responsive.isMobile() ? MobileAppBar2(context):null,
       backgroundColor: Colors.black,
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 72,),
           if(!Responsive.isMobile()) Responsive.isSmallScreen(context) ? SizedBox(height: 72,): SizedBox(height: 10,),
             Row(
               children: [

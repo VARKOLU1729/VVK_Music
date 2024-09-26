@@ -4,7 +4,7 @@ import 'package:runo_music/Helper/deviceParams.dart';
 import 'dart:math' as math;
 import '../Helper/Responsive.dart';
 
-import '../Widgets/provider.dart';
+import '../Services/Providers/provider.dart';
 
 import '../audio_controllers/favourite_button.dart';
 import '../audio_controllers/next_button.dart';

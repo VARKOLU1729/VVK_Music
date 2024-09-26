@@ -1,4 +1,4 @@
-import '../Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
 
 class TrackModel
 {

@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
-import 'package:runo_music/Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
 import 'package:runo_music/Widgets/play_text_button.dart';
 import 'package:runo_music/Widgets/pop_out.dart';
 import 'package:runo_music/Widgets/list_all.dart';
-import 'package:runo_music/Widgets/provider.dart';
+import 'package:runo_music/Services/Providers/provider.dart';
 import 'package:runo_music/models/track_model.dart';
 
 import 'music_player_view.dart';
@@ -78,7 +78,7 @@ class _AlbumViewState extends State<AlbumView> {
 
           Container(
             margin: EdgeInsets.only(top: getHeight(context)/2),
-            color: Colors.black,
+            color: Colors.black.withOpacity(0.8),
           ),
 
           const BackGroundBlur(),

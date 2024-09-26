@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
+import 'package:runo_music/Widgets/mobile_app_bar2.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
 
 import '../Helper/Responsive.dart';
@@ -13,10 +14,10 @@ import '../Widgets/see_all.dart';
 import '../Widgets/track_album_widget.dart';
 import '../Widgets/header.dart';
 
-import '../Data/top_tracks.dart';
-import '../Data/top_albums.dart';
-import '../Data/fetch_data.dart';
-import '../Data/top_artists.dart';
+import 'package:runo_music/Services/Data/top_tracks.dart';
+import 'package:runo_music/Services/Data/top_albums.dart';
+import 'package:runo_music/Services/Data/fetch_data.dart';
+import 'package:runo_music/Services/Data/top_artists.dart';
 
 
 class Home extends StatefulWidget {
@@ -123,178 +124,156 @@ class _HomeState extends State<Home> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar:Responsive.isMobile() ? PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child:
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: AppBar(
-            centerTitle: true,
-            title: Text("Explore music", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white,fontSize: 20),),
-            leading:
-            IconButton(
-                onPressed: (){},
-                icon: const Icon(Icons.notifications, color: Colors.white,size: 30,)
-            ),
-            backgroundColor: Colors.transparent,
-            actions: [IconButton(
-                onPressed: (){
-                  // Navigator.pop(context);
-                },
-                icon:const Icon(Icons.person, color: Colors.white,size: 30,)
-            ),],
+      appBar:Responsive.isMobile() ? MobileAppBar2(context, title: "Explore music"):null,
+      backgroundColor: const Color.fromARGB(255, 18, 20, 25),
+      body: Stack(children: [
+        BackdropFilter(
+          blendMode: BlendMode.srcOver,
+          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+          child: Container(
+            color: Colors.black87.withOpacity(0.1),
           ),
         ),
-      ):null,
-      backgroundColor: const Color.fromARGB(255, 18, 20, 25),
-      body: SafeArea(
-        child: Stack(children: [
-          BackdropFilter(
-            blendMode: BlendMode.srcOver,
-            filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-            child: Container(
-              color: Colors.black87.withOpacity(0.1),
-            ),
-          ),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                // first child
-                if (Responsive.isMobile(context))
-                  //   show the station image in the background and station details
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: getHeight(context) / 2.25,
-                        width: getWidth(context),
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(stationImageUrl, scale: 20),
-                                fit: BoxFit.cover)),
-                        child: Stack(
-                          children:[
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                    Colors.black.withOpacity(0.05),
-                                    Colors.black.withOpacity(0.3),
-                                    Colors.black.withOpacity(0.5)
-                                  ])),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                   Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        "STATION",
-                                        style: TextStyle(
-                                            color: Theme.of(context).colorScheme.tertiary,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    ListTile(
-                                      title: const Text("My Soundtrack",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 30)),
-                                      subtitle: Text("Based on $stationArtistName",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              color: Colors.white, fontSize: 15)),
-                                      trailing: PlayRoundButton(items: [])
-                                    ),
-                                  ]),
-                                                      ),
-                            ),
-                          ]
-                        ),
-                      ),
-                      Container(
-                        color: Colors.black,
-                      )
-                    ],
-                  ),
-            
-                // second child
-            
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              // first child
+              SizedBox(height: 22,),
+
+              if (Responsive.isMobile(context))
+                //   show the station image in the background and station details
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //   second child
-                    SizedBox(
-                      height:Responsive.isMobile()?20: 90,
+                    Container(
+                      height: getHeight(context) / 2.25,
+                      width: getWidth(context),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(stationImageUrl, scale: 20),
+                              fit: BoxFit.cover)),
+                      child: Stack(
+                        children:[
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                  Colors.black.withOpacity(0.05),
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.5)
+                                ])),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                 Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Text(
+                                      "STATION",
+                                      style: TextStyle(
+                                          color: Theme.of(context).colorScheme.tertiary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: const Text("My Soundtrack",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30)),
+                                    subtitle: Text("Based on $stationArtistName",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 15)),
+                                    trailing: PlayRoundButton(items: [])
+                                  ),
+                                ]),
+                                                    ),
+                          ),
+                        ]
+                      ),
                     ),
-                    // Third box
-                    Header(
-        
-                      pagingController: _trackPagingController,
-                        type: Type.track,
-                        scrollController: trackScrollController,
-                        title: "Top Tracks"),
-            
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    DisplayWithPagination(
-                      pagingController: _trackPagingController,
-                      type: Type.track,
-                      scrollController : trackScrollController
-                    ),
-            
-                    Header(
-                      type: Type.album,
-                        pagingController: _albumPagingController,
-                        title: "Top Albums",
-                        scrollController: albumScrollController
-                    ),
-            
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    DisplayWithPagination(
-                        pagingController: _albumPagingController,
-                        type: Type.album,
-                        scrollController : albumScrollController
-                    ),
-            
-                    Header(
-                      pagingController: _artistPagingController,
-                        type: Type.artist,
-                        title: "Top Artists",
-                        scrollController: artistScrollController
-                    ),
-            
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    DisplayWithPagination(
-                        pagingController: _artistPagingController,
-                        type: Type.artist,
-                        scrollController : artistScrollController
-                    ),
-        
-                    const SizedBox(
-                      height: 100,
-                    ),
+                    Container(
+                      color: Colors.black,
+                    )
                   ],
                 ),
-              ],
-            ),
+
+              // second child
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //   second child
+                  SizedBox(
+                    height:Responsive.isMobile()?20: 90,
+                  ),
+                  // Third box
+                  Header(
+
+                    pagingController: _trackPagingController,
+                      type: Type.track,
+                      scrollController: trackScrollController,
+                      title: "Top Tracks"),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DisplayWithPagination(
+                    pagingController: _trackPagingController,
+                    type: Type.track,
+                    scrollController : trackScrollController
+                  ),
+
+                  Header(
+                    type: Type.album,
+                      pagingController: _albumPagingController,
+                      title: "Top Albums",
+                      scrollController: albumScrollController
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DisplayWithPagination(
+                      pagingController: _albumPagingController,
+                      type: Type.album,
+                      scrollController : albumScrollController
+                  ),
+
+                  Header(
+                    pagingController: _artistPagingController,
+                      type: Type.artist,
+                      title: "Top Artists",
+                      scrollController: artistScrollController
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DisplayWithPagination(
+                      pagingController: _artistPagingController,
+                      type: Type.artist,
+                      scrollController : artistScrollController
+                  ),
+
+                  const SizedBox(
+                    height: 100,
+                  ),
+                ],
+              ),
+            ],
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }

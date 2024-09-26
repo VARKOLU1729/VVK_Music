@@ -32,22 +32,7 @@ class _SeeAllState extends State<SeeAll> {
       extendBodyBehindAppBar: true,
       extendBody: true,
       appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false,title:title):null,
-      // appBar: AppBar(
-      //   toolbarHeight: 100,
-      //   leading:
-      //   IconButton(
-      //       onPressed: (){
-      //         Navigator.pop(context);
-      //       },
-      //       icon:const Icon(Icons.keyboard_arrow_left, color: Colors.white,size: 40,)
-      //   ),
-      //   backgroundColor: Colors.black.withOpacity(0.88),
-      //   title:
-      //   Padding(
-      //     padding: const EdgeInsets.only(top:5.0),
-      //     child: Text(title, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
-      //   ),
-      // ),
+
       body:Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Views/profile_view.dart';
 import 'package:runo_music/Widgets/nav_bar.dart';
 
 import '../Views/music_player_view.dart';
@@ -12,7 +13,7 @@ import '../Helper/deviceParams.dart';
 import '../Helper/Responsive.dart';
 
 import '../Widgets/search_bar.dart';
-import '../Widgets/provider.dart';
+import 'Services/Providers/provider.dart';
 
 import '../home.dart';
 
@@ -131,7 +132,7 @@ class _TabScreenState extends State<TabScreen> {
       bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
         Container(
           alignment: Alignment.bottomCenter,
-          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 70 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 125 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
+          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
           decoration: Responsive.isMobile()? BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -253,7 +254,7 @@ class ProfileButton extends StatelessWidget {
       padding: EdgeInsets.only(right: Responsive.isMediumScreen(context)?20:(Responsive.isLargeScreen(context)?40:10)),
       child: IconButton(
         tooltip: "Profile",
-        onPressed: (){},
+        onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProfileView()));},
         icon: const Icon(Icons.person),
         color: Colors.white,
         hoverColor: Colors.grey.withOpacity(0.4),
