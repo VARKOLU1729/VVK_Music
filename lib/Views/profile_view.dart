@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login_view.dart';
 
 class ProfileView extends StatefulWidget {
@@ -12,12 +13,32 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+
+  final user = FirebaseAuth.instance.currentUser;
+  String userName = "UserName";
+  bool isLoading = true;
+  void getUserName() async
+  {
+    final sp = await SharedPreferences.getInstance();
+    print(sp.getKeys());
+    List<String> val = sp.getStringList(user!.uid)!;
+    userName = val[0];
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState()
+  {
+    super.initState();
+    getUserName();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Fetching user data
-    final user = FirebaseAuth.instance.currentUser;
 
-    return Scaffold(
+    return isLoading ? Scaffold(body: CircularProgressIndicator(),) : Scaffold(
       appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false, title: "My Profle") : null,
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -38,7 +59,7 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             SizedBox(height: 20),
             Text(
-              user?.displayName ?? 'User Name', // Add user's display name or a default
+               userName,
               style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
@@ -53,10 +74,12 @@ class _ProfileViewState extends State<ProfileView> {
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.red),
                 ),
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => LoginView()));
+                onPressed: () async{
+                  print("signing out");
+                  await FirebaseAuth.instance.signOut();
+                  print("signed out");
+                  Navigator.pushAndRemoveUntil(
+                      context, MaterialPageRoute(builder: (context) => LoginView()), (route)=>false);
                 },
                 child: Text(
                   "Sign Out",

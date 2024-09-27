@@ -23,8 +23,16 @@ class Favourites extends StatefulWidget {
 }
 
 class _FavouritesState extends State<Favourites> {
-  String Fav_img =
-      "https://m.media-amazon.com/images/G/01/ctt2309d82309/2022_en_US-UK-CA-AUNZ_MySoundtrack_PG_GH_2400x2400._UXNaN_FMjpg_QL85_.jpg";
+  String Fav_img = "https://m.media-amazon.com/images/G/01/ctt2309d82309/2022_en_US-UK-CA-AUNZ_MySoundtrack_PG_GH_2400x2400._UXNaN_FMjpg_QL85_.jpg";
+
+  @override
+  void initState()
+  {
+    var favpro = Provider.of<FavouriteItemsProvider>(context);
+    favpro.loadFavouriteItems();
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -208,6 +216,7 @@ class _FavouritesState extends State<Favourites> {
                 )];
             },
             body: ListView.builder(
+              padding: EdgeInsets.all(0),
                 key: ValueKey(favProvider.favouriteItems.length),
                 itemCount: favProvider.favouriteItems.length,
                 itemBuilder: (context, index) {

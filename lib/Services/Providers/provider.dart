@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Helper/Responsive.dart';
 import '../../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
@@ -12,104 +13,78 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 
-final userUid = FirebaseAuth.instance.currentUser!.uid;
+String userUid = '';
 
-Future<Database> initDataBase() async
-{
-  print("database ${userUid}");
-  final dbPath = path.join(await sql.getDatabasesPath(), 'favUser1.db');
-  final db = await sql.openDatabase(dbPath, version: 1, onCreate: (db, version)=>db.execute('CREATE TABLE favouritesUser1 (id TEXT,name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT, userId TEXT)'));
-  print(dbPath);
-  return db;
-}
-
-void insertData(Database db, {required String id,required String name,required  String artistId,required  String artistName,required  String albumId,required  String albumName,required  String imageUrl}) async
-{
-  // int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('${id}', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
-  int numberOfInsertions = await db.insert(
-    'favouritesUser1',
-    {
-      'id':id,
-      'name':name,
-      'artistId':artistId,
-      'artistName':artistName,
-      'albumId':albumId,
-      'albumName':albumName,
-      'imageUrl':imageUrl,
-      'userId' : userUid
+void getUser() {
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      userUid =  FirebaseAuth.instance.currentUser!.uid;
     }
-  );
-  print(numberOfInsertions);
-  print(userUid);
+  });
 }
 
-void deleteData(Database db, {required id}) async
-{
-  int numberOfDeletions = await db.rawDelete("DELETE  FROM favouritesUser1 WHERE id='$id' AND userId='$userUid'");
-  print(numberOfDeletions);
-}
-
-dynamic getData(Database db) async
-{
-  var res = await db.rawQuery("SELECT * FROM favouritesUser1 WHERE userId='$userUid' ");
-  print(res[0]['userId']);
-  return res;
-}
-
-Future<bool> checkData(Database db, {required String id}) async
-{
-  var res = await db.rawQuery("SELECT id FROM favouritesUser1 WHERE id = '$id' AND userId='$userUid'");
-  return res.isNotEmpty;
+Future<TrackModel?> getTrackData({required String trackId}) async {
+  TrackModel? tracks;
+  try {
+    var trackDetailsJson = await fetchData(path: 'tracks/$trackId');
+    var track = await TrackModel.fromJson(trackDetailsJson['tracks'][0]);
+    tracks = track;
+  } catch (error) {
+    print(error);
+  } finally {
+    return tracks;
+  }
 }
 
 class FavouriteItemsProvider extends ChangeNotifier {
   Map<String, TrackModel> favouriteItems = {};
-  Database? db;
 
-  FavouriteItemsProvider() {
-    if(Responsive.isMobile())
-      {
-        _loadDataBase();
-        _loadFavouriteItems();
-      }
-  }
-
-  Future<void> _loadDataBase() async
+  FavouriteItemsProvider()
   {
-    db = await initDataBase();
+    getUser();
   }
 
-  void _loadFavouriteItems() async {
-
-    final data = await getData(db!);
-
-    for (var item in data) {
-      final track = TrackModel(
-        id: item['id']!.toString(),
-        name: item['name']!.toString(),
-        artistId: item['artistId']!.toString(),
-        artistName: item['artistName']!.toString(),
-        albumId: item['albumId']!.toString(),
-        albumName: item['albumName']!.toString(),
-        imageUrl: item['imageUrl']!.toString(),
-      );
-      favouriteItems[item['id']!.toString()] = track;
+  void loadFavouriteItems() async {
+    favouriteItems= {};
+    print('===================================$userUid');
+    final sp = await SharedPreferences.getInstance();
+    List<String> items = await sp.getStringList(userUid)!;
+    print('---------------------------$items');
+    for (int i = 1; i < items.length; i++) {
+      final track = await getTrackData(trackId: items[i]);
+      favouriteItems[items[i]] = track!;
     }
 
     notifyListeners();
   }
 
-  void addToFavourite({required String id, required TrackModel details}) {
+  void addToFavourite({required String id, required TrackModel details}) async {
     favouriteItems[id] = details;
-    if(Responsive.isMobile())
-    insertData(db!, id: details.id,name: details.name, artistId: details.artistId, artistName: details.artistName, albumId: details.albumId, albumName: details.albumName, imageUrl: details.imageUrl);
+
+    final sp = await SharedPreferences.getInstance();
+    print("useriD $userUid");
+    print(sp.containsKey(userUid));
+    if (sp.containsKey(userUid)) {
+      List<String> value = sp.getStringList(userUid)!;
+      value.add(id);
+      sp.setStringList(userUid, value);
+      print(value);
+    }
+
     notifyListeners();
   }
 
-  void removeFromFavourite({required String id}) {
+  void removeFromFavourite({required String id}) async {
     favouriteItems.remove(id);
-    if(Responsive.isMobile())
-    deleteData(db!, id: id);
+
+    final sp = await SharedPreferences.getInstance();
+
+    if (sp.containsKey(userUid)) {
+      List<String> value = sp.getStringList(userUid)!;
+      value.remove(id);
+      sp.setStringList(userUid, value);
+    }
+
     notifyListeners();
   }
 
@@ -118,22 +93,27 @@ class FavouriteItemsProvider extends ChangeNotifier {
     return false;
   }
 
-  void toggleFavourite({ required String id, required TrackModel details, required BuildContext context}) {
+  void toggleFavourite(
+      {required String id,
+      required TrackModel details,
+      required BuildContext context}) {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration: const Duration(milliseconds: 30),content: removedSnackbarContent()),
+        SnackBar(
+            duration: const Duration(milliseconds: 30),
+            content: removedSnackbarContent()),
       );
     } else {
       addToFavourite(id: id, details: details);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration: const Duration(milliseconds: 30),content: addedSnackbarContent()),
+        SnackBar(
+            duration: const Duration(milliseconds: 30),
+            content: addedSnackbarContent()),
       );
     }
   }
 }
-
-
 
 class AudioProvider extends ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -147,8 +127,7 @@ class AudioProvider extends ChangeNotifier {
   Duration _duration = Duration.zero;
   bool openMiniPlayer = false;
 
-  void setMiniPlayer()
-  {
+  void setMiniPlayer() {
     openMiniPlayer = true;
     notifyListeners();
   }
@@ -163,12 +142,18 @@ class AudioProvider extends ChangeNotifier {
   Duration get duration => _duration;
 
   String? get trackId => _items.isNotEmpty ? _items[_currentIndex].id : null;
-  String? get trackName => _items.isNotEmpty ? _items[_currentIndex].name : null;
-  String? get trackImageUrl => _items.isNotEmpty ? _items[_currentIndex].imageUrl : null;
-  String? get artistId => _items.isNotEmpty ? _items[_currentIndex].artistId : null;
-  String? get artistName => _items.isNotEmpty ? _items[_currentIndex].artistName : null;
-  String? get albumId => _items.isNotEmpty ? _items[_currentIndex].albumId : null;
-  String? get albumName => _items.isNotEmpty ? _items[_currentIndex].albumName : null;
+  String? get trackName =>
+      _items.isNotEmpty ? _items[_currentIndex].name : null;
+  String? get trackImageUrl =>
+      _items.isNotEmpty ? _items[_currentIndex].imageUrl : null;
+  String? get artistId =>
+      _items.isNotEmpty ? _items[_currentIndex].artistId : null;
+  String? get artistName =>
+      _items.isNotEmpty ? _items[_currentIndex].artistName : null;
+  String? get albumId =>
+      _items.isNotEmpty ? _items[_currentIndex].albumId : null;
+  String? get albumName =>
+      _items.isNotEmpty ? _items[_currentIndex].albumName : null;
 
   AudioProvider() {
     _initializePlayer();
@@ -200,7 +185,8 @@ class AudioProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> loadAudio({required List<dynamic> trackList,required int index}) async {
+  Future<void> loadAudio(
+      {required List<dynamic> trackList, required int index}) async {
     _items = trackList;
     _currentIndex = index;
     _isLoading = true;
@@ -241,8 +227,8 @@ class AudioProvider extends ChangeNotifier {
   }
 
   void seekTo(double value) {
-    final newPosition = Duration(
-        milliseconds: (_duration.inMilliseconds * value).round());
+    final newPosition =
+        Duration(milliseconds: (_duration.inMilliseconds * value).round());
     _audioPlayer.seek(newPosition);
   }
 
@@ -275,10 +261,77 @@ class AudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   @override
   void dispose() {
     _audioPlayer.dispose();
     super.dispose();
   }
 }
+
+
+
+
+
+
+
+
+
+//
+
+//
+// Future<Database> initDataBase() async {
+//   final dbPath = path.join(await sql.getDatabasesPath(), 'favUser1.db');
+//   final db = await sql.openDatabase(dbPath,
+//       version: 1,
+//       onCreate: (db, version) => db.execute(
+//           'CREATE TABLE favouritesUser1 (id TEXT,name TEXT,artistId TEXT, artistName TEXT, albumId TEXT, albumName TEXT, imageUrl TEXT, userId TEXT)'));
+//   print(dbPath);
+//   return db;
+// }
+//
+// void insertData(
+//     {required String id,
+//       required String name,
+//       required String artistId,
+//       required String artistName,
+//       required String albumId,
+//       required String albumName,
+//       required String imageUrl}) async {
+//   final db = await initDataBase();
+//   // int numberOfInsertions = await db.rawInsert("INSERT INTO favourites(id, name, artistId, artistName, albumId, albumName, imageUrl) VALUES ('${id}', '${name}', '$artistId','$artistName', '$albumId', '$albumName', '$imageUrl')");
+//   int numberOfInsertions = await db.insert('favouritesUser1', {
+//     'id': id,
+//     'name': name,
+//     'artistId': artistId,
+//     'artistName': artistName,
+//     'albumId': albumId,
+//     'albumName': albumName,
+//     'imageUrl': imageUrl,
+//     'userId': userUid
+//   });
+//   print(numberOfInsertions);
+//   print(userUid);
+// }
+//
+// void deleteData({required id}) async {
+//   final db = await initDataBase();
+//   int numberOfDeletions = await db.rawDelete(
+//       'DELETE  FROM favouritesUser1 WHERE id=? AND userId=?', [id, userUid]);
+//   print(numberOfDeletions);
+// }
+//
+// dynamic getData() async {
+//   final db = await initDataBase();
+//   var res = await db
+//       .rawQuery('SELECT * FROM favouritesUser1 WHERE userId= ? ', [userUid]);
+//   print("from get data ${res[0]['userId']}");
+//   return res;
+// }
+//
+// Future<bool> checkData({required String id}) async {
+//   final db = await initDataBase();
+//   var res = await db.rawQuery(
+//       'SELECT id FROM favouritesUser1 WHERE id = ? AND userId=?',
+//       [id, userUid]);
+//   return res.isNotEmpty;
+// }

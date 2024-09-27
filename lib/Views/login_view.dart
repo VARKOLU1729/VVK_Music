@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runo_music/tab_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -15,27 +16,48 @@ class _LoginViewState extends State<LoginView> {
   final _authKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
+  String? _username;
 
   bool _isSignIn = true;
 
   Future<void> _save() async {
     if (_authKey.currentState!.validate()) {
+      final sp = await SharedPreferences.getInstance();
       try {
-        if (_isSignIn) {
+        if (_isSignIn)
+        {
           await _firebase.signInWithEmailAndPassword(email: _email!, password: _password!);
-        } else {
+        }
+        else
+        {
           await _firebase.createUserWithEmailAndPassword(email: _email!, password: _password!);
+          sp.setStringList(_firebase.currentUser!.uid, [_username!]);
         }
         print(_firebase.currentUser!.uid);
+
         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
-      } on FirebaseAuthException catch (error) {
+      }
+      on FirebaseAuthException catch (error)
+      {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message!)));
       }
     }
   }
 
   @override
+  void initState()
+  {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.black87,
       body: Padding(
@@ -65,6 +87,8 @@ class _LoginViewState extends State<LoginView> {
         child: Column(
           children: [
             _buildRadioTile("Create account", false),
+            if (!_isSignIn) _buildUserNameField(),
+            if (!_isSignIn) const SizedBox(height: 20),
             if (!_isSignIn) _buildEmailField(),
             if (!_isSignIn) const SizedBox(height: 20),
             if (!_isSignIn) _buildPasswordField(),
@@ -99,6 +123,23 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+
+  Widget _buildUserNameField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InputField(
+        labelText: "UserName",
+        onChanged: (val) => _username = val,
+        validator: (val) {
+          if (val!.isEmpty) {
+            return 'Username must not be null';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
 
   Widget _buildEmailField() {
     return Padding(
