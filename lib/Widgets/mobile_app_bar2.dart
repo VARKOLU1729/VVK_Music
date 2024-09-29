@@ -24,7 +24,7 @@ PreferredSizeWidget MobileAppBar2(BuildContext context, {String title=""}) {
               icon:const Icon(Icons.person, color: Colors.white,size: 30,)
             ),
             ],
-    )
-  )
+              )
+          )
   );
 }

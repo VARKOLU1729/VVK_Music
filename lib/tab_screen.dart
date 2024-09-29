@@ -127,7 +127,7 @@ class _TabScreenState extends State<TabScreen> {
           )
           ):null):null,
 
-        body: widget.activePage!=null ? widget.activePage! : activePage,
+        body:widget.activePage!=null ? widget.activePage! : activePage,
       
       bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
         Container(

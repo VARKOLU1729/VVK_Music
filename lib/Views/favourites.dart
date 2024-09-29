@@ -28,7 +28,8 @@ class _FavouritesState extends State<Favourites> {
   @override
   void initState()
   {
-    var favpro = Provider.of<FavouriteItemsProvider>(context);
+    super.initState();
+    var favpro = Provider.of<FavouriteItemsProvider>(context, listen: false);
     favpro.loadFavouriteItems();
   }
 
@@ -40,7 +41,7 @@ class _FavouritesState extends State<Favourites> {
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: true):null,
-        backgroundColor: const Color.fromARGB(200, 9, 3, 3),
+        backgroundColor: const Color.fromARGB(255, 18, 20, 25),
         body: Stack(children: [
 
           Image.network(
@@ -57,8 +58,6 @@ class _FavouritesState extends State<Favourites> {
 
           const BackGroundBlur(),
 
-
-
           NestedScrollView(
             headerSliverBuilder: (context, isScrolled)
             {
@@ -67,9 +66,7 @@ class _FavouritesState extends State<Favourites> {
                     child: Responsive.isMobile(context)||Responsive.isSmallScreen(context) ?
                     Column(
                       children: [
-                        SizedBox(
-                          height: 120,
-                        ),
+                        SizedBox(height: 120,),
                         Center(
                           child: SizedBox(
                             height: 250,

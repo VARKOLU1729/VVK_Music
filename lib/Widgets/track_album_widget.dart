@@ -47,14 +47,6 @@ class TrackAlbumWidget extends StatelessWidget {
 
               )
             );
-            // Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            //   return AlbumView(
-            //       albumId: id,
-            //       albumName: name,
-            //       albumImageUrl: imageUrl,
-            //       artistId: items[index].artistId,
-            //       artistName: items[index].artistName);
-            // }));
           }
 
         else if (type == Type.artist)

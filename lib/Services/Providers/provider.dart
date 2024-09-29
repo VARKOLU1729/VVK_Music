@@ -44,12 +44,11 @@ class FavouriteItemsProvider extends ChangeNotifier {
     getUser();
   }
 
-  void loadFavouriteItems() async {
+  void loadFavouriteItems() async
+  {
     favouriteItems= {};
-    print('===================================$userUid');
     final sp = await SharedPreferences.getInstance();
     List<String> items = await sp.getStringList(userUid)!;
-    print('---------------------------$items');
     for (int i = 1; i < items.length; i++) {
       final track = await getTrackData(trackId: items[i]);
       favouriteItems[items[i]] = track!;
@@ -62,8 +61,6 @@ class FavouriteItemsProvider extends ChangeNotifier {
     favouriteItems[id] = details;
 
     final sp = await SharedPreferences.getInstance();
-    print("useriD $userUid");
-    print(sp.containsKey(userUid));
     if (sp.containsKey(userUid)) {
       List<String> value = sp.getStringList(userUid)!;
       value.add(id);
