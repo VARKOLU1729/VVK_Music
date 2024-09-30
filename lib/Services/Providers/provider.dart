@@ -14,7 +14,7 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 
-String userUid = '';
+String userUid = 'vMoTcvsOubUQl9QHqw0evli6TPT2';
 
 void getUser() {
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -49,7 +49,14 @@ class FavouriteItemsProvider extends ChangeNotifier {
   {
     favouriteItems= {};
     final sp = await SharedPreferences.getInstance();
-    List<String> items = await sp.getStringList(userUid)!;
+    List<String> items = [];
+    if(sp.containsKey(userUid))
+      {
+        items = sp.getStringList(userUid)!;
+      }
+    else{
+      sp.setStringList(userUid, []);
+    }
     for (int i = 0; i < items.length; i++) {
       final track = await getTrackData(trackId: items[i]);
       favouriteItems[items[i]] = track!;
