@@ -101,6 +101,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                   top: getHeight(context) / 4,
                   bottom: getHeight(context) / 2,
                   child: VerticalSlider(
+                    activeColor: Colors.blue,
                     value: audioProvider.volume,
                     onChangeEnd: (val) {
                       setState(() {

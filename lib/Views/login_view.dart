@@ -106,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                 Center(child: const Text("Runo Music", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 25))),
                 const SizedBox(height: 40),
                 Padding(
-                  padding: EdgeInsets.only(left:  (getWidth(context)/2 > 215)? (getWidth(context)/2 - 215) : 20),
+                  padding: EdgeInsets.only(left:  (getWidth(context)/2 > 215)? (getWidth(context)/2 - 215) : 0),
                   child: const Text("Welcome", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 20)),
                 ),
                 const SizedBox(height: 5),

@@ -39,7 +39,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
 
     return isLoading ? Scaffold(body: CircularProgressIndicator(),) : Scaffold(
-      appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false, title: "My Profle") : null,
+      appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false, title: "My Profile") : null,
       extendBodyBehindAppBar: true,
       extendBody: true,
       backgroundColor: Colors.black,

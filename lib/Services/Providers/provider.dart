@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 import '../../Helper/Responsive.dart';
 import '../../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
@@ -96,18 +97,65 @@ class FavouriteItemsProvider extends ChangeNotifier {
       required BuildContext context}) {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            duration: const Duration(milliseconds: 30),
-            content: removedSnackbarContent()),
-      );
+      if(Responsive.isMobile())
+        {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                duration: const Duration(milliseconds: 30),
+                content: removedSnackbarContent()),
+          );
+        }
+      else
+        {
+          toastification.showCustom(
+            context: context,
+            autoCloseDuration: Duration(seconds: 1),
+            builder: (context, holder) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.red,
+                ),
+                width: 200,
+                height: 70,
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child: Center(child: Text("Removed From Favourites"))
+              );
+            },
+          );
+        }
+
     } else {
       addToFavourite(id: id, details: details);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            duration: const Duration(milliseconds: 30),
-            content: addedSnackbarContent()),
-      );
+      if(Responsive.isMobile())
+      {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              duration: const Duration(milliseconds: 30),
+              content: addedSnackbarContent()),
+        );
+      }
+      else
+      {
+        toastification.showCustom(
+          context: context,
+          autoCloseDuration: Duration(seconds: 1),
+          builder: (context, holder) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+              width: 200,
+              height: 70,
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+              child:Center(child: Text("Added to Favourites"))
+            );
+          },
+        );
+      }
     }
   }
 }
@@ -169,16 +217,30 @@ class AudioProvider extends ChangeNotifier {
 
     _audioPlayer.onPositionChanged.listen((Duration p) {
       _currentPosition = p;
+      if(_currentPosition.inSeconds==duration.inSeconds)
+        {
+          if(_isLoop)
+            {
+              _audioPlayer.seek(Duration.zero);
+              _audioPlayer.resume();
+            }
+        }
       notifyListeners();
     });
 
-    _audioPlayer.onPlayerComplete.listen((event) {
+    _audioPlayer.onPlayerComplete.listen((event) async{
       if (_isLoop) {
-        _audioPlayer.seek(Duration.zero);
-        _audioPlayer.resume();
+        // print("looped");
+        // _audioPlayer.pause();
+        //  _audioPlayer.seek(Duration(milliseconds: 0));
+        //  print("----$_duration");
+        //  print("=====$_currentPosition");
+        // _audioPlayer.resume();
       } else {
+        print("----$_duration");
         nextTrack();
       }
+      notifyListeners();
     });
   }
 

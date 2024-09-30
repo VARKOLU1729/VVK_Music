@@ -21,9 +21,16 @@ class PlayTextButton extends StatelessWidget {
           color: Responsive.isMobile() ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).colorScheme.tertiary
       ),
       child: TextButton(onPressed: () async{
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-        await audioProvider.loadAudio(trackList:trackList,index:0);
-
+        if(trackList.isEmpty)
+        {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 30), backgroundColor:Colors.orangeAccent, content: Text("No items to Play!", style: TextStyle(color: Colors.white),)));
+        }
+        else {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          await audioProvider.loadAudio(trackList: trackList, index: 0);
+        }
       }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow,size: 30, color: Responsive.isMobile()? Colors.white : Colors.black87,), Padding(
         padding: const EdgeInsets.only(right: 8.0),
         child: Text('Play', style: TextStyle(color: Responsive.isMobile()? Colors.white : Colors.black87),),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
+import 'package:runo_music/Helper/noFunctionality.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
@@ -139,10 +140,10 @@ class _AlbumViewState extends State<AlbumView> {
                                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                                 title:Row(
                                   children: [
-                                    IconButton(onPressed: (){}, icon: Icon(Icons.shuffle, color: Colors.white,)),
-                                    IconButton(onPressed: (){}, icon: Icon(Icons.favorite_outline, color: Colors.white,)),
-                                    IconButton(onPressed: (){}, icon: Icon(Icons.file_download, color: Colors.white,)),
-                                    IconButton(onPressed: (){}, icon: Icon(Icons.share, color: Colors.white,))
+                                    iconButton(icon: Icons.shuffle),
+                                    iconButton(icon: Icons.favorite_outline),
+                                    iconButton(icon: Icons.file_download),
+                                    iconButton(icon: Icons.share)
                                   ],
                                 ),
                                 trailing:PlayRoundButton(items: albumTrackData)
@@ -261,4 +262,12 @@ class _AlbumViewState extends State<AlbumView> {
         )
     );
   }
+
+  Widget iconButton({required icon})
+  {
+    return IconButton(onPressed: (){noFunctionality(context);}, icon: Icon(icon, color: Colors.white,));
+  }
+
 }
+
+
