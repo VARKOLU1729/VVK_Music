@@ -16,20 +16,11 @@ import 'package:runo_music/models/track_model.dart';
 import 'music_player_view.dart';
 
 class AlbumView extends StatefulWidget {
-  final String albumId;
-  final String albumName;
-  final String albumImageUrl;
-  final String artistId;
-  final String artistName;
+  final List<dynamic> items;
+  final int index;
 
   const AlbumView(
-      {super.key,
-      required this.albumId,
-      required this.albumName,
-      required this.albumImageUrl,
-      required this.artistId,
-      required this.artistName});
-
+      {super.key,required this.items, required this.index});
 
   @override
   State<AlbumView> createState() => _AlbumViewState();
@@ -42,7 +33,7 @@ class _AlbumViewState extends State<AlbumView> {
   //paging option is not there , so directly fetched all the results
   void _loadData() async {
     List<TrackModel> albumTrackDat = [];
-    var albumTracksJson =  await fetchData(path: '/albums/${widget.albumId}/tracks');
+    var albumTracksJson =  await fetchData(path: '/albums/${widget.items[widget.index].id}/tracks');
     var noAlbumTracks = albumTracksJson['meta']['returnedCount'];
     for (int i = 0; i < noAlbumTracks; i++) {
 
@@ -62,6 +53,13 @@ class _AlbumViewState extends State<AlbumView> {
 
   @override
   Widget build(BuildContext context) {
+
+    final String albumId = widget.items[widget.index].id;
+    final String albumName = widget.items[widget.index].name;
+    final String albumImageUrl = widget.items[widget.index].imageUrl;
+    final String artistId = widget.items[widget.index].artistId;
+    final String artistName = widget.items[widget.index].artistName;
+
     var audioProvider = Provider.of<AudioProvider>(context, listen: false);
     return Scaffold(
       extendBody: true,
@@ -71,7 +69,7 @@ class _AlbumViewState extends State<AlbumView> {
         body: Stack(children: [
 
           Image.network(
-            widget.albumImageUrl,
+            albumImageUrl,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -101,7 +99,7 @@ class _AlbumViewState extends State<AlbumView> {
                           borderRadius: BorderRadius.circular(10),
                           child:
                           Image.network(
-                            widget.albumImageUrl,
+                            albumImageUrl,
                             fit: BoxFit.cover,
                             scale: 0.7,
                           ),
@@ -118,13 +116,13 @@ class _AlbumViewState extends State<AlbumView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              widget.albumName,
+                              albumName,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 35,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text('${widget.artistName}', style: TextStyle(color: Colors.white, fontSize: 15),),
+                            Text('${artistName}', style: TextStyle(color: Colors.white, fontSize: 15),),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 10),
                               child: Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
@@ -160,14 +158,14 @@ class _AlbumViewState extends State<AlbumView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              widget.albumName,
+                              albumName,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              widget.artistName,
+                              artistName,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -196,7 +194,7 @@ class _AlbumViewState extends State<AlbumView> {
                               borderRadius: BorderRadius.circular(10),
                               child:
                               Image.network(
-                                widget.albumImageUrl,
+                                albumImageUrl,
                                 fit: BoxFit.cover,
                                 scale: 0.6,
                               ),
@@ -209,14 +207,14 @@ class _AlbumViewState extends State<AlbumView> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    widget.albumName,
+                                    albumName,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 50,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    widget.artistName,
+                                    artistName,
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 30,

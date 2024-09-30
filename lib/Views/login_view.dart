@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
+import 'package:runo_music/main.dart';
 import 'package:runo_music/tab_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
@@ -50,7 +52,8 @@ class _LoginViewState extends State<LoginView> {
           {
             showWelcomeSnackBar();
           }
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+        // context.push('/tab-screen');
       }
       on FirebaseAuthException catch (error)
       {
@@ -80,7 +83,8 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
+        context.push('/tab-screen');
       }
     });
   }

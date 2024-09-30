@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Services/Providers/provider.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
+import 'package:runo_music/main.dart';
 import 'package:runo_music/models/track_model.dart';
 
 import '../Helper/messenger.dart';
@@ -54,7 +56,8 @@ class _ListAllWidgetState extends State<ListAllWidget> {
             children: [
               ListTile(
                 onTap: () async{
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                  // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                  context.push('/music-player');
                   await audioProvider.loadAudio(trackList:widget.items,index: widget.index);
                 },
                 hoverColor: Colors.red,

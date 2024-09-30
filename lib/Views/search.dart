@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Views/genre_view.dart';
+import 'package:runo_music/main.dart';
 import 'package:runo_music/tab_screen.dart';
 
 import '../Helper/Responsive.dart';
@@ -193,7 +195,13 @@ class _SearchState extends State<Search> {
                             ];
                       return InkWell(
                         onTap:() {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: GenreView(genreData: genreData[index],gradientColors: gradientColors,),) ));
+                          // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: GenreView(genreData: genreData[index],gradientColors: gradientColors,),) ));
+                          context.push('/genre-view',
+                              extra: {
+                              'genreData':genreData[index],
+                                'gradientColors':gradientColors
+                              }
+                          );
                         },
                         child: Padding(
                           padding: EdgeInsets.all(10),

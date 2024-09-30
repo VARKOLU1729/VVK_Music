@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Views/profile_view.dart';
 import 'package:runo_music/Widgets/nav_bar.dart';
@@ -188,8 +189,8 @@ class _TabScreenState extends State<TabScreen> {
                       flex: 1,
                       child: InkWell(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const MusicPlayerView()));
+                          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()));
+                          context.push('/music-player');
                         },
                         child: const MiniPlayerView(),
                       ),
@@ -230,7 +231,10 @@ class NavSearchBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 10),
           child: InkWell(
             mouseCursor: MouseCursor.defer,
-            onTap:  () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(showAppBar:false, activePage: Search(),) ));},
+            onTap:  () {
+              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(showAppBar:false, activePage: Search(),) ));
+              context.push('/search');
+              },
             child: searchBar(
               enabled: false,
               // textController: _searchController,
@@ -254,7 +258,10 @@ class ProfileButton extends StatelessWidget {
       padding: EdgeInsets.only(right: Responsive.isMediumScreen(context)?20:(Responsive.isLargeScreen(context)?40:10)),
       child: IconButton(
         tooltip: "Profile",
-        onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: ProfileView(),)));},
+        onPressed: (){
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen(activePage: ProfileView(),)));
+          context.push('/profile-view');
+          },
         icon: const Icon(Icons.person),
         color: Colors.white,
         hoverColor: Colors.grey.withOpacity(0.4),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Views/album_view.dart';
@@ -31,27 +32,27 @@ class TrackAlbumWidget extends StatelessWidget {
         if (type == Type.track)
         {
           final audioProvider = Provider.of<AudioProvider>(context, listen: false);
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          context.push('/music-player');
           await audioProvider.loadAudio(trackList: items, index: index);
 
         }
         else if (type == Type.album)
           {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
-            TabScreen(activePage: AlbumView(
-                albumId: id,
-                albumName: name,
-                albumImageUrl: imageUrl,
-                artistId: items[index].artistId,
-                artistName: items[index].artistName),)
-
-              )
-            );
+            // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+            // TabScreen(activePage: AlbumView(items:items, index: index,),)
+            //   )
+            // );
+            context.push('/album/$id', extra: {
+              'items': items,
+              'index': index,
+            });
           }
 
         else if (type == Type.artist)
           {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(activePage: ArtistView(artistId: id,),) ));
+            // Navigator.of(context).push(MaterialPageRoute(builder: (context) => TabScreen(activePage: ArtistView(artistId: id,),) ));
+            context.push('/artist/$id');
           }
 
       },

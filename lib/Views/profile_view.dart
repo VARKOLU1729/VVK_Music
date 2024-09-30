@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,8 +84,9 @@ class _ProfileViewState extends State<ProfileView> {
                   print("signing out");
                   await FirebaseAuth.instance.signOut();
                   print("signed out");
-                  Navigator.pushAndRemoveUntil(
-                      context, MaterialPageRoute(builder: (context) => LoginView()), (route)=>false);
+                  // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginView()), (route)=>false);
+                  context.go("/login");
+                  context.pop();
                 },
                 child: Text(
                   "Sign Out",

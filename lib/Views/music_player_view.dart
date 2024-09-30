@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
 import 'package:vertical_slider/vertical_slider.dart';
@@ -18,6 +19,7 @@ import '../Services/Providers/provider.dart';
 import '../Widgets/pop_out.dart';
 import '../Widgets/bottom_icon.dart';
 
+import '../models/album_model.dart';
 import 'album_view.dart';
 import 'artist_view.dart';
 
@@ -161,18 +163,25 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     width: getWidth(context)/1.5,
                                     child: InkWell(
                                       onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AlbumView(
-                                              albumId: albumId,
-                                              albumName: albumName,
-                                              albumImageUrl: trackImageUrl,
+                                        List<dynamic> items = [
+                                          AlbumModel(id: albumId,
+                                              name: albumName,
+                                              imageUrl: trackImageUrl,
                                               artistId: artistId,
-                                              artistName: artistName,
-                                            ),
-                                          ),
-                                        );
+                                              artistName: artistName)
+                                        ];
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) => AlbumView(
+                                        //       items:items,index: 0,
+                                        //     ),
+                                        //   ),
+                                        // );
+                                        context.push('/album/$albumId', extra: {
+                                          'items': items,
+                                          'index': 0,
+                                        });
                                       },
                                       child: Text(
                                         trackName,
@@ -209,14 +218,15 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                               flex: 1,
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ArtistView(
-                                        artistId: artistId,
-                                      ),
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => ArtistView(
+                                  //       artistId: artistId,
+                                  //     ),
+                                  //   ),
+                                  // );
+                                  context.push('/artist/$artistId');
                                 },
                                 child: Text(
                                   artistName,
