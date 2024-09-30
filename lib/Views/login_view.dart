@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/tab_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 
 import '../Helper/Responsive.dart';
 
 final _firebase = FirebaseAuth.instance;
+final _firestore = FirebaseFirestore.instance.collection('users');
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -27,19 +30,26 @@ class _LoginViewState extends State<LoginView> {
 
   Future<void> _save() async {
     if (_authKey.currentState!.validate()) {
-      final sp = await SharedPreferences.getInstance();
       try {
         if (_isSignIn)
         {
           await _firebase.signInWithEmailAndPassword(email: _email!, password: _password!);
+          final userData = await _firestore.doc(_firebase.currentUser!.uid).get();
+          _username = userData.data()!['userName'];
         }
         else
         {
           await _firebase.createUserWithEmailAndPassword(email: _email!, password: _password!);
-          sp.setStringList(_firebase.currentUser!.uid, [_username!]);
+          var userData = _firestore.doc(_firebase.currentUser!.uid);
+          userData.set({"userName" : _username});
+
         }
         print(_firebase.currentUser!.uid);
-
+        if(!Responsive.isMobile()) showWelcomeToast();
+        else
+          {
+            showWelcomeSnackBar();
+          }
         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
       }
       on FirebaseAuthException catch (error)
@@ -389,6 +399,29 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+
+  ToastificationItem showWelcomeToast()
+  {
+    return toastification.show(
+      context: context,
+      title: Text("Welcome $_username"),
+      type: ToastificationType.success,
+      autoCloseDuration: Duration(seconds: 3)
+    );
+  }
+
+   ScaffoldFeatureController showWelcomeSnackBar()
+   {
+     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+         content: Container(
+           height: 40,
+           color: Colors.green,
+           child: Center(child: Text("Welcome $_username")),
+        )
+     )
+     );
+   }
+
 
 }
 

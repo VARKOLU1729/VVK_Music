@@ -50,7 +50,7 @@ class FavouriteItemsProvider extends ChangeNotifier {
     favouriteItems= {};
     final sp = await SharedPreferences.getInstance();
     List<String> items = await sp.getStringList(userUid)!;
-    for (int i = 1; i < items.length; i++) {
+    for (int i = 0; i < items.length; i++) {
       final track = await getTrackData(trackId: items[i]);
       favouriteItems[items[i]] = track!;
     }
@@ -108,21 +108,13 @@ class FavouriteItemsProvider extends ChangeNotifier {
         }
       else
         {
-          toastification.showCustom(
-            context: context,
-            autoCloseDuration: Duration(seconds: 1),
-            builder: (context, holder) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.red,
-                ),
-                width: 200,
-                height: 70,
-                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                child: Center(child: Text("Removed From Favourites"))
-              );
-            },
+          toastification.show(
+              context: context,
+              type: ToastificationType.info,
+              autoCloseDuration: Duration(seconds: 1),
+              title: Text("Removed From Favourites"),
+              style: ToastificationStyle.flatColored,
+
           );
         }
 
@@ -139,22 +131,14 @@ class FavouriteItemsProvider extends ChangeNotifier {
       }
       else
       {
-        toastification.showCustom(
+        toastification.show(
           context: context,
+          type: ToastificationType.info,
           autoCloseDuration: Duration(seconds: 1),
-          builder: (context, holder) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-              width: 200,
-              height: 70,
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-              child:Center(child: Text("Added to Favourites"))
-            );
-          },
+          title: Text("Added to Favourites"),
+          style: ToastificationStyle.flatColored,
         );
+
       }
     }
   }

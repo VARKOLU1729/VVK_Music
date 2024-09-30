@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runo_music/Helper/Responsive.dart';
@@ -19,10 +20,14 @@ class _ProfileViewState extends State<ProfileView> {
   bool isLoading = true;
   void getUserName() async
   {
-    final sp = await SharedPreferences.getInstance();
-    print(sp.getKeys());
-    List<String> val = sp.getStringList(user!.uid)!;
-    userName = val[0];
+    // final sp = await SharedPreferences.getInstance();
+    // print(sp.getKeys());
+    // List<String> val = sp.getStringList(user!.uid)!;
+    // userName = val[0];
+
+    final userData = await FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+    userName = userData.data()!['userName'];
+
     setState(() {
       isLoading = false;
     });
@@ -38,7 +43,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
 
-    return isLoading ? Scaffold(body: CircularProgressIndicator(),) : Scaffold(
+    return isLoading ? Scaffold(backgroundColor: Colors.black, body: Center(child: CircularProgressIndicator(color: Colors.white,)),) : Scaffold(
       appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false, title: "My Profile") : null,
       extendBodyBehindAppBar: true,
       extendBody: true,
