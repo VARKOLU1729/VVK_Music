@@ -5,10 +5,12 @@ import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
 
 import '../Helper/Responsive.dart';
+import '../Helper/noFunctionality.dart';
 import '../Views/music_player_view.dart';
 
 import '../Helper/deviceParams.dart';
 
+import '../Widgets/albumContoller.dart';
 import '../Widgets/list_all.dart';
 import '../Widgets/back_ground_blur.dart';
 import '../Services/Providers/provider.dart';
@@ -113,10 +115,17 @@ class _FavouritesState extends State<Favourites> {
                                     contentPadding: EdgeInsets.symmetric(horizontal: 0),
                                     title:Row(
                                       children: [
-                                        IconButton(onPressed: (){}, icon: Icon(Icons.shuffle, color: Colors.white,)),
-                                        IconButton(onPressed: (){}, icon: Icon(Icons.favorite_outline, color: Colors.white,)),
-                                        IconButton(onPressed: (){}, icon: Icon(Icons.file_download, color: Colors.white,)),
-                                        IconButton(onPressed: (){}, icon: Icon(Icons.share, color: Colors.white,))
+                                        IconButton( icon: Icon(Icons.shuffle, color: Colors.white,),
+                                            onPressed: ()async{
+                                          var items = favProvider.favouriteItems.values.toList(growable: false);
+                                          // items.shuffle();
+                                          // await audioProvider.loadAudio(trackList: items, index: 0);
+                                          audioProvider.toggleShuffle(itemsToShuffle: items);
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                        }),
+                                        iconButton(context:context, icon: Icons.favorite_outline, onPressed: (){noFunctionality(context);}),
+                                        iconButton(context:context, icon: Icons.file_download, onPressed: (){noFunctionality(context);}),
+                                        iconButton(context:context, icon: Icons.share, onPressed: (){noFunctionality(context);})
                                       ],
                                     ),
                                     trailing:PlayRoundButton(items: favProvider.favouriteItems.values.toList())

@@ -13,6 +13,7 @@ import 'package:runo_music/Widgets/list_all.dart';
 import 'package:runo_music/Services/Providers/provider.dart';
 import 'package:runo_music/models/track_model.dart';
 
+import '../Widgets/albumContoller.dart';
 import 'music_player_view.dart';
 
 class AlbumView extends StatefulWidget {
@@ -138,10 +139,15 @@ class _AlbumViewState extends State<AlbumView> {
                                 contentPadding: EdgeInsets.symmetric(horizontal: 0),
                                 title:Row(
                                   children: [
-                                    iconButton(icon: Icons.shuffle),
-                                    iconButton(icon: Icons.favorite_outline),
-                                    iconButton(icon: Icons.file_download),
-                                    iconButton(icon: Icons.share)
+                                    iconButton(context:context, icon: Icons.shuffle, onPressed: ()async{
+                                      var items = albumTrackData;
+                                      items.shuffle();
+                                      await audioProvider.loadAudio(trackList: items, index: 0);
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                    }),
+                                    iconButton(context:context, icon: Icons.favorite_outline,onPressed: (){noFunctionality(context);}),
+                                    iconButton(context:context, icon: Icons.file_download, onPressed:(){noFunctionality(context);}),
+                                    iconButton(context:context, icon: Icons.share, onPressed:(){noFunctionality(context);})
                                   ],
                                 ),
                                 trailing:PlayRoundButton(items: albumTrackData)
@@ -261,10 +267,7 @@ class _AlbumViewState extends State<AlbumView> {
     );
   }
 
-  Widget iconButton({required icon})
-  {
-    return IconButton(onPressed: (){noFunctionality(context);}, icon: Icon(icon, color: Colors.white,));
-  }
+
 
 }
 

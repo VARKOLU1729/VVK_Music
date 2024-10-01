@@ -11,6 +11,8 @@ import '../audio_controllers/next_button.dart';
 import '../audio_controllers/play_pause_button.dart';
 import '../audio_controllers/loop_button.dart';
 import '../audio_controllers/previous_button.dart';
+import '../audio_controllers/shuffle.dart';
+import '../audio_controllers/speed_controller.dart';
 import '../audio_controllers/volume_button.dart';
 
 
@@ -120,6 +122,16 @@ class _MiniControlsState extends State<MiniControls> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+
+                if(Responsive.isLargeScreen(context))
+                  Shuffle(audioProvider:widget.audioProvider,
+                      onPressed: (){
+                        setState(() {
+                          widget.audioProvider.toggleShuffle();
+                        });
+                      }
+                  ),
+
                   if(Responsive.isLargeScreen(context))
                     LoopButton(audioProvider: widget.audioProvider, onPress: (){widget.audioProvider.toggleLoop();}, iconSize: 25),
 
@@ -140,7 +152,17 @@ class _MiniControlsState extends State<MiniControls> {
                             addedToFav = !addedToFav;
                           });
                         },
-                        addedToFav: addedToFav)
+                        addedToFav: addedToFav),
+
+                  if(Responsive.isLargeScreen(context))
+                    SpeedController(audioProvider: widget.audioProvider,
+                      onSelected: (value){
+                        setState(() {
+                          widget.audioProvider.setSpeed(value.toDouble());
+                        });
+                      },
+                      size:20
+                    ),
               ],
             ),
           ),

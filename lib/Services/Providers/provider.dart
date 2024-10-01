@@ -1,18 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
-import 'package:http/http.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 import '../../Helper/Responsive.dart';
 import '../../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
 import '../../models/track_model.dart';
-
-import 'package:sqflite/sqlite_api.dart';
-import 'package:sqflite/sqflite.dart' as sql;
-import 'package:path/path.dart' as path;
+import 'dart:math';
 
 String userUid = 'vMoTcvsOubUQl9QHqw0evli6TPT2';
 
@@ -47,6 +42,7 @@ class FavouriteItemsProvider extends ChangeNotifier {
 
   void loadFavouriteItems() async
   {
+    print("loadddddddd");
     favouriteItems= {};
     final sp = await SharedPreferences.getInstance();
     List<String> items = [];
@@ -67,7 +63,7 @@ class FavouriteItemsProvider extends ChangeNotifier {
 
   void addToFavourite({required String id, required TrackModel details}) async {
     favouriteItems[id] = details;
-
+    print("adding");
     final sp = await SharedPreferences.getInstance();
     if (sp.containsKey(userUid)) {
       List<String> value = sp.getStringList(userUid)!;
@@ -158,11 +154,13 @@ class AudioProvider extends ChangeNotifier {
   bool _isPlaying = false;
   bool _isLoop = false;
   bool _isLoading = false;
+  double speed = 1;
   double _volume = 1.0;
+  bool isShuffled = false;
   Duration _currentPosition = Duration.zero;
   Duration _duration = Duration.zero;
   bool openMiniPlayer = false;
-
+  List<int> shuffledIndices = [];
   void setMiniPlayer() {
     openMiniPlayer = true;
     notifyListeners();
@@ -276,6 +274,32 @@ class AudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int findRandIndex()
+  {
+    int x = 0;
+    while(true)
+      {
+         x = Random().nextInt(items.length);
+        if(x!=_currentIndex && (!shuffledIndices.contains(x)))
+          {
+            break;
+          }
+      }
+      return x;
+  }
+
+  void toggleShuffle({List<dynamic>? itemsToShuffle})
+  {
+    if(itemsToShuffle!=null && !isShuffled)
+      {
+        List<dynamic> sItems = List.of(itemsToShuffle, growable: false);
+        sItems.shuffle();
+        loadAudio(trackList: sItems, index: 0);
+      }
+    isShuffled = !isShuffled;
+  }
+
+
   void seekTo(double value) {
     final newPosition =
         Duration(milliseconds: (_duration.inMilliseconds * value).round());
@@ -284,7 +308,15 @@ class AudioProvider extends ChangeNotifier {
 
   Future<void> nextTrack() async {
     if (_currentIndex < _items.length - 1) {
-      _currentIndex++;
+      if(isShuffled)
+      {
+        _currentIndex = findRandIndex();
+      }
+      if(!isShuffled)
+      {
+        _currentIndex++;
+      }
+      if(_currentIndex >= _items.length) _currentIndex=0;
       _isLoading = true;
       notifyListeners();
       await _playCurrentTrack();
@@ -293,7 +325,15 @@ class AudioProvider extends ChangeNotifier {
 
   Future<void> previousTrack() async {
     if (_currentIndex > 0) {
-      _currentIndex--;
+      if(isShuffled)
+        {
+           _currentIndex = findRandIndex();
+        }
+      if(!isShuffled)
+        {
+          _currentIndex--;
+        }
+      if(_currentIndex<0) _currentIndex=items.length;
       _isLoading = true;
       notifyListeners();
       await _playCurrentTrack();
@@ -310,6 +350,13 @@ class AudioProvider extends ChangeNotifier {
     _audioPlayer.setVolume(_volume);
     notifyListeners();
   }
+
+  void setSpeed(double value)
+  {
+    speed = value;
+    _audioPlayer.setPlaybackRate(value);
+  }
+
 
   @override
   void dispose() {

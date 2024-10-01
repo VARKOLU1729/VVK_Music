@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class bottomIcon extends StatelessWidget {
   final Widget icon;
-  const bottomIcon({Key? key, required this.icon}) : super(key: key);
+  const bottomIcon({super.key,required this.icon,});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: icon,
+      height: 40,
+      width: 40,
+      child:  icon ,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,

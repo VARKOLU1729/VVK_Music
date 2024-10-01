@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/profile-view',
-        builder: (context, state) => const ProfileView(),
+        builder: (context, state) => TabScreen(activePage: const ProfileView()),
       ),
       GoRoute(
         path: '/search',

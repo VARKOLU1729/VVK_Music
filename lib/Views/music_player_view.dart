@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
+import 'package:runo_music/audio_controllers/shuffle.dart';
+import 'package:runo_music/audio_controllers/speed_controller.dart';
 import 'package:vertical_slider/vertical_slider.dart';
 import 'dart:math' as math;
 
@@ -314,6 +316,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     iconSize: 20,
                                   ),
 
+                                  if(!(Responsive.isSmallScreen(context) || Responsive.isMobile(context)))
+                                    SpeedController(audioProvider: audioProvider,
+                                      onSelected: (value){
+                                        setState(() {
+                                          audioProvider.setSpeed(value.toDouble());
+                                        });
+                                      },
+                                    ),
+
+
                                   PreviousButton(audioProvider: audioProvider, iconSize: 40),
 
                                   audioProvider.isLoading
@@ -321,6 +333,15 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                       : PlayPauseButton(iconSize: 40,isDecoration: true,),
 
                                   NextButton(audioProvider: audioProvider, iconSize: 40),
+
+                                  if(!(Responsive.isSmallScreen(context) || Responsive.isMobile(context)))
+                                    Shuffle(audioProvider:audioProvider,
+                                        onPressed: (){
+                                          setState(() {
+                                            audioProvider.toggleShuffle();
+                                          });
+                                        }
+                                    ),
 
                                   if(!(Responsive.isSmallScreen(context) || Responsive.isMobile(context)))
                                   LoopButton(
@@ -353,6 +374,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                   ),
 
                                   bottomIcon(
+                                      icon: SpeedController(audioProvider: audioProvider,
+                                        onSelected: (value){
+                                          setState(() {
+                                            audioProvider.setSpeed(value.toDouble());
+                                          });
+                                        },
+                                      )
+                                  ),
+
+                                  bottomIcon(
                                     icon: LoopButton(
                                       audioProvider: audioProvider,
                                           onPress: () {
@@ -361,6 +392,17 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                         iconSize: 20),
                                   ),
 
+                                  bottomIcon(
+                                    icon: Shuffle(audioProvider:audioProvider,
+                                        onPressed: (){
+                                      setState(() {
+                                        audioProvider.toggleShuffle();
+                                      });
+
+                                        }
+                                    )
+                                  )
+
                                 ],
                               ),
                             ),
@@ -368,6 +410,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 20,)
                     ],
                   ),
                 ),
