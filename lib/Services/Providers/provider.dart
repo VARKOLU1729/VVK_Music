@@ -35,6 +35,7 @@ Future<TrackModel?> getTrackData({required String trackId}) async {
 
 class FavouriteItemsProvider extends ChangeNotifier {
   Map<String, TrackModel> favouriteItems = {};
+  bool isLoading = true;
 
   FavouriteItemsProvider()
   {
@@ -44,6 +45,7 @@ class FavouriteItemsProvider extends ChangeNotifier {
   void loadFavouriteItems() async
   {
     print("loadddddddd");
+    isLoading = true;
     favouriteItems= {};
     final sp = await SharedPreferences.getInstance();
     List<String> items = [];
@@ -58,7 +60,7 @@ class FavouriteItemsProvider extends ChangeNotifier {
       final track = await getTrackData(trackId: items[i]);
       favouriteItems[items[i]] = track!;
     }
-
+    isLoading = false;
     notifyListeners();
   }
 

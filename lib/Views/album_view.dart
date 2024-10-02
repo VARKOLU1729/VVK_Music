@@ -255,10 +255,11 @@ class _AlbumViewState extends State<AlbumView> {
                 )];
               },
               body: ListView.builder(
+                key: ValueKey(albumTrackData.length),
                 padding: EdgeInsets.all(0),
                   itemCount: albumTrackData.length,
                   itemBuilder: (context, index) {
-                    return ListAllWidget(index: index,items: albumTrackData, decorationReq: true,);
+                    return ListAllWidget(key: ValueKey(albumTrackData[index].id), index: index,items: albumTrackData, decorationReq: true,);
 
                   }),
           ),
