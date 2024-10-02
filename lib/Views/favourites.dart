@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
@@ -15,6 +16,7 @@ import '../Widgets/list_all.dart';
 import '../Widgets/back_ground_blur.dart';
 import '../Services/Providers/provider.dart';
 import '../Widgets/play_text_button.dart';
+import '../Widgets/filter.dart' as customFilter;
 
 class Favourites extends StatefulWidget {
 
@@ -42,7 +44,14 @@ class _FavouritesState extends State<Favourites> {
     return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
-        appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: true):null,
+        appBar: !Responsive.isMobile() ? null:
+                MobileAppBar(context,
+                  disablePop: true,
+                  actionIcon: Icons.filter_alt,
+                  actionOnPressed: (){
+                   customFilter.Filter(context);
+                  }
+                ),
         backgroundColor: const Color.fromARGB(255, 18, 20, 25),
         body: Stack(children: [
 
@@ -63,6 +72,7 @@ class _FavouritesState extends State<Favourites> {
           NestedScrollView(
             headerSliverBuilder: (context, isScrolled)
             {
+              print("asdfasdfasdfasdfasdfas");
               return [
                 SliverToBoxAdapter(
                     child: Responsive.isMobile(context)||Responsive.isSmallScreen(context) ?
@@ -123,7 +133,6 @@ class _FavouritesState extends State<Favourites> {
                                           audioProvider.toggleShuffle(itemsToShuffle: items);
                                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                                         }),
-                                        iconButton(context:context, icon: Icons.favorite_outline, onPressed: (){noFunctionality(context);}),
                                         iconButton(context:context, icon: Icons.file_download, onPressed: (){noFunctionality(context);}),
                                         iconButton(context:context, icon: Icons.share, onPressed: (){noFunctionality(context);})
                                       ],
@@ -226,7 +235,7 @@ class _FavouritesState extends State<Favourites> {
                 key: ValueKey(favProvider.favouriteItems.length),
                 itemCount: favProvider.favouriteItems.length,
                 itemBuilder: (context, index) {
-                  return ListAllWidget(index: index,items: favProvider.favouriteItems.values.toList(growable: false), decorationReq: true,);
+                  return ListAllWidget(key:ValueKey(favProvider.favouriteItems.values.toList()[index].id), index: index,items: favProvider.favouriteItems.values.toList(growable: false), decorationReq: true,);
 
                 }),
           ),
@@ -236,7 +245,11 @@ class _FavouritesState extends State<Favourites> {
     );
     
   }
+
+
 }
+
+
 
 
 

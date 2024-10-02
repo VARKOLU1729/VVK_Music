@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:runo_music/Views/profile_view.dart';
 import 'package:runo_music/tab_screen.dart';
 
-PreferredSizeWidget MobileAppBar(BuildContext context, {required bool disablePop, String title=""}) {
+PreferredSizeWidget MobileAppBar(BuildContext context, {required bool disablePop, String title="", void Function()? actionOnPressed, IconData? actionIcon}) {
   return PreferredSize(
     preferredSize: Size.fromHeight(60),
     child:
@@ -18,10 +18,8 @@ PreferredSizeWidget MobileAppBar(BuildContext context, {required bool disablePop
       ),
       backgroundColor: Colors.white.withOpacity(0.0001),
       actions: [IconButton(
-          onPressed: (){
-
-          },
-          icon:const Icon(Icons.more_vert, color: Colors.white,size: 25,)
+          onPressed:actionOnPressed??(){},
+          icon:Icon(actionIcon??Icons.more_vert, color: Colors.white,size: 25,)
       ),],
     ),
   );

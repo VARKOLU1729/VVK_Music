@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
+import 'package:runo_music/Helper/sort.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 import '../../Helper/Responsive.dart';
@@ -71,6 +72,18 @@ class FavouriteItemsProvider extends ChangeNotifier {
       sp.setStringList(userUid, value);
       print(value);
     }
+
+    notifyListeners();
+  }
+
+
+  void sortFavourites(String sortBy) {
+    print("sort");
+    var sortedList = favouriteItems.values.toList();
+    sortTracks(sortedList, sortBy: sortBy);
+    favouriteItems = {
+      for (var track in sortedList) track.id: track
+    };
 
     notifyListeners();
   }
@@ -263,6 +276,8 @@ class AudioProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
 
   void togglePlayPause() {
     if (_isPlaying) {

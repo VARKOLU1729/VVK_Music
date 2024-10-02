@@ -84,7 +84,7 @@ class _LoginViewState extends State<LoginView> {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
         // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
-        context.push('/tab-screen');
+        context.go('/tab-screen');
       }
     });
   }

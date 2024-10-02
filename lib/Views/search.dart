@@ -181,9 +181,9 @@ class _SearchState extends State<Search> {
           if(!_isSearched)
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
                 child: GridView.builder(
-                  padding: EdgeInsets.all(0),
+                  padding: EdgeInsets.only(bottom: 120),
                   itemCount: genreData.length,
                     gridDelegate : SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 300, childAspectRatio: 2.5),
                     // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 2.5),
@@ -229,7 +229,6 @@ class _SearchState extends State<Search> {
               ),
             ),
 
-          if(!_isSearched)  const SizedBox(height: 50,)
         ],
       ),
     );

@@ -133,7 +133,7 @@ class _TabScreenState extends State<TabScreen> {
       bottomNavigationBar: (Responsive.isMobile(context) || (audioProvider.openMiniPlayer)) ?
         Container(
           alignment: Alignment.bottomCenter,
-          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 50 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 120 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
+          height: (Responsive.isMobile(context) && !audioProvider.openMiniPlayer) ? 55 :(Responsive.isMobile(context) && audioProvider.openMiniPlayer ? 125 : (Responsive.isMediumScreen(context)||Responsive.isSmallScreen(context)?80:80)) ,
           decoration: Responsive.isMobile()? BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
