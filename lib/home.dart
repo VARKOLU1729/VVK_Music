@@ -22,6 +22,8 @@ import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Services/Data/top_artists.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 
+import 'models/track_model.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -35,6 +37,7 @@ class _HomeState extends State<Home> {
   String stationArtistName = "The Smiths, Elliott Smith, Aimee Mann";
   String stationImageUrl = "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
   List<dynamic> stationData = [];
+  List<List<TrackModel>> stationTrackData = [];
   bool loadingData = true;
   final PagingController<int, dynamic> _trackPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   final PagingController<int, dynamic> _albumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
@@ -140,7 +143,7 @@ class _HomeState extends State<Home> {
         stationData = temp;
       });
     }
-    loadingData = false;
+    loadStationTrackData();
   }
 
   Future<List<dynamic>> fetchStationData(String stationId) async {
@@ -154,9 +157,26 @@ class _HomeState extends State<Home> {
 
   int _currentStationIndex = 0;
 
-  void loadStationTrackData()
+  void loadStationTrackData() async
   {
-
+    print("load");
+    List<List<TrackModel>> tempStationTrackData = [];
+    for(int i=0; i<5; i++)
+    {
+      List<TrackModel> tracks = [];
+      print(stationData[i][3]);
+      var trackDetailsJson = await fetchData(path: "genres/${stationData[i][3]}/tracks/top", limit: '2', offset: '0');
+      for(int i=0; i <2; i++)
+        {
+          var track = await TrackModel.fromJson(trackDetailsJson['tracks'][i]) ;
+          tracks.add(track);
+        }
+      tempStationTrackData.add(tracks);
+    }
+    setState(() {
+      stationTrackData = tempStationTrackData;
+    });
+    loadingData = false;
   }
 
 
@@ -192,9 +212,15 @@ class _HomeState extends State<Home> {
                     final stationName = stationData[index][0];
                     final stationArtistName = stationData[index][1];
                     final stationImageUrl = stationData[index][2];
-                    return StationCard(stationName:stationName, stationImageUrl: stationImageUrl, stationArtistName: stationArtistName);
+                    return StationCard(
+                        stationName:stationName,
+                        stationImageUrl: stationImageUrl,
+                        stationArtistName: stationArtistName,
+                      stationTracks: stationTrackData[index]
+                    );
                   },
                   options: CarouselOptions(
+                    pauseAutoPlayOnTouch: true,
                     height: getHeight(context) / 2.25,
                     viewportFraction: 1,
                     autoPlay: true,
@@ -295,7 +321,7 @@ class _HomeState extends State<Home> {
   }
 
 
-  Widget StationCard({required String stationName, required String stationImageUrl, required String stationArtistName})
+  Widget StationCard({required String stationName, required String stationImageUrl, required String stationArtistName, required List<TrackModel> stationTracks})
   {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +374,7 @@ class _HomeState extends State<Home> {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 15)),
-                              trailing: PlayRoundButton(items: [])
+                              trailing: PlayRoundButton(items: stationTracks)
                           ),
                         ]),
                   ),
