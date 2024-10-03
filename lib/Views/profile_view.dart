@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Services/Providers/provider.dart';
 import 'login_view.dart';
 
 class ProfileView extends StatefulWidget {
@@ -44,7 +46,8 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
 
-    return isLoading ? Scaffold(backgroundColor: Colors.black, body: Center(child: CircularProgressIndicator(color: Colors.white,)),) : Scaffold(
+    return isLoading ? Scaffold(backgroundColor: Colors.black, body: Center(child: CircularProgressIndicator(color: Colors.white,)),) :
+    Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child)=>Scaffold(
       appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false, title: "My Profile") : null,
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -98,6 +101,6 @@ class _ProfileViewState extends State<ProfileView> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

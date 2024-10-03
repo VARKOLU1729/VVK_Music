@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
-import 'package:runo_music/Helper/noFunctionality.dart';
+import 'package:runo_music/Helper/messenger.dart';
+import 'package:runo_music/Helper/sort.dart';
 import 'package:runo_music/Widgets/back_ground_blur.dart';
 import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
@@ -15,6 +16,7 @@ import 'package:runo_music/models/track_model.dart';
 
 import '../Widgets/albumContoller.dart';
 import 'music_player_view.dart';
+import '../Widgets/filter.dart' as customFilter;
 
 class AlbumView extends StatefulWidget {
   final List<dynamic> items;
@@ -65,7 +67,17 @@ class _AlbumViewState extends State<AlbumView> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: Responsive.isMobile() ? MobileAppBar(context, disablePop: false):null,
+      appBar: !Responsive.isMobile() ? null:
+      MobileAppBar(context,
+          disablePop: false,
+          actionIcon: Icons.filter_alt,
+          actionOnPressed: (){
+            // customFilter.Filter(context: context);
+            customFilter.Filter(context: context, onSubmit : (selectedVal){setState(() {
+              sortTracks(albumTrackData, sortBy: selectedVal);
+            });});
+          }
+      ),
         backgroundColor: const Color.fromARGB(200, 9, 3, 3),
         body: Stack(children: [
 
@@ -141,13 +153,14 @@ class _AlbumViewState extends State<AlbumView> {
                                   children: [
                                     iconButton(context:context, icon: Icons.shuffle, onPressed: ()async{
                                       var items = albumTrackData;
-                                      items.shuffle();
-                                      await audioProvider.loadAudio(trackList: items, index: 0);
+                                      // items.shuffle();
+                                      // await audioProvider.loadAudio(trackList: items, index: 0);
+                                      audioProvider.toggleShuffle(context:context, itemsToShuffle: items);
                                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                                     }),
-                                    iconButton(context:context, icon: Icons.favorite_outline,onPressed: (){noFunctionality(context);}),
-                                    iconButton(context:context, icon: Icons.file_download, onPressed:(){noFunctionality(context);}),
-                                    iconButton(context:context, icon: Icons.share, onPressed:(){noFunctionality(context);})
+                                    iconButton(context:context, icon: Icons.favorite_outline,onPressed: (){showMessage(context: context, content: "Functionality Not Exists");}),
+                                    iconButton(context:context, icon: Icons.file_download, onPressed:(){showMessage(context: context, content: "Functionality Not Exists");}),
+                                    iconButton(context:context, icon: Icons.share, onPressed:(){showMessage(context: context, content: "Functionality Not Exists");})
                                   ],
                                 ),
                                 trailing:PlayRoundButton(items: albumTrackData)
@@ -183,7 +196,19 @@ class _AlbumViewState extends State<AlbumView> {
                                   fontSize: 15
                               ),
                             ),
-                            PlayTextButton(trackList: albumTrackData)
+                            Row(
+                              mainAxisAlignment : MainAxisAlignment.center,
+                              children: [
+                                PlayTextButton(trackList: albumTrackData),
+                                iconButton(context:context, icon: Icons.shuffle, onPressed: ()async{
+                                  var items = albumTrackData;
+                                  // items.shuffle();
+                                  // await audioProvider.loadAudio(trackList: items, index: 0);
+                                  audioProvider.toggleShuffle(context:context, itemsToShuffle: items);
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                }),
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -195,60 +220,80 @@ class _AlbumViewState extends State<AlbumView> {
                         padding: EdgeInsets.only(top: 100),
                         child: Row(
                           children: [
-                            Spacer(),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child:
-                              Image.network(
-                                albumImageUrl,
-                                fit: BoxFit.cover,
-                                scale: 0.6,
+                            // Spacer(),
+                            // ClipRRect(
+                            //   borderRadius: BorderRadius.circular(10),
+                            //   child:
+                            //   Image.network(
+                            //     albumImageUrl,
+                            //     fit: BoxFit.cover,
+                            //     scale: 0.6,
+                            //   ),
+                            // ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60),
+                              child: SizedBox(
+                                width: getWidth(context)<700 ? 250 : 300,
+                                height: getWidth(context)<700 ? 250 : 300,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 20, top: 20),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(albumImageUrl, fit: BoxFit.cover),
+                                  ),
+                                ),
                               ),
                             ),
-                            SizedBox(width: 40,),
-                            SizedBox(
-                              height: 200,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    albumName,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.bold),
+                            // SizedBox(width: 40,),
+                            
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: SizedBox(
+                                  height: getWidth(context)<700 ? 200 : 300,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        albumName,
+                                        style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.white,
+                                            fontSize: 50,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        artistName,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(height: Responsive.isLargeScreen(context)?20: 5,),
+                                      Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
+                                        style: TextStyle(
+                                            color: Colors.white.withOpacity(0.5),
+                                            fontSize: 15
+                                        ),
+                                      ),
+                                      SizedBox(height: Responsive.isLargeScreen(context)?20: 5,),
+                                      Row(
+                                        children: [
+                                          PlayTextButton(trackList: albumTrackData),
+                                          iconButton(context:context, icon: Icons.shuffle, onPressed: ()async{
+                                            var items = albumTrackData;
+                                            items.shuffle();
+                                            await audioProvider.loadAudio(trackList: items, index: 0);
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+                                          }),
+                                        ],
+                                      )
+                                    ],
                                   ),
-                                  Text(
-                                    artistName,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text('${albumTrackData.length} SONGS . ${((albumTrackData.length*30)/60).truncate()} MINS AND ${(albumTrackData.length*30)%60} SECS',
-                                    style: TextStyle(
-                                        color: Colors.white.withOpacity(0.5),
-                                        fontSize: 15
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 90,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        color: const Color.fromARGB(255, 11, 228, 228)
-                                    ),
-                                    child: TextButton(onPressed: () async{
-
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-                                      await audioProvider.loadAudio(trackList:albumTrackData,index:0);
-
-                                    }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow, color: Colors.black87,), Text('Play', style: TextStyle(color: Colors.black87),)],)),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                            Spacer()
                           ],
                         ),
                       )
@@ -256,7 +301,7 @@ class _AlbumViewState extends State<AlbumView> {
               },
               body: ListView.builder(
                 key: ValueKey(albumTrackData.length),
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.only(bottom: 125, top: 40),
                   itemCount: albumTrackData.length,
                   itemBuilder: (context, index) {
                     return ListAllWidget(key: ValueKey(albumTrackData[index].id), index: index,items: albumTrackData, decorationReq: true,);

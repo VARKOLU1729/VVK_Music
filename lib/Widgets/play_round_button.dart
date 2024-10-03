@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/messenger.dart';
 import 'package:runo_music/Services/Providers/provider.dart';
+import 'package:runo_music/main.dart';
 
 import '../Views/music_player_view.dart';
 
@@ -21,12 +24,13 @@ class PlayRoundButton extends StatelessWidget {
 
         if(items.isEmpty)
         {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor:Colors.orangeAccent, content: Text("No items to Play!", style: TextStyle(color: Colors.white),)));
+          showMessage(context: context, content: "No Items to Play!");
         }
         else
         {
           await audioProvider.loadAudio(trackList: items, index: 0);
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
+          context.push('/music-player');
         }
 
       }, icon: const Icon(Icons.play_arrow, size: 30,color: Colors.black,)),

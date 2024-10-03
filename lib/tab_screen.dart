@@ -6,7 +6,6 @@ import 'package:runo_music/Views/profile_view.dart';
 import 'package:runo_music/Widgets/nav_bar.dart';
 
 import '../Views/music_player_view.dart';
-import '../Views/favourites.dart';
 import '../Views/search.dart';
 import '../Views/mini_player_view.dart';
 
@@ -19,6 +18,8 @@ import 'Services/Providers/provider.dart';
 import '../home.dart';
 
 import 'dart:math' as math;
+
+import 'Views/library.dart';
 
 class TabScreen extends StatefulWidget {
 
@@ -51,8 +52,9 @@ class _TabScreenState extends State<TabScreen> {
 
     List<Widget> tabs = [
       const Home(),
-      Responsive.isLargeScreen(context) || Responsive.isMediumScreen(context) ? const Favourites() : const Search(),
-      const Favourites()
+      Responsive.isLargeScreen(context) || Responsive.isMediumScreen(context) ? const Library() : const Search(),
+      // const Favourites(),
+      Library()
     ];
 
     Widget activePage = tabs[selectedIndex];
@@ -199,6 +201,7 @@ class _TabScreenState extends State<TabScreen> {
                     Expanded(
                       flex: 1,
                       child: BottomNavigationBar(
+                        type: BottomNavigationBarType.fixed,
                           onTap: _selectIndex,
                           selectedLabelStyle: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800),
                           unselectedLabelStyle: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800),
@@ -293,16 +296,26 @@ List<BottomNavigationBarItem> bottomNavItems({required iconSize}) {
           size: iconSize,
         ),
         label: "FIND"),
+    // BottomNavigationBarItem(
+    //     icon: Icon(
+    //       Icons.favorite_border,
+    //       size: iconSize,
+    //     ),
+    //     activeIcon: Icon(
+    //       Icons.favorite,
+    //       size: iconSize,
+    //     ),
+    //     label: "FAVOURITES"),
     BottomNavigationBarItem(
         icon: Icon(
-          Icons.favorite_border,
+          Icons.library_music_outlined,
           size: iconSize,
         ),
         activeIcon: Icon(
-          Icons.favorite,
+          Icons.library_music,
           size: iconSize,
         ),
-        label: "FAVOURITES"),
+        label: "LIBRARY"),
   ];
 }
 
@@ -317,8 +330,8 @@ List<CustomNavBarItem> customNavItems() {
         activeIcon: Icons.search,
         label: "SEARCH"),
     CustomNavBarItem(
-        icon: Icons.favorite_border,
-        activeIcon: Icons.favorite,
+        icon:  Icons.library_music_outlined,
+        activeIcon: Icons.library_music,
         label: "LIBRARY"),
   ];
 }

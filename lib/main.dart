@@ -7,6 +7,7 @@ import 'package:runo_music/Views/genre_view.dart';
 import 'package:runo_music/Views/login_view.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Views/profile_view.dart';
+import 'package:runo_music/Views/same_view.dart';
 import 'package:runo_music/tab_screen.dart';
 import 'Services/Providers/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -89,6 +90,16 @@ class MyApp extends StatelessWidget {
           final gradientColors = extra['gradientColors'] as List<Color>;
           return TabScreen(
             activePage: GenreView(genreData: genreData, gradientColors: gradientColors),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/same-view',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final pageType = extra['pageType'] as PageType;
+          return TabScreen(
+            activePage: SameView(pageType: pageType),
           );
         },
       ),

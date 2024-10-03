@@ -127,7 +127,7 @@ class _MiniControlsState extends State<MiniControls> {
                   Shuffle(audioProvider:widget.audioProvider,
                       onPressed: (){
                         setState(() {
-                          widget.audioProvider.toggleShuffle();
+                          widget.audioProvider.toggleShuffle(context: context);
                         });
                       }
                   ),

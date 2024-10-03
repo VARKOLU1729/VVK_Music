@@ -115,49 +115,11 @@ class FavouriteItemsProvider extends ChangeNotifier {
       required BuildContext context}) {
     if (checkInFav(id: id)) {
       removeFromFavourite(id: id);
-      if(Responsive.isMobile())
-        {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                duration: const Duration(milliseconds: 30),
-                content: removedSnackbarContent()),
-          );
-        }
-      else
-        {
-          toastification.show(
-              context: context,
-              type: ToastificationType.info,
-              autoCloseDuration: Duration(seconds: 1),
-              title: Text("Removed From Favourites"),
-              style: ToastificationStyle.flatColored,
-
-          );
-        }
+      showMessage(context: context, content: "Removed from fav's");
 
     } else {
       addToFavourite(id: id, details: details);
-      if(Responsive.isMobile())
-      {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              duration: const Duration(milliseconds: 30),
-              content: addedSnackbarContent()),
-        );
-      }
-      else
-      {
-        toastification.show(
-          context: context,
-          type: ToastificationType.info,
-          autoCloseDuration: Duration(seconds: 1),
-          title: Text("Added to Favourites"),
-          style: ToastificationStyle.flatColored,
-        );
-
-      }
+      showMessage(context: context, content: "Added to fav's");
     }
   }
 }
@@ -176,6 +138,8 @@ class AudioProvider extends ChangeNotifier {
   Duration _duration = Duration.zero;
   bool openMiniPlayer = false;
   List<int> shuffledIndices = [];
+  List<TrackModel> recentPlayedItems = [];
+
   void setMiniPlayer() {
     openMiniPlayer = true;
     notifyListeners();
@@ -265,6 +229,7 @@ class AudioProvider extends ChangeNotifier {
     final trackId = track.id;
     final urlData = await fetchData(path: 'tracks/$trackId');
     final previewUrl = urlData['tracks'][0]['previewURL'];
+    recentPlayedItems.add(track);
 
     try {
       await _audioPlayer.setSourceUrl(previewUrl);
@@ -279,7 +244,12 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
-
+  void sortRecents(String sortBy) {
+    var sortedList = recentPlayedItems;
+    sortTracks(sortedList, sortBy: sortBy);
+    recentPlayedItems = sortedList;
+    notifyListeners();
+  }
 
   void togglePlayPause() {
     if (_isPlaying) {
@@ -305,7 +275,7 @@ class AudioProvider extends ChangeNotifier {
       return x;
   }
 
-  void toggleShuffle({List<dynamic>? itemsToShuffle})
+  void toggleShuffle({required BuildContext context, List<dynamic>? itemsToShuffle})
   {
     if(itemsToShuffle!=null && !isShuffled)
       {
@@ -314,6 +284,8 @@ class AudioProvider extends ChangeNotifier {
         loadAudio(trackList: sItems, index: 0);
       }
     isShuffled = !isShuffled;
+    showMessage(context: context, content: isShuffled?"Shuffle on":"Shuffle off");
+    notifyListeners();
   }
 
 
@@ -356,6 +328,8 @@ class AudioProvider extends ChangeNotifier {
       await _playCurrentTrack();
     }
   }
+
+
 
   void toggleLoop() {
     _isLoop = !_isLoop;

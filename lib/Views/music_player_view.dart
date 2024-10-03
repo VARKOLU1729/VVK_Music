@@ -338,7 +338,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     Shuffle(audioProvider:audioProvider,
                                         onPressed: (){
                                           setState(() {
-                                            audioProvider.toggleShuffle();
+                                            audioProvider.toggleShuffle(context: context);
                                           });
                                         }
                                     ),
@@ -396,7 +396,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                     icon: Shuffle(audioProvider:audioProvider,
                                         onPressed: (){
                                       setState(() {
-                                        audioProvider.toggleShuffle();
+                                        audioProvider.toggleShuffle(context: context);
                                       });
 
                                         }

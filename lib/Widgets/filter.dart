@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import '../Helper/deviceParams.dart';
-import '../Services/Providers/provider.dart';
 
-void Filter(BuildContext context) async
+void Filter({required BuildContext context, required void Function(String) onSubmit}) async
 {
-  FavouriteItemsProvider favProvider = Provider.of<FavouriteItemsProvider>(context, listen: false);
   print("HI");
   return await showModalBottomSheet(
       showDragHandle: true,
@@ -75,7 +72,8 @@ void Filter(BuildContext context) async
                     FilledButton(
                       onPressed:(){
                         if(isSelected) {
-                          favProvider.sortFavourites(selectedVal);
+                          // favProvider.sortFavourites(selectedVal);
+                          onSubmit(selectedVal);
                           context.pop();
                         }
                       },

@@ -14,8 +14,8 @@ class PlayTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var audioProvider = Provider.of<AudioProvider>(context, listen: false);
     return Container(
-      width: 90,
-      height: 45,
+      width: 80,
+      height: 30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: Responsive.isMobile() ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).colorScheme.tertiary
@@ -31,7 +31,7 @@ class PlayTextButton extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
           await audioProvider.loadAudio(trackList: trackList, index: 0);
         }
-      }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow,size: 30, color: Responsive.isMobile()? Colors.white : Colors.black87,), Padding(
+      }, child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [Icon(Icons.play_arrow,size: 20, color: Responsive.isMobile()? Colors.white : Colors.black87,), Padding(
         padding: const EdgeInsets.only(right: 8.0),
         child: Text('Play', style: TextStyle(color: Responsive.isMobile()? Colors.white : Colors.black87),),
       )],)),
