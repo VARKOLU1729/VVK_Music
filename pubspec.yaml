@@ -48,6 +48,7 @@ dependencies:
   toastification: ^2.3.0
   cloud_firestore: ^5.4.3
   go_router: ^14.2.8
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

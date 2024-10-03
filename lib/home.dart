@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:runo_music/Helper/loadingIndicator.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/mobile_app_bar2.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
@@ -18,6 +20,7 @@ import 'package:runo_music/Services/Data/top_tracks.dart';
 import 'package:runo_music/Services/Data/top_albums.dart';
 import 'package:runo_music/Services/Data/fetch_data.dart';
 import 'package:runo_music/Services/Data/top_artists.dart';
+import 'package:carousel_slider/carousel_controller.dart';
 
 
 class Home extends StatefulWidget {
@@ -30,9 +33,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String stationId = "ps.10388500";
   String stationArtistName = "The Smiths, Elliott Smith, Aimee Mann";
-  String stationImageUrl =
-      "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
-
+  String stationImageUrl = "https://images.prod.napster.com/img/356x237/5/1/2/6/686215_356x237.jpg?width=356&height=237";
+  List<dynamic> stationData = [];
+  bool loadingData = true;
   final PagingController<int, dynamic> _trackPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   final PagingController<int, dynamic> _albumPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
   final PagingController<int, dynamic> _artistPagingController = PagingController(firstPageKey: 0, invisibleItemsThreshold: 3);
@@ -40,6 +43,7 @@ class _HomeState extends State<Home> {
   final ScrollController trackScrollController = ScrollController();
   final ScrollController albumScrollController = ScrollController();
   final ScrollController artistScrollController = ScrollController();
+
 
   
   void _loadTrackData(pageKey) async {
@@ -109,6 +113,7 @@ class _HomeState extends State<Home> {
     _artistPagingController.addPageRequestListener((pageKey) {
       _loadArtistData(pageKey);
     });
+    fetchTopStations();
   }
 
   @override
@@ -119,6 +124,42 @@ class _HomeState extends State<Home> {
     // _artistPagingController.dispose();
     super.dispose();
   }
+
+
+  Future<void> fetchTopStations() async {
+    var data = await fetchData(path: 'stations/top', limit: '5', offset: '1');
+    if (data != null) {
+      List<dynamic> temp = [];
+      for(int i=0; i<5; i++)
+        {
+          stationId = data['stations'][i]['id'];
+          dynamic t = await fetchStationData(stationId);
+          temp.add(t);
+        }
+      setState(() {
+        stationData = temp;
+      });
+    }
+    loadingData = false;
+  }
+
+  Future<List<dynamic>> fetchStationData(String stationId) async {
+    var data = await fetchData(path: 'stations/$stationId');
+    String stationName = data['stations'][0]['name'];
+    String stationArtistsName = data['stations'][0]['artists'];
+    String genreIds = data['stations'][0]['links']['genres']['ids'].join(',');
+    String stationImageUrl = data['stations'][0]['links']['largeImage']['href'];
+    return [stationName, stationArtistsName,stationImageUrl, genreIds];
+  }
+
+  int _currentStationIndex = 0;
+
+  void loadStationTrackData()
+  {
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -137,78 +178,52 @@ class _HomeState extends State<Home> {
         ),
         Padding(
           padding: Responsive.isMobile() ? MediaQuery.of(context).padding : EdgeInsets.zero,
+          // padding: EdgeInsets.zero,
           child: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 50,),
                 // first child
                 if (Responsive.isMobile(context))
                   //   show the station image in the background and station details
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: getHeight(context) / 2.25,
-                        width: getWidth(context),
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(stationImageUrl, scale: 20),
-                                fit: BoxFit.cover)),
-                        child: Stack(
-                          children:[
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                    Colors.black.withOpacity(0.05),
-                                    Colors.black.withOpacity(0.3),
-                                    Colors.black.withOpacity(0.5)
-                                  ])),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                   Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        "STATION",
-                                        style: TextStyle(
-                                            color: Theme.of(context).colorScheme.tertiary,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    ListTile(
-                                      title: const Text("My Soundtrack",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 30)),
-                                      subtitle: Text("Based on $stationArtistName",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              color: Colors.white, fontSize: 15)),
-                                      trailing: PlayRoundButton(items: [])
-                                    ),
-                                  ]),
-                                                      ),
-                            ),
-                          ]
-                        ),
-                      ),
-                      Container(
-                        color: Colors.black,
-                      )
-                    ],
+                loadingData ? SizedBox(height: getHeight(context)/2.25 ,child: loadingIndicator()) : CarouselSlider.builder(
+                  itemCount: stationData.length,
+                  itemBuilder: (context, index, realIndex) {
+                    final stationName = stationData[index][0];
+                    final stationArtistName = stationData[index][1];
+                    final stationImageUrl = stationData[index][2];
+                    return StationCard(stationName:stationName, stationImageUrl: stationImageUrl, stationArtistName: stationArtistName);
+                  },
+                  options: CarouselOptions(
+                    height: getHeight(context) / 2.25,
+                    viewportFraction: 1,
+                    autoPlay: true,
+                    enlargeCenterPage: false,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentStationIndex = index;
+                      });
+                    },
                   ),
+                ),
 
                 // second child
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(stationData.length, (index) {
+                    return AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(
+                        '-',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: _currentStationIndex == index ? Colors.white : Colors.grey,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
 
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,4 +293,77 @@ class _HomeState extends State<Home> {
       ]),
     );
   }
+
+
+  Widget StationCard({required String stationName, required String stationImageUrl, required String stationArtistName})
+  {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: getHeight(context) / 2.25,
+          width: getWidth(context),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(stationImageUrl, scale: 20),
+                  fit: BoxFit.cover)),
+          child: Stack(
+              children:[
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.05),
+                              Colors.black.withOpacity(0.3),
+                              Colors.black.withOpacity(0.5)
+                            ])),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Text(
+                              "STATION",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ListTile(
+                              title: Text(stationName,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 30)),
+                              subtitle: Text("Based on $stationArtistName",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 15)),
+                              trailing: PlayRoundButton(items: [])
+                          ),
+                        ]),
+                  ),
+                ),
+              ]
+          ),
+        ),
+        Container(
+          color: Colors.black,
+        )
+      ],
+    );
+  }
+
 }
+
+
+
