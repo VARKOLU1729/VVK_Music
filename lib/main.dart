@@ -37,6 +37,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => FavouriteItemsProvider()),
         ChangeNotifierProvider(create: (context) => AudioProvider()),
+        ChangeNotifierProvider(create: (context) => PlayListProvider()),
       ],
       child: MyApp(),
     ),

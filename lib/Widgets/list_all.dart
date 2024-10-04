@@ -10,12 +10,14 @@ import 'package:runo_music/main.dart';
 import 'package:runo_music/models/track_model.dart';
 
 import '../Helper/messenger.dart';
+import '../Views/same_view.dart';
 
 class ListAllWidget extends StatefulWidget {
   final List<dynamic> items;
   final int index;
   final bool decorationReq;
-  const ListAllWidget({super.key, required this.items, required this.index,required this.decorationReq});
+  final PageType? pageType;
+  const ListAllWidget({super.key, required this.items, required this.index,required this.decorationReq, this.pageType});
 
   @override
   State<ListAllWidget> createState() => _ListAllWidgetState();
@@ -46,15 +48,37 @@ class _ListAllWidgetState extends State<ListAllWidget> {
     loadData();
   }
 
+  Widget addToPlayList({ required BuildContext context,required PlayListProvider plProvider,required TrackModel track})
+  {
+    return PopupMenuButton(
+      icon: Icon(Icons.add,color: Colors.white,),
+      itemBuilder: (context)
+      {
+        List<String> playListNames = plProvider.getPlayListNames();
+        return playListNames.map((item)=>PopupMenuItem(
+          onTap:(){
+            if(!plProvider.checkInPlayList(name: item, trackId: track.id))
+            plProvider.addTrackToPlayList(name: item, track:track);
+            else {
+              showMessage(context: context, content: "Song already exists in '$item'");
+            }
+            },
+            child: Text("$item"))).toList();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider,  child){
+    return Consumer3<FavouriteItemsProvider, AudioProvider, PlayListProvider>(builder: (context, favProvider,audioProvider,playListProvider,  child){
       bool addedToFav = favProvider.checkInFav(id: id!);
+      TrackModel track = TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!);
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: Column(
             children: [
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 onTap: () async{
                   // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
                   context.push('/music-player');
@@ -90,16 +114,34 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                trailing: favButton(onTap: () {
-                  favProvider.toggleFavourite(
-                      id: id!,
-                      details: TrackModel(id: id!, name: name!, artistId: artistId!, artistName: artistName!, albumId: albumId!, albumName: albumName!, imageUrl: imageUrl!),
-                      context: context);
-                  setState(() {
-                    addedToFav = !addedToFav;
-                  });
-                    },
-                    addedToFav: addedToFav),
+                trailing: SizedBox(
+                  width: 72,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      favButton(onTap: () {
+                        favProvider.toggleFavourite(
+                            id: id!,
+                            details: track,
+                            context: context
+                        );
+                        setState(() {
+                          addedToFav = !addedToFav;
+                        });
+                          },
+                          addedToFav: addedToFav),
+                      // IconButton(
+                      //     onPressed: (){addToPlayList(context, playListProvider);},
+                      //     icon: Icon(Icons.add, color: Colors.white,)
+                      // )
+                      widget.pageType!=null && widget.pageType==PageType.PlayList && playListProvider.currentName!=null && playListProvider.checkInPlayList(name: playListProvider.currentName!, trackId: track.id) ?
+
+                      IconButton(icon: Icon(Icons.remove, color: Colors.white,),onPressed: (){playListProvider.removeFromPlaylist(name: playListProvider.currentName!, trackId: track.id);},) :
+
+                      addToPlayList(context:context, plProvider: playListProvider,track: track)
+                    ],
+                  ),
+                ),
               ),
               if(!Responsive.isMobile(context) && widget.decorationReq)
               Divider(indent: 20,endIndent: 20,height: 0,thickness: 0,color: Colors.grey,),
@@ -108,7 +150,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
         );}
     );
 
-
-
   }
+
+
 }

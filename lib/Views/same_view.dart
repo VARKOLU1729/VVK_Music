@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/sort.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
+import 'package:runo_music/models/track_model.dart';
 
 import '../Helper/Responsive.dart';
 import '../Helper/messenger.dart';
@@ -18,7 +20,7 @@ import '../Services/Providers/provider.dart';
 import '../Widgets/play_text_button.dart';
 import '../Widgets/filter.dart' as customFilter;
 
-enum PageType {Favourites, RecentlyPlayed}
+enum PageType {Favourites, RecentlyPlayed, PlayList}
 
 class SameView extends StatefulWidget {
 
@@ -30,6 +32,14 @@ class SameView extends StatefulWidget {
 }
 
 class _SameViewState extends State<SameView> {
+
+  String recentsImage = "assets/images/recentsImage.webp";
+  String favImage = "assets/images/favouritesImage.webp";
+  String playListImage = "assets/images/favouritesImage.webp";
+  String image = "assets/images/favouritesImage.webp" ;
+  String title = "Default";
+  List<TrackModel> Items = [];
+
   @override
   void initState()
   {
@@ -46,12 +56,26 @@ class _SameViewState extends State<SameView> {
   @override
   Widget build(BuildContext context) {
 
-    return Consumer2<FavouriteItemsProvider, AudioProvider>(builder: (context, favProvider,audioProvider, child){
-      String recentsImage = "assets/images/recentsImage.webp";
-      String favImage = "assets/images/favouritesImage.webp";
-      String Fav_img = widget.pageType==PageType.Favourites  ? favImage : recentsImage ;
-      String title = widget.pageType==PageType.Favourites ? "My Favourites" : "My Recent Plays";
-      List<dynamic> Items = widget.pageType==PageType.Favourites ? favProvider.favouriteItems.values.toList(growable: false) : audioProvider.recentPlayedItems.toList(growable: false);
+    return Consumer3<FavouriteItemsProvider, AudioProvider, PlayListProvider>(builder: (context, favProvider,audioProvider,playListProvider, child){
+
+      if(widget.pageType == PageType.Favourites)
+        {
+          title = "My Favourites";
+          image = favImage;
+          Items = favProvider.favouriteItems.values.toList(growable: false);
+        }
+      else if(widget.pageType == PageType.RecentlyPlayed)
+      {
+        title = "MY Recent Plays";
+        image = recentsImage;
+        Items =  audioProvider.recentPlayedItems.toList(growable: false);
+      }
+      else if(widget.pageType == PageType.PlayList)
+      {
+        title = playListProvider.currentName!;
+        image = recentsImage;
+        Items =  playListProvider.getTrackList(name: playListProvider.currentName!);
+      }
       return Scaffold(
             extendBody: true,
             extendBodyBehindAppBar: true,
@@ -66,6 +90,8 @@ class _SameViewState extends State<SameView> {
                     favProvider.sortFavourites(selectedVal);
                     if(widget.pageType==PageType.RecentlyPlayed)
                       audioProvider.sortRecents(selectedVal);
+                    if(widget.pageType==PageType.PlayList)
+                      playListProvider.sortItems(playListProvider.currentName!, selectedVal);
                   }
                   );
                 }
@@ -74,7 +100,7 @@ class _SameViewState extends State<SameView> {
             body: Stack(children: [
 
               Image.asset(
-                Fav_img,
+                image,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
@@ -107,7 +133,7 @@ class _SameViewState extends State<SameView> {
                                   borderRadius: BorderRadius.circular(10),
                                   child:
                                   Image.asset(
-                                    Fav_img,
+                                    image,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -228,7 +254,7 @@ class _SameViewState extends State<SameView> {
                                     margin: const EdgeInsets.only(left: 20, top: 20),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image.network(Fav_img, fit: BoxFit.cover),
+                                      child: Image.network(image, fit: BoxFit.cover),
                                     ),
                                   ),
                                 ),
@@ -281,7 +307,7 @@ class _SameViewState extends State<SameView> {
                     key: ValueKey(Items.length),
                     itemCount: Items.length,
                     itemBuilder: (context, index) {
-                      return ListAllWidget(key:ValueKey(Items[index].id), index: index,items: Items, decorationReq: true,);
+                      return ListAllWidget(key:ValueKey(Items[index].id), index: index,items: Items, decorationReq: true, pageType: widget.pageType,);
 
                     }),
               ),

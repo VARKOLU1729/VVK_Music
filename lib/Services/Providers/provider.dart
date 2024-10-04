@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:runo_music/Helper/sort.dart';
+import 'package:runo_music/models/play_list_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 import '../../Helper/Responsive.dart';
@@ -222,6 +223,8 @@ class AudioProvider extends ChangeNotifier {
     await _playCurrentTrack();
   }
 
+
+
   Future<void> _playCurrentTrack() async {
     if (_items.isEmpty) return;
 
@@ -229,6 +232,12 @@ class AudioProvider extends ChangeNotifier {
     final trackId = track.id;
     final urlData = await fetchData(path: 'tracks/$trackId');
     final previewUrl = urlData['tracks'][0]['previewURL'];
+
+    //check if already exists in recent plays so as to push it to the top(by poping at earlier index and pushing again)
+    for(int i=0; i<recentPlayedItems.length; i++)
+      {
+        if(recentPlayedItems[i].id==trackId) recentPlayedItems.removeAt(i);
+      }
     recentPlayedItems.add(track);
 
     try {
@@ -356,7 +365,68 @@ class AudioProvider extends ChangeNotifier {
   }
 }
 
+class PlayListProvider extends ChangeNotifier
+{
+  Map<String, PlayListModel> playLists = {};
+  String? currentName;
+  void createNewPlayList({required String name, required String imageUrl})
+  {
+    playLists[name] = PlayListModel(name: name, imageUrl: imageUrl);
+    notifyListeners();
+  }
 
+  void addTrackToPlayList({required String name, required TrackModel track})
+  {
+    if(playLists.containsKey(name))
+      playLists[name]!.tracks.add(track);
+    notifyListeners();
+  }
+
+  void setCurrentName(String name)
+  {
+    currentName = name;
+    print("set $name");
+    notifyListeners();
+  }
+
+  List<TrackModel> getTrackList({required String name})
+  {
+    return playLists[name]!.tracks;
+  }
+
+  List<String> getPlayListNames()
+  {
+    return playLists.keys.toList(growable: false);
+  }
+
+  void sortItems(String name, String sortBy)
+  {
+    var sortedList = playLists[name]!.tracks;
+    sortTracks(sortedList, sortBy: sortBy);
+    playLists[name]!.tracks= sortedList;
+    notifyListeners();
+  }
+
+  bool checkInPlayList({required String name, required String trackId})
+  {
+    print("check $name");
+    // if(playLists[name]!.tracks.contains(track)) return true;
+    for(int i=0; i<playLists[name]!.tracks.length; i++)
+      {
+        if(playLists[name]!.tracks[i].id == trackId) return true;
+      }
+    return false;
+  }
+
+  void removeFromPlaylist({required String name, required String trackId})
+  {
+    for(int i=0; i<playLists[name]!.tracks.length; i++)
+    {
+      if(playLists[name]!.tracks[i].id == trackId) playLists[name]!.tracks.removeAt(i);
+    }
+    notifyListeners();
+  }
+}
 
 
 

@@ -221,7 +221,7 @@ class _HomeState extends State<Home> {
                   },
                   options: CarouselOptions(
                     pauseAutoPlayOnTouch: true,
-                    height: getHeight(context) / 2.25,
+                    height: getHeight(context) / 2.5,
                     viewportFraction: 1,
                     autoPlay: true,
                     enlargeCenterPage: false,
@@ -327,7 +327,7 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: getHeight(context) / 2.25,
+          height: getHeight(context) / 2.5,
           width: getWidth(context),
           decoration: BoxDecoration(
               image: DecorationImage(
