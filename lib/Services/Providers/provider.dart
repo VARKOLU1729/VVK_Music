@@ -1,11 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:runo_music/Helper/sort.dart';
 import 'package:runo_music/models/play_list_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toastification/toastification.dart';
-import '../../Helper/Responsive.dart';
 import '../../Helper/messenger.dart';
 import '../Data/fetch_data.dart';
 import '../../models/track_model.dart';
@@ -186,31 +185,27 @@ class AudioProvider extends ChangeNotifier {
 
     _audioPlayer.onPositionChanged.listen((Duration p) {
       _currentPosition = p;
-      if(_currentPosition.inSeconds==duration.inSeconds)
-        {
-          if(_isLoop)
-            {
-              _audioPlayer.seek(Duration.zero);
-              _audioPlayer.resume();
-            }
-        }
       notifyListeners();
     });
 
+
     _audioPlayer.onPlayerComplete.listen((event) async{
       if (_isLoop) {
-        // print("looped");
-        // _audioPlayer.pause();
-        //  _audioPlayer.seek(Duration(milliseconds: 0));
-        //  print("----$_duration");
-        //  print("=====$_currentPosition");
-        // _audioPlayer.resume();
+        _playCurrentTrack();
       } else {
         nextTrack();
       }
       notifyListeners();
     });
   }
+
+  void reset()
+  {
+    _currentPosition = Duration.zero;
+    _audioPlayer.seek(Duration.zero);
+    _audioPlayer.stop();
+  }
+
 
   Future<void> loadAudio(
       {required List<dynamic> trackList, required int index}) async {
@@ -297,44 +292,59 @@ class AudioProvider extends ChangeNotifier {
   }
 
 
-  void seekTo(double value) {
-    final newPosition =
-        Duration(milliseconds: (_duration.inMilliseconds * value).round());
+  void seekTo(int value) {
+    // final newPosition = Duration(milliseconds: (_duration.inMilliseconds * value).round());
+    final newPosition = Duration(seconds: value);
     _audioPlayer.seek(newPosition);
   }
 
   Future<void> nextTrack() async {
-    if (_currentIndex < _items.length - 1) {
-      if(isShuffled)
+    if(_isLoop==false)
       {
-        _currentIndex = findRandIndex();
+        if (_currentIndex < _items.length - 1) {
+          if(isShuffled)
+          {
+            _currentIndex = findRandIndex();
+          }
+          if(!isShuffled)
+          {
+            _currentIndex++;
+          }
+          if(_currentIndex >= _items.length) _currentIndex=0;
+
+        }
       }
-      if(!isShuffled)
-      {
-        _currentIndex++;
-      }
-      if(_currentIndex >= _items.length) _currentIndex=0;
+
+      reset();
       _isLoading = true;
       notifyListeners();
       await _playCurrentTrack();
-    }
+
   }
 
   Future<void> previousTrack() async {
-    if (_currentIndex > 0) {
-      if(isShuffled)
+    if(_isLoop==false)
+      {
+        print("left---");
+        if (_currentIndex > 0)
         {
-           _currentIndex = findRandIndex();
+          if(isShuffled)
+          {
+            _currentIndex = findRandIndex();
+          }
+          if(!isShuffled)
+          {
+            _currentIndex--;
+          }
+          if(_currentIndex<0) _currentIndex=items.length;
         }
-      if(!isShuffled)
-        {
-          _currentIndex--;
-        }
-      if(_currentIndex<0) _currentIndex=items.length;
-      _isLoading = true;
-      notifyListeners();
-      await _playCurrentTrack();
-    }
+      }
+
+    reset();
+    _isLoading = true;
+    notifyListeners();
+    await _playCurrentTrack();
+
   }
 
 
@@ -375,10 +385,11 @@ class PlayListProvider extends ChangeNotifier
   }
 
 
-  void createNewPlayList({required String name, required String imageUrl})
+  void createNewPlayList({required String name, required String imageUrl}) async
   {
 
     playLists[name] = PlayListModel(name: name, imageUrl: imageUrl);
+    var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
     notifyListeners();
   }
 
@@ -506,4 +517,109 @@ class PlayListProvider extends ChangeNotifier
 //       'SELECT id FROM favouritesUser1 WHERE id = ? AND userId=?',
 //       [id, userUid]);
 //   return res.isNotEmpty;
+// }
+
+
+//
+// class PlayListProvider extends ChangeNotifier {
+//   Map<String, PlayListModel> privatePlayLists = {};
+//   Map<String, PlayListModel> publicPlayLists = {};
+//   String? currentName;
+//
+//   bool isAlreadyExists({required String name, required bool isPublic}) {
+//     return isPublic ? publicPlayLists.containsKey(name) : privatePlayLists.containsKey(name);
+//   }
+//
+//   Future<void> createNewPlayList({
+//     required String name,
+//     required String imageUrl,
+//     required bool isPublic,
+//   }) async {
+//     PlayListModel newPlaylist = PlayListModel(name: name, imageUrl: imageUrl);
+//
+//     if (isPublic) {
+//       publicPlayLists[name] = newPlaylist;
+//     } else {
+//       privatePlayLists[name] = newPlaylist;
+//     }
+//
+//     var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
+//
+//     // Store in Firestore
+//     await fireStore.update({
+//       isPublic ? 'publicPlayLists' : 'privatePlayLists': {
+//         name: newPlaylist.toMap(),  // Convert playlist model to a map
+//       }
+//     });
+//
+//     notifyListeners();
+//   }
+//
+//   void addTrackToPlayList({
+//     required BuildContext context,
+//     required String name,
+//     required TrackModel track,
+//     required bool isPublic,
+//   }) async {
+//     if (isPublic ? publicPlayLists.containsKey(name) : privatePlayLists.containsKey(name)) {
+//       var playlist = isPublic ? publicPlayLists[name]! : privatePlayLists[name]!;
+//       playlist.tracks.add(track);
+//
+//       var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
+//
+//       // Update Firestore with the modified playlist
+//       await fireStore.update({
+//         isPublic ? 'publicPlayLists' : 'privatePlayLists': {
+//           name: playlist.toMap(),  // Convert playlist model to a map
+//         }
+//       });
+//
+//       showMessage(context: context, content: "Song added to playlist '$name'");
+//       notifyListeners();
+//     }
+//   }
+//
+//   List<TrackModel> getTrackList({required String name, required bool isPublic}) {
+//     return isPublic ? publicPlayLists[name]!.tracks : privatePlayLists[name]!.tracks;
+//   }
+//
+//   List<String> getPlayListNames(bool isPublic) {
+//     return isPublic ? publicPlayLists.keys.toList(growable: false) : privatePlayLists.keys.toList(growable: false);
+//   }
+//
+//   Future<void> removeFromPlaylist({
+//     required BuildContext context,
+//     required String name,
+//     required String trackId,
+//     required bool isPublic,
+//   }) async {
+//     var playlist = isPublic ? publicPlayLists[name]! : privatePlayLists[name]!;
+//
+//     for (int i = 0; i < playlist.tracks.length; i++) {
+//       if (playlist.tracks[i].id == trackId) {
+//         playlist.tracks.removeAt(i);
+//
+//         var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
+//
+// 
+//         await fireStore.update({
+//           isPublic ? 'publicPlayLists' : 'privatePlayLists': {
+//             name: playlist.toMap(),
+//           }
+//         });
+//
+//         showMessage(context: context, content: "Song removed from '$name'");
+//         notifyListeners();
+//         break;
+//       }
+//     }
+//   }
+//
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'name': name,
+//       'imageUrl': imageUrl,
+//       'tracks': tracks.map((track) => track.toMap()).toList(),
+//     };
+//   }
 // }

@@ -10,7 +10,7 @@ class BackGroundBlur extends StatelessWidget {
         blendMode: BlendMode.src,
         filter: ImageFilter.blur(sigmaX: 100, sigmaY:100),
         child: Container(
-          color: Colors.black87.withOpacity(0.001),
+          color: Colors.black87.withOpacity(0.5),
         ),
       ),
     );

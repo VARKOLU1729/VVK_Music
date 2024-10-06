@@ -134,9 +134,9 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                           borderRadius: BorderRadius.circular(10),
                           child:  Image.network(
                                 trackImageUrl,
-                                height: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?  math.min(getHeight(context)*0.4, 200) : math.min(getHeight(context)*0.5, 300),
+                                height: Responsive.isSmallScreen(context) || Responsive.isMobile(context) ?  math.min(getHeight(context)*0.4, 280) : math.min(getHeight(context)*0.5, 300),
                                 width: Responsive.isSmallScreen(context) || Responsive.isMobile(context)
-                                    ? 200
+                                    ? 280
                                     : (Responsive.isMediumScreen(context)
                                     ? math.max(300, getWidth(context) / 3.5)
                                     : math.min(getWidth(context) / 3.5, 400)),
@@ -265,14 +265,16 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
                                         thumbColor: Colors.white,
                                         activeColor: Colors.white,
                                         inactiveColor: Colors.grey,
-                                        value: audioProvider.duration.inMilliseconds > 0
-                                            ? math.min(audioProvider.currentPosition.inMilliseconds /
-                                            audioProvider.duration.inMilliseconds,1)
-                                            : 0.0,
+                                        // value: audioProvider.duration.inMilliseconds > 0
+                                        //     ? math.min(audioProvider.currentPosition.inMilliseconds /
+                                        //     audioProvider.duration.inMilliseconds,1)
+                                        //     : 0.0,
+                                        value: audioProvider.currentPosition.inSeconds.toDouble(),
                                         min: 0.0,
-                                        max: 1.0,
+                                        max: audioProvider.duration.inSeconds.toDouble(),
                                         onChanged: (value) {
-                                          audioProvider.seekTo(value);
+                                          // audioProvider.seekTo(value);
+                                          audioProvider.seekTo(value.round());
                                         },
                                       ),
                                     ),

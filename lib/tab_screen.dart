@@ -173,14 +173,12 @@ class _TabScreenState extends State<TabScreen> {
                         thumbColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 29, 33, 33) : Colors.white,
                         activeColor: Responsive.isMobile(context) ? Colors.grey : Colors.white,
                         inactiveColor: Responsive.isMobile(context) ? const Color.fromARGB(255, 29, 33, 33) : Colors.grey,
-                        value: audioProvider.duration.inMilliseconds > 0
-                            ? math.min(audioProvider.currentPosition.inMilliseconds /
-                            audioProvider.duration.inMilliseconds,1)
-                            : 0.0,
+                        value: audioProvider.currentPosition.inSeconds.toDouble(),
                         min: 0.0,
-                        max: 1.0,
+                        max: audioProvider.duration.inSeconds.toDouble(),
                         onChanged: (value) {
-                          audioProvider.seekTo(value);
+                          // audioProvider.seekTo(value);
+                          audioProvider.seekTo(value.round());
                         },
                       ),
                     ),

@@ -31,191 +31,145 @@ class _LibraryState extends State<Library> {
               extendBody: true,
               extendBodyBehindAppBar: true,
               appBar:Responsive.isMobile() ? MobileAppBar2(context):null,
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              body: Container(
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors:
-                      [
-                        Theme.of(context).colorScheme.secondary,
-                        Colors.black.withOpacity(0.5),
-                        Colors.black
-                      ]
-                  )
-                ),
-                child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+              backgroundColor: Colors.black87,
+              body: Padding(
+                padding: MediaQuery.of(context).padding,
+                child: Container(
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors:
+                        [
+                          Theme.of(context).colorScheme.secondary,
+                          Colors.black
+                        ]
+                    )
+                  ),
+                  child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
 
-                SizedBox(height: 100,),
+                  SizedBox(height: Responsive.isMobile()? 70 : 20,),
 
-                if(Responsive.isMobile())
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading:  InkWell(
-                    mouseCursor: MouseCursor.uncontrolled,
-                    onTap: (){context.push('/profile-view');},
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Container(
-                          child: Icon(Icons.person, size: 50,color: Colors.white.withOpacity(0.5),),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                Colors.orange.withOpacity(0.9), Colors.red.withOpacity(0.9)
-                              ])
+                  if(Responsive.isMobile())
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading:  InkWell(
+                      mouseCursor: MouseCursor.uncontrolled,
+                      onTap: (){context.push('/profile-view');},
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Container(
+                            child: Icon(Icons.person, size: 50,color: Colors.white.withOpacity(0.5),),
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                  Colors.orange.withOpacity(0.9), Colors.red.withOpacity(0.9)
+                                ])
+                            ),
                           ),
                         ),
-                      ),
 
+                      ),
+                      // child: ClipOval(
+                      //     child: Image.asset(
+                      //       'assets/images/profile_image.png',
+                      //       width: 30,
+                      //       height: 30,
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   ),
                     ),
-                    // child: ClipOval(
-                    //     child: Image.asset(
-                    //       'assets/images/profile_image.png',
-                    //       width: 30,
-                    //       height: 30,
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //   ),
+                    title: Text("My Library", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 22),),
                   ),
-                  title: Text("My Library", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                ),
 
-                Padding(
-                  padding: const EdgeInsets.only(top: 50),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Header(title: "Playlists"),
-                          FilledButton(
-                            style: ButtonStyle(
-                              visualDensity: VisualDensity(vertical: -3),
-                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
-                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 0, horizontal: 15)),
-                            ),
-                              onPressed: (){
-                              showCreatePlaylistDialog(context: context,
-                                  playListProvider: playListProvider,
-                                  onSave: (playListName)
-                                  {
-                                    playListProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
-                                  }
-                              );
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context)
-                                //     {
-                                //       String enteredName = "";
-                                //       bool entered = false;
-                                //       return AlertDialog(
-                                //         backgroundColor: Colors.black87,
-                                //         actions: [
-                                //           FilledButton(
-                                //             style:ButtonStyle(
-                                //               backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
-                                //             ),
-                                //               onPressed: (){
-                                //               if(entered)
-                                //                 setState(() {
-                                //                   playListProvider.createNewPlayList(name: enteredName, imageUrl: playlistImage);
-                                //                 });
-                                //                 context.pop();
-                                //               },
-                                //               child: Text("Save", style: TextStyle(color: Colors.black87),)
-                                //           ),
-                                //           IconButton(
-                                //               onPressed: (){
-                                //                 context.pop();
-                                //               },
-                                //               icon: Icon(Icons.exit_to_app, color: Colors.white,))
-                                //         ],
-                                //         title: Center(child: Text("Create New Playlist", style: TextStyle(color: Colors.white, fontSize: 15),)),
-                                //         content: TextField(
-                                //           decoration: InputDecoration(
-                                //             hintText: "Playlist Name ...",
-                                //             hintStyle: TextStyle(color: Colors.grey),
-                                //             border: OutlineInputBorder(),
-                                //           ),
-                                //           style: TextStyle(color: Colors.white, fontSize: 10),
-                                //           onChanged: (val){
-                                //            if(val.length>=1)
-                                //              {
-                                //                setState(() {
-                                //                  enteredName = val;
-                                //                  entered=true;
-                                //                });
-                                //              }
-                                //           },
-                                //         ),
-                                //       );
-                                //     }
-                                // );
-                              },
-                              child: Text("+ NEW PLAYLIST", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold,fontSize: 12),),
-                          )
-                        ],
-                      ),
-
-                      SizedBox(height: 15,),
-
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Item(Url: "assets/images/favouritesImage.webp", Title: "My Favourites", pageType: PageType.Favourites, provider: favProvider),
-                            for(int i=0; i<playListProvider.playLists.length; i++)
-                            playListProvider.playLists.values.map((playlist)=>Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Item(Title: playlist.name, Url: playlist.imageUrl, pageType: PageType.PlayList, playListName: playlist.name, provider: playListProvider),
-                            )).toList()[i]
+                            Header(title: "Playlists"),
+                            FilledButton(
+                              style: ButtonStyle(
+                                visualDensity: VisualDensity(vertical: -3),
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
+                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 0, horizontal: 15)),
+                              ),
+                                onPressed: (){
+                                showCreatePlaylistDialog(context: context,
+                                    playListProvider: playListProvider,
+                                    onSave: (playListName)
+                                    {
+                                      playListProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
+                                    }
+                                );
+
+                                },
+                                child: Text("+ NEW PLAYLIST", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold,fontSize: 12),),
+                            )
                           ],
                         ),
-                      ),
 
-                      SizedBox(height: 30,),
+                        SizedBox(height: 15,),
 
-                      Header(title: "Made for you"),
-
-                      SizedBox(height: 20,),
-
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-
-
-                            Item(Url: "assets/images/favouritesImage.webp", Title: "My Favourites", pageType: PageType.Favourites, provider: favProvider),
-
-                            SizedBox(width: 20,),
-
-                            Item(Url: "assets/images/recentsImage.webp", Title: "My Recent Plays", pageType: PageType.RecentlyPlayed, provider: playListProvider),
-
-
-                          ],
-                        ),
-                      ),
-
-                    ],
-                  ),
-                )
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Item(Url: "assets/images/favouritesImage.webp", Title: "My Favourites", pageType: PageType.Favourites, provider: favProvider),
+                              for(int i=0; i<playListProvider.playLists.length; i++)
+                              playListProvider.playLists.values.map((playlist)=>Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Item(Title: playlist.name, Url: playlist.imageUrl, pageType: PageType.PlayList, playListName: playlist.name, provider: playListProvider),
+                              )).toList()[i]
                             ],
                           ),
                         ),
+
+                        SizedBox(height: 30,),
+
+                        Header(title: "Made for you"),
+
+                        SizedBox(height: 20,),
+
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+
+
+                              Item(Url: "assets/images/favouritesImage.webp", Title: "My Favourites", pageType: PageType.Favourites, provider: favProvider),
+
+                              SizedBox(width: 20,),
+
+                              Item(Url: "assets/images/recentsImage.webp", Title: "My Recent Plays", pageType: PageType.RecentlyPlayed, provider: playListProvider),
+
+
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  )
+                              ],
+                            ),
+                          ),
+                  ),
                 ),
               ),
             ));
@@ -223,7 +177,7 @@ class _LibraryState extends State<Library> {
   
   Widget Header({required String title})
   {
-    return Text("$title", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),);
+    return Text("$title", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),);
   }
 
   Widget Item({required String Url, required String Title, required PageType pageType, String playListName='null', required provider})
