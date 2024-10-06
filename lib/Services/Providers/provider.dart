@@ -138,7 +138,7 @@ class AudioProvider extends ChangeNotifier {
   Duration _currentPosition = Duration.zero;
   Duration _duration = Duration.zero;
   bool openMiniPlayer = false;
-  List<int> shuffledIndices = [];
+  List<int> shuffledIndices = []; //to keep track of indices that occured in shuffle loop
   List<TrackModel> recentPlayedItems = [];
 
   void setMiniPlayer() {
@@ -206,7 +206,6 @@ class AudioProvider extends ChangeNotifier {
         //  print("=====$_currentPosition");
         // _audioPlayer.resume();
       } else {
-        print("----$_duration");
         nextTrack();
       }
       notifyListeners();
@@ -369,16 +368,27 @@ class PlayListProvider extends ChangeNotifier
 {
   Map<String, PlayListModel> playLists = {};
   String? currentName;
+
+  bool isAlreadyExists({required String name})
+  {
+    return playLists.containsKey(name);
+  }
+
+
   void createNewPlayList({required String name, required String imageUrl})
   {
+
     playLists[name] = PlayListModel(name: name, imageUrl: imageUrl);
     notifyListeners();
   }
 
-  void addTrackToPlayList({required String name, required TrackModel track})
+  void addTrackToPlayList({required BuildContext context, required String name, required TrackModel track})
   {
     if(playLists.containsKey(name))
+    {
       playLists[name]!.tracks.add(track);
+      showMessage(context: context, content: "Song added to playlist '$name'");
+    }
     notifyListeners();
   }
 
@@ -418,11 +428,15 @@ class PlayListProvider extends ChangeNotifier
     return false;
   }
 
-  void removeFromPlaylist({required String name, required String trackId})
+  void removeFromPlaylist({required BuildContext context, required String name, required String trackId})
   {
     for(int i=0; i<playLists[name]!.tracks.length; i++)
     {
-      if(playLists[name]!.tracks[i].id == trackId) playLists[name]!.tracks.removeAt(i);
+      if(playLists[name]!.tracks[i].id == trackId)
+        {
+          playLists[name]!.tracks.removeAt(i);
+          showMessage(context: context, content: "Song removed from '$name'");
+        }
     }
     notifyListeners();
   }

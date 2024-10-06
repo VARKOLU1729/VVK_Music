@@ -234,6 +234,7 @@ class _HomeState extends State<Home> {
                 ),
 
                 // second child
+                if (Responsive.isMobile(context))
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(stationData.length, (index) {
@@ -256,7 +257,7 @@ class _HomeState extends State<Home> {
                   children: [
                     //   second child
                     SizedBox(
-                      height:Responsive.isMobile()?20: 90,
+                      height:Responsive.isMobile()?0: 90,
                     ),
                     // Third box
                     Header(
@@ -349,34 +350,37 @@ class _HomeState extends State<Home> {
                               Colors.black.withOpacity(0.3),
                               Colors.black.withOpacity(0.5)
                             ])),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 15),
-                            child: Text(
-                              "STATION",
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10, top: 5),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Text(
+                                "STATION",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.tertiary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          ListTile(
-                              title: Text(stationName,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30)),
-                              subtitle: Text("Based on $stationArtistName",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 15)),
-                              trailing: PlayRoundButton(items: stationTracks)
-                          ),
-                        ]),
+                            ListTile(
+                                title: Text(stationName,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30)),
+                                subtitle: Text("Based on $stationArtistName",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 15)),
+                                trailing: PlayRoundButton(items: stationTracks)
+                            ),
+                          ]),
+                    ),
                   ),
                 ),
               ]

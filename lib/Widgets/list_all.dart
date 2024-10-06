@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:runo_music/Helper/Responsive.dart';
+import 'package:runo_music/Helper/deviceParams.dart';
 import 'package:runo_music/Views/music_player_view.dart';
 import 'package:runo_music/Services/Providers/provider.dart';
+import 'package:runo_music/Widgets/create_playlist_dialog.dart';
 import 'package:runo_music/audio_controllers/favourite_button.dart';
 import 'package:runo_music/main.dart';
 import 'package:runo_music/models/track_model.dart';
@@ -48,25 +50,122 @@ class _ListAllWidgetState extends State<ListAllWidget> {
     loadData();
   }
 
-  Widget addToPlayList({ required BuildContext context,required PlayListProvider plProvider,required TrackModel track})
-  {
-    return PopupMenuButton(
-      icon: Icon(Icons.add,color: Colors.white,),
-      itemBuilder: (context)
-      {
-        List<String> playListNames = plProvider.getPlayListNames();
-        return playListNames.map((item)=>PopupMenuItem(
-          onTap:(){
-            if(!plProvider.checkInPlayList(name: item, trackId: track.id))
-            plProvider.addTrackToPlayList(name: item, track:track);
-            else {
-              showMessage(context: context, content: "Song already exists in '$item'");
-            }
-            },
-            child: Text("$item"))).toList();
+
+  Widget addToPlayList({
+    required BuildContext context,
+    required PlayListProvider plProvider,
+    required TrackModel track,
+  }) {
+    List<String> playListNames = plProvider.getPlayListNames();
+
+    return IconButton(
+      icon: Icon(Icons.add, color: Colors.white),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              title: Text(
+                "Add To Playlist",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: playListNames.map((item) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(item, style: TextStyle(color: Colors.white)),
+                          onTap: () {
+                            if (!plProvider.checkInPlayList(name: item, trackId: track.id)) {
+                              plProvider.addTrackToPlayList(context: context, name: item, track: track);
+                            } else {
+                              showMessage(context: context, content: "Song already exists in '$item'");
+                            }
+                            Navigator.of(context).pop(); // Close the dialog after adding
+                          },
+                        ),
+                        Divider(color: Colors.grey, indent: 0,endIndent: 0,),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.spaceBetween,
+              actionsPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Cancel", style: TextStyle(color: Colors.white, fontSize: 18)),
+                ),
+                TextButton(
+                  onPressed: ()async {
+                    String  playlistImage = 'assets/images/favouritesImage.webp';
+                     await showCreatePlaylistDialog(context: context,
+                        playListProvider: plProvider,
+                        onSave: (playListName)
+                        {
+                          plProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
+                        }
+                    );
+                    context.pop();
+                  },
+                  child: Text("+ Create", style: TextStyle(color: Colors.white, fontSize: 18)),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }
+
+
+  // Widget addToPlayList({ required BuildContext context,required PlayListProvider plProvider,required TrackModel track})
+  // {
+  //   List<String> playListNames = plProvider.getPlayListNames();
+  //   return  PopupMenuButton(
+  //     offset: Offset(-15, 10),
+  //           icon: Icon(Icons.add, color: Colors.white,),
+  //         itemBuilder: (context)=>
+  //         [
+  //           const PopupMenuItem(
+  //             enabled: false, // Disable selection for title
+  //             child: Text(
+  //               "Add To Playlist",
+  //               style: TextStyle(
+  //                 fontWeight: FontWeight.bold,
+  //                 fontSize: 16,
+  //                 color: Colors.white
+  //               ),
+  //             ),
+  //           ),
+  //           ...playListNames.map((item)=>PopupMenuItem(
+  //             onTap:(){
+  //               if(!plProvider.checkInPlayList(name: item, trackId: track.id))
+  //               plProvider.addTrackToPlayList(context:context, name: item, track:track);
+  //               else {
+  //                 showMessage(context: context, content: "Song already exists in '$item'");
+  //               }
+  //               },
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text("$item"),
+  //                   Divider(height: 8,thickness: 0,)
+  //                 ],
+  //               ))).toList()
+  //         ]
+  //       );
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +235,7 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                       // )
                       widget.pageType!=null && widget.pageType==PageType.PlayList && playListProvider.currentName!=null && playListProvider.checkInPlayList(name: playListProvider.currentName!, trackId: track.id) ?
 
-                      IconButton(icon: Icon(Icons.remove, color: Colors.white,),onPressed: (){playListProvider.removeFromPlaylist(name: playListProvider.currentName!, trackId: track.id);},) :
+                      IconButton(icon: Icon(Icons.remove, color: Colors.white,),onPressed: (){playListProvider.removeFromPlaylist(context:context, name: playListProvider.currentName!, trackId: track.id);},) :
 
                       addToPlayList(context:context, plProvider: playListProvider,track: track)
                     ],
