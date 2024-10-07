@@ -11,10 +11,18 @@ class PlayListModel {
     List<String>? trackId,
   }) : trackId = trackId ?? [];
 
-  PlayListModel fromJson(Map<String, dynamic> json) => PlayListModel(
-    name: json["name"],
-    imageUrl : json["imageURl"],
-    trackId: List<String>.from(json["trackId"].map((x) => x)),
+  // static PlayListModel fromJson(Map<String, dynamic> json) => PlayListModel(
+  //   name: json["name"],
+  //   imageUrl : json["imageURl"],
+  //   trackId: List<String>.from(json["trackId"].map((x) => x)),
+  // );
+
+  static PlayListModel fromJson(Map<String, dynamic> json) => PlayListModel(
+    name: json["name"] ?? '', // Fallback in case 'name' is null
+    imageUrl: json["imageUrl"] ?? '', // Fallback for 'imageUrl'
+    trackId: json["trackId"] != null
+        ? List<String>.from(json["trackId"].map((x) => x.toString())) // Ensure each item is a string
+        : [], // Fallback if trackId is null
   );
 
   Map<String, dynamic> toJson() => {
