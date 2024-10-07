@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/loadingIndicator.dart';
 import 'package:runo_music/Helper/sort.dart';
 import 'package:runo_music/Widgets/mobile_app_bar.dart';
 import 'package:runo_music/Widgets/play_round_button.dart';
@@ -39,6 +40,15 @@ class _SameViewState extends State<SameView> {
   String image = "assets/images/favouritesImage.webp" ;
   String title = "Default";
   List<TrackModel> Items = [];
+  void loadPlayListTracks() async
+  {
+    if(widget.pageType==PageType.PlayList)
+      {
+        PlayListProvider playListProvider = Provider.of<PlayListProvider>(context);
+        Items = await playListProvider.getTrackList(name: playListProvider.currentName!);
+        print("loaded");
+      }
+  }
 
   @override
   void initState()
@@ -74,7 +84,9 @@ class _SameViewState extends State<SameView> {
       {
         title = playListProvider.currentName!;
         image = recentsImage;
-        Items =  playListProvider.getTrackList(name: playListProvider.currentName!);
+        loadPlayListTracks();
+
+        // Items =  playListProvider.getTrackList(name: playListProvider.currentName!);
       }
       return Scaffold(
             extendBody: true,

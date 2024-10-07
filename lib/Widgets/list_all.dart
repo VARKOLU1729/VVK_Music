@@ -110,10 +110,10 @@ class _ListAllWidgetState extends State<ListAllWidget> {
                     String  playlistImage = 'assets/images/favouritesImage.webp';
                      await showCreatePlaylistDialog(context: context,
                         playListProvider: plProvider,
-                        onSave: (playListName)
-                        {
-                          plProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
-                        }
+                        // onSave: (playListName)
+                        // {
+                        //   plProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
+                        // }
                     );
                     context.pop();
                   },

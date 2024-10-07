@@ -112,10 +112,10 @@ class _LibraryState extends State<Library> {
                                 onPressed: (){
                                 showCreatePlaylistDialog(context: context,
                                     playListProvider: playListProvider,
-                                    onSave: (playListName)
-                                    {
-                                      playListProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
-                                    }
+                                    // onSave: (playListName)
+                                    // {
+                                    //   playListProvider.createNewPlayList(name: playListName, imageUrl: playlistImage);
+                                    // }
                                 );
 
                                 },
