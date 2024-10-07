@@ -18,8 +18,8 @@ class PlayListModel {
   // );
 
   static PlayListModel fromJson(Map<String, dynamic> json) => PlayListModel(
-    name: json["name"] ?? '', // Fallback in case 'name' is null
-    imageUrl: json["imageUrl"] ?? '', // Fallback for 'imageUrl'
+    name: json["name"] ?? '',
+    imageUrl: json["imageUrl"] ?? '',
     trackId: json["trackId"] != null
         ? List<String>.from(json["trackId"].map((x) => x.toString())) // Ensure each item is a string
         : [], // Fallback if trackId is null

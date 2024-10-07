@@ -39,6 +39,7 @@ class _SameViewState extends State<SameView> {
   String playListImage = "assets/images/favouritesImage.webp";
   String image = "assets/images/favouritesImage.webp" ;
   String title = "Default";
+  bool trackLoad = true;
   List<TrackModel> Items = [];
   void loadPlayListTracks() async
   {
@@ -46,6 +47,7 @@ class _SameViewState extends State<SameView> {
       {
         PlayListProvider playListProvider = Provider.of<PlayListProvider>(context);
         Items = await playListProvider.getTrackList(name: playListProvider.currentName!);
+        trackLoad = false;
         print("loaded");
       }
   }
@@ -59,7 +61,10 @@ class _SameViewState extends State<SameView> {
         var favpro = Provider.of<FavouriteItemsProvider>(context, listen: false);
         favpro.loadFavouriteItems();
       }
-
+    // if(widget.pageType==PageType.PlayList)
+    // {
+    //   loadPlayListTracks();
+    // }
   }
 
 
@@ -84,8 +89,9 @@ class _SameViewState extends State<SameView> {
       {
         title = playListProvider.currentName!;
         image = recentsImage;
-        loadPlayListTracks();
-
+        // loadPlayListTracks();
+        playListProvider.setTrackList(name: playListProvider.currentName!);
+        Items = playListProvider.getTracks;
         // Items =  playListProvider.getTrackList(name: playListProvider.currentName!);
       }
       return Scaffold(
@@ -314,14 +320,17 @@ class _SameViewState extends State<SameView> {
                         )
                     )];
                 },
-                body: ListView.builder(
+                body:((widget.pageType==PageType.PlayList) || (widget.pageType==PageType.Favourites && !favProvider.isLoading) || (widget.pageType==PageType.RecentlyPlayed))
+                    ?
+                ListView.builder(
                     padding: EdgeInsets.only(top: 40),
                     key: ValueKey(Items.length),
                     itemCount: Items.length,
                     itemBuilder: (context, index) {
                       return ListAllWidget(key:ValueKey(Items[index].id), index: index,items: Items, decorationReq: true, pageType: widget.pageType,);
 
-                    }),
+                    }):
+                loadingIndicator(),
               ),
             ]
             )

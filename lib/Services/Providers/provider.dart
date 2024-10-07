@@ -376,216 +376,516 @@ class AudioProvider extends ChangeNotifier {
   }
 }
 
-class PlayListProvider extends ChangeNotifier
-{
 
+
+class PlayListProvider extends ChangeNotifier {
   Map<String, PlayListModel> privatePlayLists = {};
   Map<String, PlayListModel> publicPlayLists = {};
-
   Map<String, PlayListModel> playLists = {};
   String? currentName;
+  bool isNamesLoading = true;
+  bool isTracksLoading = true;
+  bool isTrackDeleting = false;
 
-  bool isAlreadyExists({required String name})
+  PlayListProvider() {
+    getUser();
+  }
+
+  bool checkIfPublic({required String name})
   {
+    if(privatePlayLists.containsKey(name)) return false;
+    return true;
+  }
+
+
+  // Check if a playlist already exists
+  bool isAlreadyExists({required String name}) {
     return playLists.containsKey(name);
   }
 
-
-  PlayListProvider()
-  {
-    loadPlayLists();
-  }
-
-  void loadPlayLists() async
-  {
-    //total = public + private(created by this user)
+  // Load both public and private playlists
+  Future<void> loadPlayLists() async {
+    isNamesLoading=true;
+    print("asdfasdfasdfasdfasdfasdfasdf");
     await loadPublicPlayLists();
     await loadPrivatePlayLists();
-    for(var name in privatePlayLists.keys)
-    {
-      playLists[name] = privatePlayLists[name]!;
-    }
-    for(var name in publicPlayLists.keys)
-    {
-      playLists[name] = publicPlayLists[name]!;
-    }
-    print("********$playLists");
+    print("-----------asdfasdfasdfasdfasdfasdfasdf");
+    // Combine private and public playlists into a single map
+    playLists = {
+      ...privatePlayLists,
+      ...publicPlayLists,
+    };
+
+    print("All Playlists: $playLists");
+    isNamesLoading = false;
+    notifyListeners();
   }
 
-
-
-  Map<String, String> convertToMap({required Map<String, PlayListModel> playLists})
-  {
-    Map<String, String> storeModel = {};
-    for(var item in playLists.keys)
-      {
-        storeModel[item] = jsonEncode(playLists[item]!.toJson());
-      }
-    return storeModel;
+  // Convert playlists to a map for Firestore storage
+  Map<String, String> convertToMap({required Map<String, PlayListModel> playLists}) {
+    return playLists.map((name, model) => MapEntry(name, jsonEncode(model.toJson())));
   }
 
+  // Load public playlists from Firestore
+  Future<void> loadPublicPlayLists() async {
+    print("###############$userUid");
+    var playListCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUid)
+        .collection('publicPlaylists');
 
-  Future<void> loadPublicPlayLists() async
-  {
-    var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
-    var snapShot = await fireStore.get();
-    var playLists = snapShot.data()!['publicPlayLists'];
-    for(var name in playLists.keys)
-      {
-        publicPlayLists[name] = PlayListModel.fromJson(jsonDecode(playLists[name]));
-      }
+    var snapshot = await playListCollection.get();
+    print("@@@@@@@${snapshot.docs}");
+    publicPlayLists = {
+      for (var doc in snapshot.docs) doc.id: PlayListModel.fromJson(doc.data())
+    };
+    print(publicPlayLists.keys);
   }
 
-  Future<void> loadPrivatePlayLists() async
-  {
-    var sp = await SharedPreferences.getInstance(); //{concat("private_", userUId), [privateplaylistNames]}
+  // Load private playlists using Firestore and SharedPreferences
+  Future<void> loadPrivatePlayLists() async {
+    var sp = await SharedPreferences.getInstance();
     String privateUserId = 'private_$userUid';
-    var playListNames = sp.getStringList(privateUserId);
-    print(playListNames);
-    for(var name in playListNames!)
-      {
-        var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
-        var snapShot = await fireStore.get();
-        var model = snapShot.data()!['privatePlayLists'];
-        print("----$model ----");
-        print(jsonDecode(model[name]));
-        privatePlayLists[name] = PlayListModel.fromJson(jsonDecode(model[name]));
-        print(privatePlayLists);
+    var playListNames = sp.getStringList(privateUserId) ?? [];
+
+    for (var name in playListNames) {
+      var playListDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userUid)
+          .collection('privatePlaylists')
+          .doc(name)
+          .get();
+
+      if (playListDoc.exists) {
+        privatePlayLists[name] = PlayListModel.fromJson(playListDoc.data()!);
       }
+    }
   }
 
-  void addToPrivate({required PlayListModel newPlayList}) async
-  {
+  // Add a playlist to private
+  Future<void> addToPrivate({required PlayListModel newPlayList}) async {
     privatePlayLists[newPlayList.name] = newPlayList;
-    //add the name to shared pref so that only creator can access
-    var sp = await SharedPreferences.getInstance(); //{concat("private_", userUId), [privateplaylistNames]}
+
+    var fireStore = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUid)
+        .collection('privatePlaylists')
+        .doc(newPlayList.name);
+
+    await fireStore.set(newPlayList.toJson());
+
+    var sp = await SharedPreferences.getInstance();
     String privateUserId = 'private_$userUid';
-    if(sp.containsKey(privateUserId))
-      {
-        print("exists---------");
-        var existingList = sp.getStringList(privateUserId);
-        existingList!.add(newPlayList.name);
-        sp.setStringList(privateUserId, existingList);
-      }
-    else
-      {
-        sp.setStringList(privateUserId, [newPlayList.name]);
-      }
+    var existingList = sp.getStringList(privateUserId) ?? [];
+    existingList.add(newPlayList.name);
+    sp.setStringList(privateUserId, existingList);
 
-    var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
-    fireStore.update({'privatePlayLists' : convertToMap(playLists: privatePlayLists)});
+    notifyListeners();
   }
 
-  void addToPublic({required PlayListModel newPlayList})
-  {
+  // Add a playlist to public
+  Future<void> addToPublic({required PlayListModel newPlayList}) async {
     publicPlayLists[newPlayList.name] = newPlayList;
-    var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
-    fireStore.update({'publicPlayLists' : convertToMap(playLists: publicPlayLists)});
+
+    var fireStore = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUid)
+        .collection('publicPlaylists')
+        .doc(newPlayList.name);
+
+    await fireStore.set(newPlayList.toJson());
+
+    notifyListeners();
   }
 
-
-  void createNewPlayList({required String name, required String imageUrl, bool isPrivate=false}) async
-  {
+  // Create a new playlist
+  Future<void> createNewPlayList({
+    required String name,
+    required String imageUrl,
+    bool isPrivate = false,
+  }) async {
     PlayListModel newPlayList = PlayListModel(name: name, imageUrl: imageUrl);
     playLists[name] = newPlayList;
 
-    if(isPrivate)
-    {
-      privatePlayLists[name] = newPlayList;
-      addToPrivate(newPlayList: newPlayList);
-    }
-    else
-    {
-      publicPlayLists[name] = newPlayList;
-      addToPublic(newPlayList: newPlayList);
+    if (isPrivate) {
+      await addToPrivate(newPlayList: newPlayList);
+    } else {
+      await addToPublic(newPlayList: newPlayList);
     }
 
     notifyListeners();
   }
 
-  void addTrackToPlayList({required BuildContext context, required String name, required TrackModel track}) async
-  {
-    if(playLists.containsKey(name))
-    {
-      playLists[name]!.trackId.add(track.id);
+  // Add a track to a playlist
+  Future<void> addTrackToPlayList({
+    required BuildContext context,
+    required String name,
+    required TrackModel track,
+  }) async {
+    if (playLists.containsKey(name)) {
 
-      var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
-      if(privatePlayLists.containsKey(name))
-        {
-          print("adding to private");
-          privatePlayLists[name]!.trackId.add(track.id);
-          fireStore.update({'privatePlayLists' : convertToMap(playLists: privatePlayLists)});
-        }
-      else if(publicPlayLists.containsKey(name))
-        {
-          publicPlayLists[name]!.trackId.add(track.id);
-          fireStore.update({'publicPlayLists' : convertToMap(playLists: publicPlayLists)});
-        }
+      // playLists[name]!.trackId.add(track.id);
 
-      showMessage(context: context, content: "Song added to playlist '$name'");
-    }
-    notifyListeners();
-  }
+      var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
 
-  void setCurrentName(String name)
-  {
-    currentName = name;
-    print("set $name");
-    notifyListeners();
-  }
-
-  Future<List<TrackModel>> getTrackList({required String name}) async
-  {
-    List<TrackModel> tracks = [];
-    for(var trackId in playLists[name]!.trackId!)
+      if (privatePlayLists.containsKey(name))
       {
-        final track = await getTrackData(trackId: trackId);
-        tracks.add(track!);
+        privatePlayLists[name]!.trackId.add(track.id);
+        fireStore
+            .collection('privatePlaylists')
+            .doc(name)
+            .update({'trackId': privatePlayLists[name]!.trackId});
       }
-    return tracks;
+      else if (publicPlayLists.containsKey(name))
+      {
+        publicPlayLists[name]!.trackId.add(track.id);
+        fireStore
+            .collection('publicPlaylists')
+            .doc(name)
+            .update({'trackId': publicPlayLists[name]!.trackId});
+      }
+
+      // Assuming you have a method to show messages
+
+    }
+
+    showMessage(context: context, content: "Song added to playlist '$name'");
+    notifyListeners();
   }
 
-  List<String> getPlayListNames()
-  {
+  // Set the current playlist name
+  void setCurrentName(String name) {
+    currentName = name;
+    print("Set current playlist: $name");
+    notifyListeners();
+  }
+
+  // Get tracks from a playlist
+  Future<List<TrackModel>> getTrackList({required String name}) async {
+    isTracksLoading = true;
+    List<TrackModel> tracks = [];
+    for (var trackId in playLists[name]!.trackId) {
+      final track = await getTrackData(trackId: trackId);
+      tracks.add(track!);
+    }
+    isTracksLoading = false;
+    notifyListeners();
+    return tracks.toList(growable: false);
+  }
+
+
+  List<TrackModel> getTracks = [];
+
+  void setTrackList({required String name}) async {
+    isTracksLoading = true;
+    List<TrackModel> tracks = [];
+    for (var trackId in playLists[name]!.trackId) {
+      final track = await getTrackData(trackId: trackId);
+      tracks.add(track!);
+    }
+    isTracksLoading = false;
+    getTracks = tracks;
+    notifyListeners();
+  }
+
+  // Get all playlist names
+  List<String> getPlayListNames() {
     return playLists.keys.toList(growable: false);
   }
 
-  // void sortPlayListTracks(List<String> trackId, {required String sortBy}) async{
-  //
-  // }
 
-  void sortItems(String name, String sortBy)
-  {
-    // var sortedList = playLists[name]!.trackId;
-    // sortTracks(sortedList, sortBy: sortBy);
-    // playLists[name]!.tracks= sortedList;
-    notifyListeners();
-  }
+  Future<List<String>> sortTrackIdsBy(List<String> trackIds, {required String sortBy}) async {
+    // Create a map to store trackId and its corresponding TrackModel
+    Map<String, TrackModel> trackMap = {};
 
-  bool checkInPlayList({required String name, required String trackId})
-  {
-    print("check $name");
-    // if(playLists[name]!.tracks.contains(track)) return true;
-    for(int i=0; i<playLists[name]!.trackId!.length; i++)
-      {
-        if(playLists[name]!.trackId![i] == trackId) return true;
+    // Fetch TrackModel for each trackId
+    for (String trackId in trackIds) {
+      TrackModel? track = await getTrackData(trackId: trackId);
+      if (track != null) {
+        trackMap[trackId] = track;  // Store the fetched track with its trackId
       }
-    return false;
+    }
+
+    // Sort the trackIds based on the sortBy criteria (trackName or artistName)
+    trackIds.sort((a, b) {
+      TrackModel trackA = trackMap[a]!;
+      TrackModel trackB = trackMap[b]!;
+
+      if (sortBy == 'trackName') {
+        return trackA.name.toLowerCase().compareTo(trackB.name.toLowerCase());
+      } else if (sortBy == 'artistName') {
+        return trackA.artistName.toLowerCase().compareTo(trackB.artistName.toLowerCase());
+      } else {
+        return 0; // No sorting if invalid sortBy option is provided
+      }
+    });
+
+    return trackIds;
   }
 
-  void removeFromPlaylist({required BuildContext context, required String name, required String trackId})
-  {
-    for(int i=0; i<playLists[name]!.trackId!.length; i++)
-    {
-      if(playLists[name]!.trackId![i] == trackId)
-        {
-          playLists[name]!.trackId!.removeAt(i);
-          showMessage(context: context, content: "Song removed from '$name'");
-        }
-    }
+
+  void sortItems(String name, String sortBy) async{
+    var sortedTracks = playLists[name]!.trackId;
+    sortTrackIdsBy(sortedTracks, sortBy: sortBy);
+    playLists[name]!.trackId = sortedTracks;
     notifyListeners();
+  }
+
+  // Check if a track is in a playlist
+  bool checkInPlayList({required String name, required String trackId}) {
+    return playLists[name]!.trackId.contains(trackId);
+  }
+
+  // Remove a track from a playlist
+  Future<void> removeFromPlaylist({
+    required BuildContext context,
+    required String name,
+    required String trackId,
+  }) async {
+    isTrackDeleting = true;
+    playLists[name]!.trackId.remove(trackId);
+    var fireStore = FirebaseFirestore.instance.collection('users').doc(userUid);
+
+    if (privatePlayLists.containsKey(name))
+    {
+      privatePlayLists[name]!.trackId.remove(trackId);
+      fireStore
+          .collection('privatePlaylists')
+          .doc(name)
+          .update({'trackId': privatePlayLists[name]!.trackId});
+    }
+    else if (publicPlayLists.containsKey(name))
+    {
+      publicPlayLists[name]!.trackId.remove(trackId);
+      fireStore
+          .collection('publicPlaylists')
+          .doc(name)
+          .update({'trackId': publicPlayLists[name]!.trackId});
+    }
+
+    showMessage(context: context, content: "Song removed from '$name'");
+    isTrackDeleting = true;
+    notifyListeners();
+
   }
 }
+
+
+
+
+
+
+
+// class PlayListProvider extends ChangeNotifier
+// {
+//
+//   Map<String, PlayListModel> privatePlayLists = {};
+//   Map<String, PlayListModel> publicPlayLists = {};
+//
+//   Map<String, PlayListModel> playLists = {};
+//   String? currentName;
+//
+//   bool isAlreadyExists({required String name})
+//   {
+//     return playLists.containsKey(name);
+//   }
+//
+//
+//   PlayListProvider()
+//   {
+//     loadPlayLists();
+//   }
+//
+//   void loadPlayLists() async
+//   {
+//     //total = public + private(created by this user)
+//     await loadPublicPlayLists();
+//     await loadPrivatePlayLists();
+//     for(var name in privatePlayLists.keys)
+//     {
+//       playLists[name] = privatePlayLists[name]!;
+//     }
+//     for(var name in publicPlayLists.keys)
+//     {
+//       playLists[name] = publicPlayLists[name]!;
+//     }
+//     print("********$playLists");
+//   }
+//
+//
+//
+//   Map<String, String> convertToMap({required Map<String, PlayListModel> playLists})
+//   {
+//     Map<String, String> storeModel = {};
+//     for(var item in playLists.keys)
+//       {
+//         storeModel[item] = jsonEncode(playLists[item]!.toJson());
+//       }
+//     return storeModel;
+//   }
+//
+//
+//   Future<void> loadPublicPlayLists() async
+//   {
+//     var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
+//     var snapShot = await fireStore.get();
+//     var playLists = snapShot.data()!['publicPlayLists'];
+//     for(var name in playLists.keys)
+//       {
+//         publicPlayLists[name] = PlayListModel.fromJson(jsonDecode(playLists[name]));
+//       }
+//   }
+//
+//   Future<void> loadPrivatePlayLists() async
+//   {
+//     var sp = await SharedPreferences.getInstance(); //{concat("private_", userUId), [privateplaylistNames]}
+//     String privateUserId = 'private_$userUid';
+//     var playListNames = sp.getStringList(privateUserId);
+//     print(playListNames);
+//     for(var name in playListNames!)
+//       {
+//         var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
+//         var snapShot = await fireStore.get();
+//         var model = snapShot.data()!['privatePlayLists'];
+//         print("----$model ----");
+//         print(jsonDecode(model[name]));
+//         privatePlayLists[name] = PlayListModel.fromJson(jsonDecode(model[name]));
+//         print(privatePlayLists);
+//       }
+//   }
+//
+//   void addToPrivate({required PlayListModel newPlayList}) async
+//   {
+//     privatePlayLists[newPlayList.name] = newPlayList;
+//     //add the name to shared pref so that only creator can access
+//     var sp = await SharedPreferences.getInstance(); //{concat("private_", userUId), [privateplaylistNames]}
+//     String privateUserId = 'private_$userUid';
+//     if(sp.containsKey(privateUserId))
+//       {
+//         print("exists---------");
+//         var existingList = sp.getStringList(privateUserId);
+//         existingList!.add(newPlayList.name);
+//         sp.setStringList(privateUserId, existingList);
+//       }
+//     else
+//       {
+//         sp.setStringList(privateUserId, [newPlayList.name]);
+//       }
+//
+//     var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
+//     fireStore.update({'privatePlayLists' : convertToMap(playLists: privatePlayLists)});
+//   }
+//
+//   void addToPublic({required PlayListModel newPlayList})
+//   {
+//     publicPlayLists[newPlayList.name] = newPlayList;
+//     var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
+//     fireStore.update({'publicPlayLists' : convertToMap(playLists: publicPlayLists)});
+//   }
+//
+//
+//   void createNewPlayList({required String name, required String imageUrl, bool isPrivate=false}) async
+//   {
+//     PlayListModel newPlayList = PlayListModel(name: name, imageUrl: imageUrl);
+//     playLists[name] = newPlayList;
+//
+//     if(isPrivate)
+//     {
+//       privatePlayLists[name] = newPlayList;
+//       addToPrivate(newPlayList: newPlayList);
+//     }
+//     else
+//     {
+//       publicPlayLists[name] = newPlayList;
+//       addToPublic(newPlayList: newPlayList);
+//     }
+//
+//     notifyListeners();
+//   }
+//
+//   void addTrackToPlayList({required BuildContext context, required String name, required TrackModel track}) async
+//   {
+//     if(playLists.containsKey(name))
+//     {
+//       playLists[name]!.trackId.add(track.id);
+//
+//       var fireStore =  FirebaseFirestore.instance.collection('users').doc(userUid);
+//       if(privatePlayLists.containsKey(name))
+//         {
+//           print("adding to private");
+//           privatePlayLists[name]!.trackId.add(track.id);
+//           fireStore.update({'privatePlayLists' : convertToMap(playLists: privatePlayLists)});
+//         }
+//       else if(publicPlayLists.containsKey(name))
+//         {
+//           publicPlayLists[name]!.trackId.add(track.id);
+//           fireStore.update({'publicPlayLists' : convertToMap(playLists: publicPlayLists)});
+//         }
+//
+//       showMessage(context: context, content: "Song added to playlist '$name'");
+//     }
+//     notifyListeners();
+//   }
+//
+//   void setCurrentName(String name)
+//   {
+//     currentName = name;
+//     print("set $name");
+//     notifyListeners();
+//   }
+//
+//   Future<List<TrackModel>> getTrackList({required String name}) async
+//   {
+//     List<TrackModel> tracks = [];
+//     for(var trackId in playLists[name]!.trackId!)
+//       {
+//         final track = await getTrackData(trackId: trackId);
+//         tracks.add(track!);
+//       }
+//     return tracks;
+//   }
+//
+//   List<String> getPlayListNames()
+//   {
+//     return playLists.keys.toList(growable: false);
+//   }
+//
+//   // void sortPlayListTracks(List<String> trackId, {required String sortBy}) async{
+//   //
+//   // }
+//
+//   void sortItems(String name, String sortBy)
+//   {
+//     // var sortedList = playLists[name]!.trackId;
+//     // sortTracks(sortedList, sortBy: sortBy);
+//     // playLists[name]!.tracks= sortedList;
+//     notifyListeners();
+//   }
+//
+//   bool checkInPlayList({required String name, required String trackId})
+//   {
+//     print("check $name");
+//     // if(playLists[name]!.tracks.contains(track)) return true;
+//     for(int i=0; i<playLists[name]!.trackId!.length; i++)
+//       {
+//         if(playLists[name]!.trackId![i] == trackId) return true;
+//       }
+//     return false;
+//   }
+//
+//   void removeFromPlaylist({required BuildContext context, required String name, required String trackId})
+//   {
+//     for(int i=0; i<playLists[name]!.trackId!.length; i++)
+//     {
+//       if(playLists[name]!.trackId![i] == trackId)
+//         {
+//           playLists[name]!.trackId!.removeAt(i);
+//           showMessage(context: context, content: "Song removed from '$name'");
+//         }
+//     }
+//     notifyListeners();
+//   }
+// }
 
 
 

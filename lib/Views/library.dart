@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/loadingIndicator.dart';
 import 'package:runo_music/Views/same_view.dart';
 import 'package:runo_music/Widgets/create_playlist_dialog.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
@@ -23,7 +24,14 @@ class Library extends StatefulWidget {
 class _LibraryState extends State<Library> {
 
   String playlistImage = "assets/images/favouritesImage.webp";
-  
+
+  @override
+  void initState()
+  {
+    PlayListProvider playListProvider = Provider.of<PlayListProvider>(context, listen: false);
+    playListProvider.loadPlayLists();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer3<FavouriteItemsProvider, AudioProvider, PlayListProvider>(builder: (context, favProvider,audioProvider,playListProvider, child)=>
@@ -131,11 +139,16 @@ class _LibraryState extends State<Library> {
                           child: Row(
                             children: [
                               Item(Url: "assets/images/favouritesImage.webp", Title: "My Favourites", pageType: PageType.Favourites, provider: favProvider),
+                              if(!playListProvider.isNamesLoading)
                               for(int i=0; i<playListProvider.playLists.length; i++)
                               playListProvider.playLists.values.map((playlist)=>Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: Item(Title: playlist.name, Url: playlist.imageUrl, pageType: PageType.PlayList, playListName: playlist.name, provider: playListProvider),
-                              )).toList()[i]
+                              )).toList()[i],
+                              if(playListProvider.isNamesLoading) Padding(
+                                padding: const EdgeInsets.only(left: 60.0),
+                                child: loadingIndicator(),
+                              )
                             ],
                           ),
                         ),
@@ -216,8 +229,9 @@ class _LibraryState extends State<Library> {
                   child: RichText(
                       text: TextSpan(
                         children: [
-                          TextSpan(text: "PLAYLIST\n", style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary)),
-                          TextSpan(text: Title ,style: TextStyle(fontSize: 15,fontWeight: FontWeight.w400))
+                          TextSpan(text: "PLAYLIST ", style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary)),
+                          if(pageType==PageType.PlayList && !provider.checkIfPublic(name:Title)) TextSpan(text: "\u2022", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold, color: Colors.red)),
+                          TextSpan(text: "\n$Title" ,style: TextStyle(fontSize: 15,fontWeight: FontWeight.w400, color: Colors.white))
                         ]
                       )
                   ),
