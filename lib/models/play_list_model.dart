@@ -21,8 +21,8 @@ class PlayListModel {
     name: json["name"] ?? '',
     imageUrl: json["imageUrl"] ?? '',
     trackId: json["trackId"] != null
-        ? List<String>.from(json["trackId"].map((x) => x.toString())) // Ensure each item is a string
-        : [], // Fallback if trackId is null
+        ? List<String>.from(json["trackId"].map((x) => x.toString()))
+        : [],
   );
 
   Map<String, dynamic> toJson() => {

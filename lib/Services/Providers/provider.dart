@@ -403,13 +403,11 @@ class PlayListProvider extends ChangeNotifier {
     return playLists.containsKey(name);
   }
 
-  // Load both public and private playlists
+  // Load both public and private playlists and combine them
   Future<void> loadPlayLists() async {
     isNamesLoading=true;
-    print("asdfasdfasdfasdfasdfasdfasdf");
     await loadPublicPlayLists();
     await loadPrivatePlayLists();
-    print("-----------asdfasdfasdfasdfasdfasdfasdf");
     // Combine private and public playlists into a single map
     playLists = {
       ...privatePlayLists,
@@ -422,20 +420,18 @@ class PlayListProvider extends ChangeNotifier {
   }
 
   // Convert playlists to a map for Firestore storage
-  Map<String, String> convertToMap({required Map<String, PlayListModel> playLists}) {
-    return playLists.map((name, model) => MapEntry(name, jsonEncode(model.toJson())));
-  }
+  // Map<String, String> convertToMap({required Map<String, PlayListModel> playLists}) {
+  //   return playLists.map((name, model) => MapEntry(name, jsonEncode(model.toJson())));
+  // }
 
   // Load public playlists from Firestore
   Future<void> loadPublicPlayLists() async {
-    print("###############$userUid");
     var playListCollection = FirebaseFirestore.instance
         .collection('users')
         .doc(userUid)
         .collection('publicPlaylists');
 
     var snapshot = await playListCollection.get();
-    print("@@@@@@@${snapshot.docs}");
     publicPlayLists = {
       for (var doc in snapshot.docs) doc.id: PlayListModel.fromJson(doc.data())
     };
@@ -545,7 +541,6 @@ class PlayListProvider extends ChangeNotifier {
             .update({'trackId': publicPlayLists[name]!.trackId});
       }
 
-      // Assuming you have a method to show messages
 
     }
 
@@ -595,18 +590,15 @@ class PlayListProvider extends ChangeNotifier {
 
 
   Future<List<String>> sortTrackIdsBy(List<String> trackIds, {required String sortBy}) async {
-    // Create a map to store trackId and its corresponding TrackModel
     Map<String, TrackModel> trackMap = {};
 
-    // Fetch TrackModel for each trackId
     for (String trackId in trackIds) {
       TrackModel? track = await getTrackData(trackId: trackId);
       if (track != null) {
-        trackMap[trackId] = track;  // Store the fetched track with its trackId
+        trackMap[trackId] = track;
       }
     }
 
-    // Sort the trackIds based on the sortBy criteria (trackName or artistName)
     trackIds.sort((a, b) {
       TrackModel trackA = trackMap[a]!;
       TrackModel trackB = trackMap[b]!;
@@ -616,7 +608,8 @@ class PlayListProvider extends ChangeNotifier {
       } else if (sortBy == 'artistName') {
         return trackA.artistName.toLowerCase().compareTo(trackB.artistName.toLowerCase());
       } else {
-        return 0; // No sorting if invalid sortBy option is provided
+        return 0;
+
       }
     });
 

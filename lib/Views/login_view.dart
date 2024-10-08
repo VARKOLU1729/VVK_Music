@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:runo_music/Helper/deviceParams.dart';
+import 'package:runo_music/Helper/messenger.dart';
 import 'package:runo_music/main.dart';
 import 'package:runo_music/tab_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +51,8 @@ class _LoginViewState extends State<LoginView> {
         if(!Responsive.isMobile()) showWelcomeToast();
         else
           {
-            showWelcomeSnackBar();
+            // showWelcomeSnackBar();
+            showMessage(context: context, content:"Welcome $_username");
           }
         // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TabScreen()));
         // context.push('/tab-screen');

@@ -7,7 +7,7 @@ Widget loadingIndicator()
     child: SizedBox(
       height: 40,
       width: 40,
-      child: CircularProgressIndicator(color: Colors.white,),
+      child: CircularProgressIndicator(color: Color.fromARGB(255, 37, 209, 218),),
     ),
   );
 }

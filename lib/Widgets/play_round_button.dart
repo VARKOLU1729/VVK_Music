@@ -28,9 +28,10 @@ class PlayRoundButton extends StatelessWidget {
         }
         else
         {
+          context.push('/music-player');
           await audioProvider.loadAudio(trackList: items, index: 0);
           // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MusicPlayerView()),);
-          context.push('/music-player');
+
         }
 
       }, icon: const Icon(Icons.play_arrow, size: 30,color: Colors.black,)),

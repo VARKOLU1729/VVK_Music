@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import 'package:runo_music/Helper/loadingIndicator.dart';
 import 'package:runo_music/Widgets/track_album_widget.dart';
 
 import '../Helper/Responsive.dart';
@@ -25,6 +26,9 @@ class DisplayWithPagination extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           scrollController: scrollController,
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
+            firstPageProgressIndicatorBuilder: (context)=> loadingIndicator(),
+              newPageProgressIndicatorBuilder: (context)=> loadingIndicator(),
+              noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items found", style: TextStyle(color: Theme.of(context).colorScheme.tertiary),),),
               itemBuilder: (context, item, index) {
             return TrackAlbumWidget(
               index: index,

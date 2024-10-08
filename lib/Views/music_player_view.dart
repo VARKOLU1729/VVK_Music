@@ -83,6 +83,7 @@ class _MusicPlayerViewState extends State<MusicPlayerView> {
 
               Image.network(
                 trackImageUrl,
+                // scale: 0.1,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,

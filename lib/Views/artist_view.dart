@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
+import 'package:runo_music/Helper/loadingIndicator.dart';
 import 'package:runo_music/Views/search.dart';
 
 import 'package:runo_music/Services/Data/fetch_data.dart';
@@ -136,7 +137,7 @@ class _ArtistViewState extends State<ArtistView> {
                               ),
                               child: ListTile(
                                 title: artistName == null
-                                    ? const CircularProgressIndicator()
+                                    ? loadingIndicator()
                                     : Text(
                                   artistName!,
                                   style: const TextStyle(
@@ -243,7 +244,7 @@ class _ArtistViewState extends State<ArtistView> {
                                     children: [
                                       ListTile(
                                         title: artistName == null
-                                            ? const CircularProgressIndicator()
+                                            ? loadingIndicator()
                                             : Text(
                                                 artistName!,
                                                 style: TextStyle(
@@ -308,24 +309,7 @@ class _ArtistViewState extends State<ArtistView> {
                           height: 20,
                         ),
                         Header(
-                            // onTap: () {
-                            //   Widget widget = SeeAll(
-                            //       type: Type.track,
-                            //       pagingController: _artistTrackPagingController);
-                            //   if (Responsive.isSmallScreen(context))
-                            //     {
-                            //       showModalBottomSheet(
-                            //         useSafeArea: true,
-                            //           constraints: BoxConstraints(
-                            //               minHeight: getHeight(context)),
-                            //           context: context,
-                            //           builder: (context) => widget);
-                            //     }
-                            //   else {
-                            //     Navigator.of(context).push(MaterialPageRoute(
-                            //         builder: (context) => widget));
-                            //   }
-                            // },
+
                           type: Type.track,
                             pagingController: _artistTrackPagingController,
                             title: "Top Tracks",
@@ -340,23 +324,7 @@ class _ArtistViewState extends State<ArtistView> {
                             scrollController: trackScrollController
                         ),
                         Header(
-                            // onTap: () {
-                            //   Widget widget = SeeAll(
-                            //       type: Type.album,
-                            //       pagingController: _artistAlbumPagingController);
-                            //   if (Responsive.isSmallScreen(context))
-                            //     {
-                            //       showModalBottomSheet(
-                            //         useSafeArea: true,
-                            //           context: context,
-                            //           builder: (context) => widget);
-                            //     }
-                            //
-                            //   else {
-                            //     Navigator.of(context).push(MaterialPageRoute(
-                            //         builder: (context) => widget));
-                            //   }
-                            // },
+
                           pagingController: _artistAlbumPagingController,
                             type: Type.album,
                             title: "Top Albums",
@@ -375,7 +343,7 @@ class _ArtistViewState extends State<ArtistView> {
                         (artistName == null ||
                                 artistBio == null ||
                                 artistImageUrl == null)
-                            ? const CircularProgressIndicator()
+                            ? loadingIndicator()
                             : Padding(
                               padding: EdgeInsets.only(left: Responsive.isSmallScreen(context) ||  Responsive.isMobile(context) ?10:(Responsive.isMediumScreen(context)?40:60)),
                               child: ListTile(

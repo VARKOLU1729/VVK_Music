@@ -206,7 +206,7 @@ class _HomeState extends State<Home> {
                 // first child
                 if (Responsive.isMobile(context))
                   //   show the station image in the background and station details
-                loadingData ? SizedBox(height: getHeight(context)/2.25 ,child: loadingIndicator()) : CarouselSlider.builder(
+                loadingData ? SizedBox(height: getHeight(context)/2.5 ,child: loadingIndicator()) : CarouselSlider.builder(
                   itemCount: stationData.length,
                   itemBuilder: (context, index, realIndex) {
                     final stationName = stationData[index][0];
@@ -245,7 +245,7 @@ class _HomeState extends State<Home> {
                         '-',
                         style: TextStyle(
                           fontSize: 30,
-                          color: _currentStationIndex == index ? Colors.white : Colors.grey,
+                          color: _currentStationIndex == index ? Theme.of(context).colorScheme.tertiary : Colors.grey,
                         ),
                       ),
                     );

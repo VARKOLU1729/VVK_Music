@@ -8,6 +8,7 @@ import 'package:runo_music/tab_screen.dart';
 
 import '../Helper/Responsive.dart';
 import 'package:runo_music/Services/Data/searchResults.dart';
+import '../Helper/loadingIndicator.dart';
 import '../Widgets/list_all.dart';
 import '../Widgets/mobile_app_bar2.dart';
 import '../Widgets/search_bar.dart';
@@ -83,7 +84,7 @@ class _SearchState extends State<Search> {
         controller: _searchPagingController,
         pageKey: pageKey,
       );
-      final isLastPage = trackData.isEmpty;
+      final isLastPage = trackData.isEmpty || trackData.length<5;
       if (isLastPage) {
         _searchPagingController.appendLastPage(trackData);
       } else {
@@ -153,7 +154,10 @@ class _SearchState extends State<Search> {
                     pagingController: _searchPagingController,
                     scrollDirection: Axis.vertical,
                     builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                        noItemsFoundIndicatorBuilder: (context)=>const Center(child: Text("No Items Found", style: TextStyle(color: Colors.red),),),
+                        firstPageProgressIndicatorBuilder: (context)=> loadingIndicator(),
+                        newPageProgressIndicatorBuilder: (context)=> loadingIndicator(),
+                        noMoreItemsIndicatorBuilder: (context)=>Center(child: Text("No More Items", style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontSize: 20),),),
+                        noItemsFoundIndicatorBuilder: (context)=>Center(child: Text("No Items Found", style: TextStyle(color: Theme.of(context).colorScheme.tertiary, fontSize: 20),),),
                         itemBuilder: (context, item, index) {
                           return ListAllWidget(
                               items: _searchPagingController.itemList!,
