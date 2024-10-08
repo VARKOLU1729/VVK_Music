@@ -39,6 +39,7 @@ class _SameViewState extends State<SameView> {
   String playListImage = "assets/images/favouritesImage.webp";
   String image = "assets/images/favouritesImage.webp" ;
   String title = "Default";
+  String access = "Private";
   bool trackLoad = true;
   List<TrackModel> Items = [];
   void loadPlayListTracks() async
@@ -78,12 +79,14 @@ class _SameViewState extends State<SameView> {
           title = "My Favourites";
           image = favImage;
           Items = favProvider.favouriteItems.values.toList(growable: false);
+          access = "PRIVATE";
         }
       else if(widget.pageType == PageType.RecentlyPlayed)
       {
         title = "MY Recent Plays";
         image = recentsImage;
         Items =  audioProvider.recentPlayedItems.toList(growable: false);
+        access = "PRIVATE";
       }
       else if(widget.pageType == PageType.PlayList)
       {
@@ -93,6 +96,14 @@ class _SameViewState extends State<SameView> {
         playListProvider.setTrackList(name: playListProvider.currentName!);
         Items = playListProvider.getTracks;
         // Items =  playListProvider.getTrackList(name: playListProvider.currentName!);
+        if(playListProvider.checkIfPublic(name: playListProvider.currentName!))
+          {
+            access = "PUBLIC";
+          }
+        else
+          {
+            access = "PRIVATE";
+          }
       }
       return Scaffold(
             extendBody: true,
@@ -177,7 +188,7 @@ class _SameViewState extends State<SameView> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text('${Items.length} SONGS . ${((Items.length*30)/60).truncate()} MINS AND ${(Items.length*30)%60} SECS',
+                                    child: Text('$access \u2022 ${Items.length} SONGS \u2022 ${((Items.length*30)/60).truncate()} MINS AND ${(Items.length*30)%60} SECS',
                                       style: TextStyle(
                                           color: Colors.white.withOpacity(0.5),
                                           fontSize: 10,
@@ -222,7 +233,7 @@ class _SameViewState extends State<SameView> {
                                         fontWeight: FontWeight.bold),
                                   ),
 
-                                  Text('${Items.length} SONGS . ${((Items.length*30)/60).truncate()} MINS AND ${(Items.length*30)%60} SECS',
+                                  Text('$access \u2022 ${Items.length} SONGS \u2022 ${((Items.length*30)/60).truncate()} MINS AND ${(Items.length*30)%60} SECS',
                                     style: TextStyle(
                                         color: Colors.white.withOpacity(0.5),
                                         fontSize: 15
